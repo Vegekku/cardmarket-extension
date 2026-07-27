@@ -4,10 +4,10 @@
 
 | Bloque | Puntos |
 |--------|--------|
-| 1 — Bugs críticos | [1.3](#13-listener-click-fuera-de-domcontentloaded), [1.5](#15-resaltado-aplica-a-cualquier-texto-en-lugar-de-filas-de-vendedor) |
-| 2 — Calidad de código | [2.1](#21-refactor-a-módulos-es-con-jsdoc), [2.2](#22-eliminar-console-log-de-producción), [2.3](#23-migrar-a-chromestoragelocal) |
-| 3 — UX / Popup | [3.1](#31-estilos-css-en-el-popup), [3.2](#32-botón-limpiar-términos), [3.3](#33-feedback-visual-al-guardar), [3.4](#34-contador-de-coincidencias), [3.5](#35-página-de-opciones) |
-| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.2](#42-toggle-activardesactivar-resaltado), [4.3](#43-resaltado-en-todo-el-texto-no-solo-enlaces), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos) |
+| 1 — Bugs críticos | |
+| 2 — Calidad de código | [2.1](#21-refactor-a-módulos-es-con-jsdoc), [2.3](#23-migrar-a-chromestoragelocal) |
+| 3 — UX / Popup | [3.1](#31-estilos-css-en-el-popup), [3.2](#32-botón-limpiar-términos), [3.3](#33-feedback-visual-al-guardar), [3.4](#34-contador-de-coincidencias), [3.5](#35-página-de-opciones), [3.6](#36-renombrar-términos-a-vendedores-o-usuarios-en-la-ui) |
+| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.2](#42-toggle-activardesactivar-resaltado), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos) |
 
 ---
 
@@ -22,27 +22,6 @@
 
 ## 1. Bugs críticos
 
-### 1.3 Listener click fuera de DOMContentLoaded
-
-En `popup.js` el listener del botón `#highlightBtn` se registra fuera del bloque `DOMContentLoaded`, lo que puede provocar un error si el script se ejecuta antes de que el DOM esté listo.
-
-Ficheros afectados: `popup.js`.
-
-### 1.5 Resaltado aplica a cualquier texto en lugar de filas de vendedor
-
-El resaltado actual (TreeWalker) marca cualquier coincidencia de texto en la página, independientemente del contexto. El comportamiento correcto es resaltar la fila `div.article-row` completa (modificando `--bs-table-bg`) cuando esa fila contiene un enlace cuyo `href` apunta a `https://www.cardmarket.com/es/Digimon/Users/<término>`. Así el resaltado queda restringido al listado de vendedores de un artículo.
-
-Decisiones tomadas:
-- El TreeWalker se elimina completamente; este enfoque lo reemplaza.
-- El resaltado aplica únicamente en el listado de vendedores de un artículo (URL pattern a determinar).
-- El path del href será genérico: `/es/<Juego>/Users/<término>` para cubrir todos los juegos.
-
-Decisiones adicionales:
-- URL pattern: `*://*.cardmarket.com/*/Products/*` (cualquier URL que contenga `/Products/`).
-- Color: `rgba(255, 200, 0, 0.25)` — ámbar semitransparente, visible en dark mode (`#1d1f26`, `#14161b`) y light mode (`#f5f5f5`, transparente), compatible con accesibilidad perceptiva en ambos.
-
-Ficheros afectados: `content.js`.
-
 ---
 
 ## 2. Calidad de código
@@ -50,10 +29,6 @@ Ficheros afectados: `content.js`.
 ### 2.1 Refactor a módulos ES con JSDoc
 
 Los ficheros actuales son scripts planos sin módulos ni documentación. Refactorizar a módulos ES (`type: module`) con JSDoc estándar (`@module`, `@description`, `@param`, `@returns`) en todas las funciones exportadas.
-
-### 2.2 Eliminar `console.log` de producción
-
-`popup.js` tiene un `console.log('Términos guardados:', terms)` que no debe estar en producción. Eliminar.
 
 ### 2.3 Migrar a `chrome.storage.local`
 
@@ -98,6 +73,15 @@ Pendiente de definir qué opciones exponer (candidatos según otras mejoras pend
 
 Ficheros afectados: `manifest.json`, `options.html` (nuevo), `options.js` (nuevo), `content.js`.
 
+### 3.6 Renombrar "términos" a "vendedores" o "usuarios" en la UI
+
+El popup y el storage usan la palabra "términos", pero la funcionalidad real es remarcar vendedores/usuarios concretos. Renombrar el concepto en la UI (labels, placeholders, mensajes) una vez decidido si el nombre más adecuado es "vendedores" o "usuarios".
+
+Pendiente de decidir:
+- Nombre definitivo: "vendedores" o "usuarios".
+
+Ficheros afectados: `popup.html`, `popup.js`.
+
 ---
 
 ## 4. Funcionalidad nueva
@@ -109,10 +93,6 @@ Permitir al usuario asignar un color diferente a cada término en lugar de usar 
 ### 4.2 Toggle activar/desactivar resaltado
 
 Añadir un toggle en el popup para activar o desactivar el resaltado sin borrar los términos guardados.
-
-### 4.3 Resaltado en todo el texto, no solo enlaces
-
-Actualmente el resaltado solo afecta a elementos `<a>`. Extenderlo a cualquier nodo de texto de la página.
 
 ### 4.4 Navegación entre coincidencias
 
@@ -134,7 +114,7 @@ Ficheros afectados: `content.js`.
 Cuando el usuario añade cartas de un vendedor concreto al carrito, añadir automáticamente el nombre de ese vendedor a la lista de términos resaltados. El objetivo es facilitar la localización visual de ese vendedor en listados de cartas para construir pedidos.
 
 Pendiente de decidir:
-- Si el vendedor se añade con el mismo color que el resto de términos o con un color diferente (depende de [4.1](#41-colores-personalizables-por-término)).
+- El vendedor añadido automáticamente se resaltará en `rgba(100, 200, 100, 0.25)` — verde suave, reservado para distinguirlo visualmente de los términos manuales. Color descartado para el resaltado general (1.5) por reservarse para este uso.
 - Cómo detectar el evento de "añadir al carrito" en la página de Cardmarket (MutationObserver sobre el DOM o intercepción de la petición de red).
 
 Ficheros afectados: `content.js`, `popup.js`, `background.js`.
