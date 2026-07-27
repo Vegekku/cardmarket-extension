@@ -4,7 +4,7 @@
 
 | Bloque | Puntos |
 |--------|--------|
-| 1 — Bugs críticos | [1.1](#11-resaltado-rompe-el-dom), [1.2](#12-inyección-en-todas-las-pestañas), [1.4](#14-términos-no-se-cargan-al-abrir-el-popup) |
+| 1 — Bugs críticos | [1.1](#11-resaltado-rompe-el-dom), [1.2](#12-inyección-en-todas-las-pestañas), [1.3](#13-listener-click-fuera-de-domcontentloaded), [1.4](#14-términos-no-se-cargan-al-abrir-el-popup), [1.5](#15-resaltado-aplica-a-cualquier-texto-en-lugar-de-filas-de-vendedor) |
 | 2 — Calidad de código | [2.1](#21-refactor-a-módulos-es-con-jsdoc), [2.2](#22-eliminar-console-log-de-producción), [2.3](#23-migrar-a-chromestoragelocal) |
 | 3 — UX / Popup | [3.1](#31-estilos-css-en-el-popup), [3.2](#32-botón-limpiar-términos), [3.3](#33-feedback-visual-al-guardar), [3.4](#34-contador-de-coincidencias), [3.5](#35-página-de-opciones) |
 | 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.2](#42-toggle-activardesactivar-resaltado), [4.3](#43-resaltado-en-todo-el-texto-no-solo-enlaces), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos) |
@@ -30,9 +30,30 @@
 
 `background.js` inyecta `content.js` en cualquier pestaña al activarla o cargarla, sin filtrar por URL. Añadir comprobación de que la URL pertenece a `cardmarket.com` antes de ejecutar `scripting.executeScript`.
 
+### 1.3 Listener click fuera de DOMContentLoaded
+
+En `popup.js` el listener del botón `#highlightBtn` se registra fuera del bloque `DOMContentLoaded`, lo que puede provocar un error si el script se ejecuta antes de que el DOM esté listo.
+
+Ficheros afectados: `popup.js`.
+
 ### 1.4 Términos no se cargan al abrir el popup
 
 `popup.js` no tiene listener `DOMContentLoaded`, por lo que el textarea puede estar vacío aunque haya términos guardados. Envolver la lectura de storage en `DOMContentLoaded`.
+
+### 1.5 Resaltado aplica a cualquier texto en lugar de filas de vendedor
+
+El resaltado actual (TreeWalker) marca cualquier coincidencia de texto en la página, independientemente del contexto. El comportamiento correcto es resaltar la fila `div.article-row` completa (modificando `--bs-table-bg`) cuando esa fila contiene un enlace cuyo `href` apunta a `https://www.cardmarket.com/es/Digimon/Users/<término>`. Así el resaltado queda restringido al listado de vendedores de un artículo.
+
+Decisiones tomadas:
+- El TreeWalker se elimina completamente; este enfoque lo reemplaza.
+- El resaltado aplica únicamente en el listado de vendedores de un artículo (URL pattern a determinar).
+- El path del href será genérico: `/es/<Juego>/Users/<término>` para cubrir todos los juegos.
+
+Decisiones adicionales:
+- URL pattern: `*://*.cardmarket.com/*/Products/*` (cualquier URL que contenga `/Products/`).
+- Color: `rgba(255, 200, 0, 0.25)` — ámbar semitransparente, visible en dark mode (`#1d1f26`, `#14161b`) y light mode (`#f5f5f5`, transparente), compatible con accesibilidad perceptiva en ambos.
+
+Ficheros afectados: `content.js`.
 
 ---
 
@@ -56,9 +77,13 @@ Actualmente se usa `chrome.storage.sync`, que tiene un límite de 8KB. Migrar a 
 
 ### 3.1 Estilos CSS en el popup
 
-El popup es HTML puro sin estilos. Añadir un `popup.css` con estilos básicos (tipografía, espaciado, botón).
+El popup es HTML puro sin estilos. Añadir un `popup.css` con estilos básicos (tipografía, espaciado, botón) y las siguientes mejoras de tamaño:
 
-### 3.2 Botón limpiar términos
+- Ancho mínimo cómodo para el popup (actualmente Chrome lo renderiza muy pequeño).
+- El textarea debe crecer automáticamente con el contenido para que todos los términos sean visibles de un vistazo, sin scroll ni redimensionado manual. Usar `field-sizing: content` (CSS nativo) con fallback en JS (`input` event + `scrollHeight`) para navegadores que no lo soporten.
+- El tamaño redimensionado manualmente no persiste entre aperturas del popup (limitación de Chrome); la solución es que el tamaño se derive del contenido, no del usuario.
+
+Ficheros afectados: `popup.html`, `popup.css` (nuevo), `popup.js` (fallback JS si necesario).### 3.2 Botón limpiar términos
 
 Añadir un botón que vacíe el textarea y elimine los términos guardados en storage.
 
