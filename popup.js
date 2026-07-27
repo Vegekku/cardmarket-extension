@@ -1,3 +1,13 @@
+// Cargar los términos guardados cuando se abre el popup
+document.addEventListener('DOMContentLoaded', function() {
+    chrome.storage.sync.get('terms', function(data) {
+        if (data.terms) {
+            document.getElementById('terms').value = data.terms.join(', ');
+        }
+    });
+});
+
+// Guardar y resaltar los términos cuando se hace clic en el botón
 document.getElementById('highlightBtn').addEventListener('click', function() {
     let terms = document.getElementById('terms').value.split(',').map(term => term.trim());
     
