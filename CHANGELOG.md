@@ -9,3 +9,5 @@ Versionado según [Semantic Versioning](https://semver.org/lang/es/).
 ### Added
 
 - Versión inicial: resaltado de términos de búsqueda en páginas de Cardmarket
+
+[v1.0.0]: https://github.com/vegekku/cardmarket-extension/releases/tag/v1.0.0
