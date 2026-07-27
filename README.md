@@ -4,10 +4,10 @@ Extensión de Chrome que resalta términos de búsqueda en [Cardmarket](https://
 
 ## Funcionalidades
 
-### Resaltado de términos
-- Introduce uno o varios términos en el popup separados por coma.
-- Al pulsar **Resaltar**, los términos se guardan y se resaltan en amarillo en la página activa.
-- Los términos persisten entre sesiones y se aplican automáticamente al navegar por Cardmarket.
+### Resaltado de vendedores
+- Introduce uno o varios nombres de vendedor en el popup separados por coma.
+- Al pulsar **Resaltar**, los vendedores se guardan y se resalta en azul-cian la fila completa de cada vendedor coincidente en el listado de artículos.
+- Los vendedores persisten entre sesiones y se aplican automáticamente al navegar por las páginas de producto de Cardmarket.
 
 ## Instalación
 
@@ -43,4 +43,4 @@ cardmarket-extension/
 ## Compatibilidad
 
 - Chrome con Manifest V3.
-- Funciona en `*://*.cardmarket.com/*`.
+- Funciona en `*://*.cardmarket.com/*/Products/*`.
