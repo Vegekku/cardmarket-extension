@@ -1,0 +1,20 @@
+{
+  "name": "cardmarket-extension",
+  "version": "1.0.0",
+  "description": "Extensión de Chrome que resalta vendedores en Cardmarket.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch",
+    "dev:build": "node build.js --dev",
+    "zip": "node zip.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vegekku/cardmarket-extension.git"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  }
+}

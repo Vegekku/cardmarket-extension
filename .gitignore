@@ -1,2 +1,4 @@
 .amazonq/
 packages/
+dist/
+node_modules/
