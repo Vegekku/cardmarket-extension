@@ -1,11 +1,10 @@
-chrome.storage.sync.get('terms', function(data) {
-    clearHighlights();
-    if (data.terms && data.terms.length > 0) {
-        const table = document.getElementById('table');
-        if (table) highlightRows(data.terms, table);
-        observeNewContent(data.terms);
-    }
-});
+/**
+ * @module content
+ * @description Script inyectado en cardmarket.com. Lee los términos guardados
+ * y resalta las filas de artículos cuyos vendedores coincidan.
+ */
+
+if (typeof __BUILD_TIME__ !== 'undefined') console.log(`[Cardmarket] build: ${__BUILD_TIME__}`);
 
 /**
  * Elimina el resaltado de todas las filas previamente marcadas.
@@ -46,3 +45,12 @@ function observeNewContent(terms) {
         });
     }).observe(document.getElementById('table') || document.body, { childList: true, subtree: true });
 }
+
+chrome.storage.sync.get('terms', function(data) {
+    clearHighlights();
+    if (data.terms && data.terms.length > 0) {
+        const table = document.getElementById('table');
+        if (table) highlightRows(data.terms, table);
+        observeNewContent(data.terms);
+    }
+});

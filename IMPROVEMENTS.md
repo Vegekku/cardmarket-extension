@@ -5,9 +5,9 @@
 | Bloque | Puntos |
 |--------|--------|
 | 1 — Bugs críticos | |
-| 2 — Calidad de código | [2.1](#21-refactor-a-módulos-es-con-jsdoc), [2.3](#23-migrar-a-chromestoragelocal) |
+| 2 — Calidad de código | |
 | 3 — UX / Popup | [3.1](#31-estilos-css-en-el-popup), [3.2](#32-botón-limpiar-términos), [3.3](#33-feedback-visual-al-guardar), [3.4](#34-contador-de-coincidencias), [3.5](#35-página-de-opciones), [3.6](#36-renombrar-términos-a-vendedores-o-usuarios-en-la-ui) |
-| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.2](#42-toggle-activardesactivar-resaltado), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos) |
+| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.2](#42-toggle-activardesactivar-resaltado), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click) |
 
 ---
 
@@ -25,14 +25,6 @@
 ---
 
 ## 2. Calidad de código
-
-### 2.1 Refactor a módulos ES con JSDoc
-
-Los ficheros actuales son scripts planos sin módulos ni documentación. Refactorizar a módulos ES (`type: module`) con JSDoc estándar (`@module`, `@description`, `@param`, `@returns`) en todas las funciones exportadas.
-
-### 2.3 Migrar a `chrome.storage.local`
-
-Actualmente se usa `chrome.storage.sync`, que tiene un límite de 8KB. Migrar a `chrome.storage.local`, que permite hasta 10MB y es más adecuado para datos que no necesitan sincronizarse entre dispositivos.
 
 ---
 
@@ -140,5 +132,27 @@ Cuando un pedido combina cartas de varios juegos, Cardmarket divide el listado p
 Pendiente de analizar:
 - Estructura del DOM de la página de pedido para identificar los bloques por juego, las filas de cartas y las celdas de precio.
 - URL pattern de la página de pedido para restringir la inyección.
+
+Ficheros afectados: `content.js`.
+
+### 4.9 Pago selectivo de pedidos en el carrito
+
+El carrito organiza las cartas en pedidos por vendedor. Actualmente no es posible pagar solo algunos pedidos: al comprar se procesan todos a la vez. La única forma de pagar un subconjunto es eliminar manualmente los pedidos no deseados, procesar el pago y volver a añadir las cartas eliminadas.
+
+Pendiente de analizar:
+- Estructura del DOM del carrito para identificar los bloques de pedido por vendedor y sus artículos.
+- Cómo guardar temporalmente los artículos de los pedidos excluidos (storage local) para poder restaurarlos tras el pago.
+- Si Cardmarket expone algún mecanismo nativo para eliminar/restaurar pedidos completos o es necesario operar artículo a artículo.
+- URL pattern de la página del carrito para restringir la inyección.
+
+Ficheros afectados: `content.js`.
+
+### 4.10 Añadir / quitar vendedor con doble click
+
+Permitir añadir o quitar un vendedor de la lista de resaltados haciendo doble click directamente en la página, sin necesidad de abrir el popup. Si el vendedor ya está en la lista, el doble click lo elimina; si no está, lo añade y resalta la fila inmediatamente.
+
+Pendiente de decidir:
+- Zona de doble click: fila completa (`div.article-row`) o celda del vendedor (el enlace `a[href*="/Users/"]`).
+- Feedback visual al añadir/quitar (ej. animación breve o cambio de color transitorio).
 
 Ficheros afectados: `content.js`.
