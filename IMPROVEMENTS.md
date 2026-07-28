@@ -5,7 +5,7 @@
 | Bloque | Puntos |
 |--------|--------|
 | 1 — Bugs críticos | |
-| 2 — Calidad de código | [2.1](#21-refactor-a-módulos-es-con-jsdoc), [2.3](#23-migrar-a-chromestoragelocal) |
+| 2 — Calidad de código | |
 | 3 — UX / Popup | [3.1](#31-estilos-css-en-el-popup), [3.2](#32-botón-limpiar-términos), [3.3](#33-feedback-visual-al-guardar), [3.4](#34-contador-de-coincidencias), [3.5](#35-página-de-opciones), [3.6](#36-renombrar-términos-a-vendedores-o-usuarios-en-la-ui) |
 | 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.2](#42-toggle-activardesactivar-resaltado), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click) |
 
@@ -25,14 +25,6 @@
 ---
 
 ## 2. Calidad de código
-
-### 2.1 Refactor a módulos ES con JSDoc
-
-Los ficheros actuales son scripts planos sin módulos ni documentación. Refactorizar a módulos ES (`type: module`) con JSDoc estándar (`@module`, `@description`, `@param`, `@returns`) en todas las funciones exportadas.
-
-### 2.3 Estrategia de almacenamiento por tipo de dato
-
-Usar `chrome.storage.sync` para preferencias del usuario (términos, colores, opciones) y `chrome.storage.local` o `sessionStorage` para datos temporales de sesión (ej. pedidos excluidos de 4.9). No migrar todo a `local`: la sincronización entre dispositivos es una ventaja real para las preferencias.
 
 ---
 
