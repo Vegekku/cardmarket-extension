@@ -12,9 +12,8 @@ const dev = watch || process.argv.includes('--dev');
 
 mkdirSync('dist/icons', { recursive: true });
 
-['icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png', 'src/popup.html', 'manifest.json'].forEach(f => {
-    copyFileSync(f, `dist/${f.replace('src/', '')}`);
-});
+const staticFiles = ['icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png', 'src/popup.html', 'src/popup.css', 'manifest.json'];
+staticFiles.forEach(f => copyFileSync(f, `dist/${f.replace('src/', '')}`));
 
 const logPlugin = { name: 'log', setup(build) { build.onEnd(() => console.log('rebuilt')); } };
 
@@ -23,7 +22,6 @@ const ctx = await esbuild.context({
         content:    'src/content.js',
         background: 'src/background.js',
         popup:      'src/popup.js',
-        'popup.css': 'src/popup.css',
     },
     bundle: true,
     minify: !dev,
@@ -39,7 +37,7 @@ if (watch) {
     await ctx.watch();
     console.log('esbuild watching...');
     const { watch: fsWatch } = await import('fs');
-    ['src/popup.html', 'manifest.json'].forEach(f => {
+    [...staticFiles].forEach(f => {
         fsWatch(f, () => {
             copyFileSync(f, `dist/${f.replace('src/', '')}`);
             console.log(`copied ${f}`);
