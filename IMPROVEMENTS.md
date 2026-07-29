@@ -6,8 +6,8 @@
 |--------|--------|
 | 1 — Bugs críticos | |
 | 2 — Calidad de código | |
-| 3 — UX / Popup | [3.1](#31-estilos-css-en-el-popup), [3.2](#32-botón-limpiar-términos), [3.3](#33-feedback-visual-al-guardar), [3.4](#34-contador-de-coincidencias), [3.5](#35-página-de-opciones), [3.6](#36-renombrar-términos-a-vendedores-o-usuarios-en-la-ui) |
-| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.2](#42-toggle-activardesactivar-resaltado), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click) |
+| 3 — UX / Popup | [3.3](#33-feedback-visual-al-guardar), [3.5](#35-página-de-opciones), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido) |
+| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click) |
 
 ---
 
@@ -30,27 +30,9 @@
 
 ## 3. UX / Popup
 
-### 3.1 Estilos CSS en el popup
-
-El popup es HTML puro sin estilos. Añadir un `popup.css` con estilos básicos (tipografía, espaciado, botón) y las siguientes mejoras de tamaño:
-
-- Ancho mínimo cómodo para el popup (actualmente Chrome lo renderiza muy pequeño).
-- El textarea debe crecer automáticamente con el contenido para que todos los términos sean visibles de un vistazo, sin scroll ni redimensionado manual. Usar `field-sizing: content` (CSS nativo) con fallback en JS (`input` event + `scrollHeight`) para navegadores que no lo soporten.
-- El tamaño redimensionado manualmente no persiste entre aperturas del popup (limitación de Chrome); la solución es que el tamaño se derive del contenido, no del usuario.
-
-Ficheros afectados: `popup.html`, `popup.css` (nuevo), `popup.js` (fallback JS si necesario).
-
-### 3.2 Botón limpiar términos
-
-Añadir un botón que vacíe el textarea y elimine los términos guardados en storage.
-
 ### 3.3 Feedback visual al guardar
 
 Mostrar un mensaje temporal (ej. "Guardado ✓") durante ~1 segundo tras pulsar el botón de resaltar.
-
-### 3.4 Contador de coincidencias
-
-Mostrar en el popup cuántas coincidencias se han encontrado en la página activa tras aplicar el resaltado.
 
 ### 3.5 Página de opciones
 
@@ -65,14 +47,17 @@ Pendiente de definir qué opciones exponer (candidatos según otras mejoras pend
 
 Ficheros afectados: `manifest.json`, `options.html` (nuevo), `options.js` (nuevo), `content.js`.
 
-### 3.6 Renombrar "términos" a "vendedores" o "usuarios" en la UI
+### 3.7 Tamaño configurable del checkbox en el listado de pedido
 
-El popup y el storage usan la palabra "términos", pero la funcionalidad real es remarcar vendedores/usuarios concretos. Renombrar el concepto en la UI (labels, placeholders, mensajes) una vez decidido si el nombre más adecuado es "vendedores" o "usuarios".
+Los checkboxes nativos de Cardmarket en el listado de cartas de un pedido son demasiado pequeños. Agrandarlos mediante CSS inyectado y exponer un ajuste de tamaño configurable por el usuario.
 
 Pendiente de decidir:
-- Nombre definitivo: "vendedores" o "usuarios".
+- Tamaño por defecto a aplicar (ej. `20px`, `24px`).
+- Selector CSS exacto de los checkboxes en la página de pedido (pendiente de inspeccionar el DOM).
 
-Ficheros afectados: `popup.html`, `popup.js`.
+El ajuste se expone en la página de opciones ([3.5](#35-página-de-opciones)).
+
+Ficheros afectados: `content.js`, `options.html`, `options.js`.
 
 ---
 
@@ -82,9 +67,19 @@ Ficheros afectados: `popup.html`, `popup.js`.
 
 Permitir al usuario asignar un color diferente a cada término en lugar de usar siempre amarillo.
 
-### 4.2 Toggle activar/desactivar resaltado
+### 4.3 Modo filtro: mostrar solo vendedores resaltados
 
-Añadir un toggle en el popup para activar o desactivar el resaltado sin borrar los términos guardados.
+Añadir una opción para que, además de resaltar las filas de los vendedores guardados, se oculten el resto de filas del listado, mostrando únicamente las coincidencias.
+
+El filtro se aplica sobre los artículos presentes en el DOM en cada momento. Cuando Cardmarket carga nuevos artículos mediante "ver más" (llamada Ajax a `https://www.cardmarket.com/{lang}/{game}/AjaxAction/Product_LoadMoreArticles`, respuesta Base64 que se inyecta en el DOM), el MutationObserver existente los detecta y aplica el filtro automáticamente.
+
+Pendiente de decidir:
+- Si la extensión debe auto-pulsar "ver más" cuando el filtro está activo, para cargar todos los lotes sin intervención del usuario. Opciones barajadas:
+  - **Sin auto-carga**: el filtro aplica solo sobre lo cargado; el usuario pulsa manualmente.
+  - **Auto-carga completa**: la extensión pulsa "ver más" en bucle hasta agotar resultados y luego filtra.
+  - **Auto-carga bajo demanda**: carga el siguiente lote, filtra, y continúa si no hay coincidencias.
+
+Ficheros afectados: `content.js`, `popup.html`, `popup.js`.
 
 ### 4.4 Navegación entre coincidencias
 

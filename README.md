@@ -1,13 +1,15 @@
 # Cardmarket Extension
 
-Extensión de Chrome que resalta términos de búsqueda en [Cardmarket](https://www.cardmarket.com), el marketplace europeo de cartas coleccionables (Magic, Pokémon, Yu-Gi-Oh!, etc.).
+Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket.com), el marketplace europeo de cartas coleccionables (Magic, Pokémon, Yu-Gi-Oh!, etc.).
 
 ## Funcionalidades
 
-### Resaltado de vendedores
-- Introduce uno o varios nombres de vendedor en el popup separados por coma.
-- Al pulsar **Resaltar**, los vendedores se guardan y se resalta en azul-cian la fila completa de cada vendedor coincidente en el listado de artículos.
-- Los vendedores persisten entre sesiones y se aplican automáticamente al navegar por las páginas de producto de Cardmarket.
+### Resaltado de usuarios
+- Introduce uno o varios nombres de usuario en el popup separados por espacio, salto de línea o coma.
+- Los usuarios se guardan automáticamente y se resalta en azul-cian la fila completa de cada usuario coincidente en el listado de artículos.
+- Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por las páginas de producto de Cardmarket.
+- El botón **Vaciar** elimina todos los usuarios guardados.
+- El toggle **Resaltado activo** permite activar o desactivar el resaltado sin borrar los usuarios.
 
 ## Instalación
 
@@ -27,7 +29,7 @@ Extensión de Chrome que resalta términos de búsqueda en [Cardmarket](https://
 
 ## Almacenamiento de datos
 
-Los términos introducidos se guardan en `chrome.storage.sync`, vinculados al perfil de Chrome y sincronizados entre dispositivos.
+Los usuarios introducidos se guardan en `chrome.storage.sync`, vinculados al perfil de Chrome y sincronizados entre dispositivos.
 
 - **Desactivar la extensión**: los datos se conservan.
 - **Desinstalar la extensión**: los datos se eliminan permanentemente.
@@ -38,8 +40,9 @@ Los términos introducidos se guardan en `chrome.storage.sync`, vinculados al pe
 cardmarket-extension/
 ├── src/
 │   ├── background.js    # Service worker
-│   ├── content.js       # Script inyectado: resalta términos en la página
+│   ├── content.js       # Script inyectado: resalta usuarios en la página
 │   ├── popup.html       # Popup del icono de la extensión
+│   ├── popup.css        # Estilos del popup
 │   └── popup.js         # Lógica del popup
 ├── dist/            # Build generado (no commitear)
 ├── icons/

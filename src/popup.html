@@ -2,12 +2,19 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Resaltador de términos</title>
+    <title>Resaltador de usuarios</title>
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <h3>Resaltar términos</h3>
-    <textarea id="terms" placeholder="Introduce términos separados por coma..."></textarea>
-    <button id="highlightBtn">Resaltar</button>
+    <h3>Resaltar usuarios</h3>
+    <textarea id="terms" placeholder="Introduce usuarios separados por espacio o salto de línea..."></textarea>
+    <div class="actions">
+        <button id="clearBtn">Vaciar</button>
+    </div>
+    <div class="toggle-row">
+        <input type="checkbox" id="enabledToggle">
+        <label for="enabledToggle">Resaltado activo</label>
+    </div>
     <script src="popup.js"></script>
 </body>
 </html>

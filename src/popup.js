@@ -1,34 +1,82 @@
 /**
  * @module popup
- * @description Lógica del popup: carga los términos guardados y dispara el resaltado.
+ * @description Lógica del popup: carga usuarios y estado del toggle, autoguarda al escribir.
  */
 
 /**
- * Carga los términos guardados en el textarea al abrir el popup.
+ * Envía un mensaje UPDATE_HIGHLIGHT a todas las pestañas abiertas de Cardmarket.
+ * @param {{ terms?: string[], enabled?: boolean }} data
  */
-function loadTerms() {
-    chrome.storage.sync.get('terms', function(data) {
-        if (data.terms) {
-            document.getElementById('terms').value = data.terms.join(', ');
-        }
-    });
-}
-
-/**
- * Guarda los términos introducidos y ejecuta el resaltado en la pestaña activa.
- */
-function saveAndHighlight() {
-    const terms = document.getElementById('terms').value.split(',').map(t => t.trim());
-    chrome.storage.sync.set({ terms });
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        chrome.scripting.executeScript({
-            target: { tabId: tabs[0].id },
-            files: ['content.js']
+function broadcastToCardmarket(data) {
+    chrome.tabs.query({ url: '*://*.cardmarket.com/*/Products/*' }, function(tabs) {
+        tabs.forEach(tab => {
+            chrome.tabs.sendMessage(tab.id, { type: 'UPDATE_HIGHLIGHT', data })
+                .catch(() => {});
         });
     });
 }
 
+/**
+ * Aplica el fallback JS para textarea auto-resize cuando field-sizing no está soportado.
+ * @param {HTMLTextAreaElement} textarea
+ */
+function applyAutoResize(textarea) {
+    if (CSS.supports('field-sizing', 'content')) return;
+    const resize = () => {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    };
+    textarea.addEventListener('input', resize);
+    resize();
+}
+
+/**
+ * Devuelve una versión con debounce de la función dada.
+ * @param {Function} fn
+ * @param {number} delay
+ * @returns {Function}
+ */
+function debounce(fn, delay) {
+    let timer;
+    return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    loadTerms();
-    document.getElementById('highlightBtn').addEventListener('click', saveAndHighlight);
+    const termsEl = document.getElementById('terms');
+    const clearBtn = document.getElementById('clearBtn');
+    const toggle = document.getElementById('enabledToggle');
+
+    applyAutoResize(termsEl);
+
+    let enabled = true;
+
+    chrome.storage.sync.get(['terms', 'enabled'], function(data) {
+        if (data.terms && data.terms.length > 0) {
+            termsEl.value = data.terms.join('\n');
+        }
+        enabled = data.enabled !== false;
+        toggle.checked = enabled;
+        clearBtn.disabled = !termsEl.value.trim();
+    });
+
+    const saveAndBroadcast = debounce(function() {
+        const terms = termsEl.value.split(/[\s,]+/).filter(Boolean).sort((a, b) => a.localeCompare(b));
+        clearBtn.disabled = terms.length === 0;
+        chrome.storage.sync.set({ terms }, () => broadcastToCardmarket({ terms, enabled }));
+    }, 500);
+
+    termsEl.addEventListener('input', saveAndBroadcast);
+
+    toggle.addEventListener('change', function() {
+        enabled = toggle.checked;
+        chrome.storage.sync.set({ enabled }, () => {
+            chrome.storage.sync.get('terms', data => broadcastToCardmarket({ ...data, enabled }));
+        });
+    });
+
+    clearBtn.addEventListener('click', function() {
+        termsEl.value = '';
+        clearBtn.disabled = true;
+        chrome.storage.sync.remove('terms', () => broadcastToCardmarket({ terms: [], enabled }));
+    });
 });
