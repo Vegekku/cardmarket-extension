@@ -6,6 +6,8 @@
 
 if (typeof __BUILD_TIME__ !== 'undefined') console.log(`[Cardmarket] build: ${__BUILD_TIME__}`);
 
+let activeObserver = null;
+
 /**
  * Elimina el resaltado de todas las filas previamente marcadas.
  */
@@ -33,9 +35,10 @@ function highlightRows(terms, root) {
 /**
  * Observa cambios en el DOM y resalta filas en los nuevos nodos añadidos.
  * @param {string[]} terms - Términos a buscar
+ * @returns {MutationObserver}
  */
 function observeNewContent(terms) {
-    new MutationObserver(mutations => {
+    const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             mutation.addedNodes.forEach(node => {
                 if (node.nodeType === Node.ELEMENT_NODE) {
@@ -43,14 +46,19 @@ function observeNewContent(terms) {
                 }
             });
         });
-    }).observe(document.getElementById('table') || document.body, { childList: true, subtree: true });
+    });
+    observer.observe(document.getElementById('table') || document.body, { childList: true, subtree: true });
+    return observer;
 }
 
-chrome.storage.sync.get('terms', function(data) {
+if (activeObserver) { activeObserver.disconnect(); activeObserver = null; }
+
+chrome.storage.sync.get(['terms', 'enabled'], function(data) {
     clearHighlights();
+    if (data.enabled === false) return;
     if (data.terms && data.terms.length > 0) {
         const table = document.getElementById('table');
         if (table) highlightRows(data.terms, table);
-        observeNewContent(data.terms);
+        activeObserver = observeNewContent(data.terms);
     }
 });

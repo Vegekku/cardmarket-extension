@@ -23,6 +23,7 @@ const ctx = await esbuild.context({
         content:    'src/content.js',
         background: 'src/background.js',
         popup:      'src/popup.js',
+        'popup.css': 'src/popup.css',
     },
     bundle: true,
     minify: !dev,
@@ -37,6 +38,13 @@ const ctx = await esbuild.context({
 if (watch) {
     await ctx.watch();
     console.log('esbuild watching...');
+    const { watch: fsWatch } = await import('fs');
+    ['src/popup.html', 'manifest.json'].forEach(f => {
+        fsWatch(f, () => {
+            copyFileSync(f, `dist/${f.replace('src/', '')}`);
+            console.log(`copied ${f}`);
+        });
+    });
 } else {
     await ctx.rebuild();
     await ctx.dispose();

@@ -3,11 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Resaltador de términos</title>
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <h3>Resaltar términos</h3>
-    <textarea id="terms" placeholder="Introduce términos separados por coma..."></textarea>
-    <button id="highlightBtn">Resaltar</button>
+    <h3>Resaltar vendedores</h3>
+    <textarea id="terms" placeholder="Introduce vendedores separados por coma..."></textarea>
+    <div class="actions">
+        <button id="highlightBtn">Resaltar</button>
+        <button id="clearBtn">Limpiar</button>
+    </div>
+    <div class="toggle-row">
+        <input type="checkbox" id="enabledToggle">
+        <label for="enabledToggle">Resaltado activo</label>
+    </div>
     <script src="popup.js"></script>
 </body>
 </html>

@@ -1,0 +1,76 @@
+/**
+ * @module popup.css
+ * @description Estilos del popup de la extensión.
+ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    min-width: 280px;
+    margin: 0;
+    padding: 12px;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+}
+
+h3 {
+    margin: 0 0 10px;
+    font-size: 15px;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    min-height: 60px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    font: inherit;
+    field-sizing: content;
+}
+
+.actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+button {
+    flex: 1;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+}
+
+#highlightBtn {
+    background: #0240ca;
+    color: #fff;
+}
+
+#highlightBtn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+}
+
+#clearBtn {
+    background: #e0e0e0;
+    color: #333;
+}
+
+#clearBtn:hover {
+    background: #ccc;
+}
+
+.toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 13px;
+}
