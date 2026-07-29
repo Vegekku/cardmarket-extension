@@ -1,6 +1,6 @@
 /**
  * @module popup
- * @description Lógica del popup: carga términos y estado del toggle, autoguarda al escribir.
+ * @description Lógica del popup: carga usuarios y estado del toggle, autoguarda al escribir.
  */
 
 /**

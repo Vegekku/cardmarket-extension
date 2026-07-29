@@ -6,7 +6,7 @@
 |--------|--------|
 | 1 — Bugs críticos | |
 | 2 — Calidad de código | |
-| 3 — UX / Popup | [3.1](#31-estilos-css-en-el-popup), [3.2](#32-botón-limpiar-términos), [3.3](#33-feedback-visual-al-guardar), [3.5](#35-página-de-opciones), [3.6](#36-renombrar-términos-a-vendedores-o-usuarios-en-la-ui), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido) |
+| 3 — UX / Popup | [3.1](#31-estilos-css-en-el-popup), [3.2](#32-botón-limpiar-términos), [3.3](#33-feedback-visual-al-guardar), [3.5](#35-página-de-opciones), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido) |
 | 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.2](#42-toggle-activardesactivar-resaltado), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click) |
 
 ---
@@ -60,15 +60,6 @@ Pendiente de definir qué opciones exponer (candidatos según otras mejoras pend
 - Simplificación de selectores y filtros de Cardmarket: reducir opciones visibles en dropdowns para agilizar la navegación
 
 Ficheros afectados: `manifest.json`, `options.html` (nuevo), `options.js` (nuevo), `content.js`.
-
-### 3.6 Renombrar "términos" a "vendedores" o "usuarios" en la UI
-
-El popup y el storage usan la palabra "términos", pero la funcionalidad real es remarcar vendedores/usuarios concretos. Renombrar el concepto en la UI (labels, placeholders, mensajes) una vez decidido si el nombre más adecuado es "vendedores" o "usuarios".
-
-Pendiente de decidir:
-- Nombre definitivo: "vendedores" o "usuarios".
-
-Ficheros afectados: `popup.html`, `popup.js`.
 
 ### 3.7 Tamaño configurable del checkbox en el listado de pedido
 

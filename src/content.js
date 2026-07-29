@@ -1,7 +1,7 @@
 /**
  * @module content
- * @description Script inyectado en cardmarket.com. Lee los términos guardados
- * y resalta las filas de artículos cuyos vendedores coincidan.
+ * @description Script inyectado en cardmarket.com. Lee los usuarios guardados
+ * y resalta las filas de artículos cuyos usuarios coincidan.
  * Escucha mensajes del popup para actualizar el resaltado sin reinyectarse.
  */
 
@@ -20,9 +20,9 @@ function clearHighlights() {
 }
 
 /**
- * Resalta las filas `div.article-row` que contienen un enlace a un vendedor
- * cuyo nombre coincide con alguno de los términos dados.
- * @param {string[]} terms - Términos a buscar
+ * Resalta las filas `div.article-row` que contienen un enlace a un usuario
+ * cuyo nombre coincide con alguno de los usuarios dados.
+ * @param {string[]} terms - Usuarios a buscar
  * @param {Node} root - Nodo raíz desde el que buscar
  */
 function highlightRows(terms, root) {
@@ -35,7 +35,7 @@ function highlightRows(terms, root) {
 
 /**
  * Observa cambios en el DOM y resalta filas en los nuevos nodos añadidos.
- * @param {string[]} terms - Términos a buscar
+ * @param {string[]} terms - Usuarios a buscar
  * @returns {MutationObserver}
  */
 function observeNewContent(terms) {
