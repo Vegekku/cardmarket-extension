@@ -5,9 +5,11 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 ## Funcionalidades
 
 ### Resaltado de usuarios
-- Introduce uno o varios nombres de usuario en el popup separados por coma.
-- Al pulsar **Resaltar**, los usuarios se guardan y se resalta en azul-cian la fila completa de cada usuario coincidente en el listado de artículos.
+- Introduce uno o varios nombres de usuario en el popup separados por espacio, salto de línea o coma.
+- Los usuarios se guardan automáticamente y se resalta en azul-cian la fila completa de cada usuario coincidente en el listado de artículos.
 - Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por las páginas de producto de Cardmarket.
+- El botón **Vaciar** elimina todos los usuarios guardados.
+- El toggle **Resaltado activo** permite activar o desactivar el resaltado sin borrar los usuarios.
 
 ## Instalación
 
@@ -40,6 +42,7 @@ cardmarket-extension/
 │   ├── background.js    # Service worker
 │   ├── content.js       # Script inyectado: resalta usuarios en la página
 │   ├── popup.html       # Popup del icono de la extensión
+│   ├── popup.css        # Estilos del popup
 │   └── popup.js         # Lógica del popup
 ├── dist/            # Build generado (no commitear)
 ├── icons/

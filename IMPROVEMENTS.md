@@ -6,8 +6,8 @@
 |--------|--------|
 | 1 — Bugs críticos | |
 | 2 — Calidad de código | |
-| 3 — UX / Popup | [3.1](#31-estilos-css-en-el-popup), [3.2](#32-botón-limpiar-términos), [3.3](#33-feedback-visual-al-guardar), [3.5](#35-página-de-opciones), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido) |
-| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.2](#42-toggle-activardesactivar-resaltado), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click) |
+| 3 — UX / Popup | [3.3](#33-feedback-visual-al-guardar), [3.5](#35-página-de-opciones), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido) |
+| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click) |
 
 ---
 
@@ -29,20 +29,6 @@
 ---
 
 ## 3. UX / Popup
-
-### 3.1 Estilos CSS en el popup
-
-El popup es HTML puro sin estilos. Añadir un `popup.css` con estilos básicos (tipografía, espaciado, botón) y las siguientes mejoras de tamaño:
-
-- Ancho mínimo cómodo para el popup (actualmente Chrome lo renderiza muy pequeño).
-- El textarea debe crecer automáticamente con el contenido para que todos los términos sean visibles de un vistazo, sin scroll ni redimensionado manual. Usar `field-sizing: content` (CSS nativo) con fallback en JS (`input` event + `scrollHeight`) para navegadores que no lo soporten.
-- El tamaño redimensionado manualmente no persiste entre aperturas del popup (limitación de Chrome); la solución es que el tamaño se derive del contenido, no del usuario.
-
-Ficheros afectados: `popup.html`, `popup.css` (nuevo), `popup.js` (fallback JS si necesario).
-
-### 3.2 Botón limpiar términos
-
-Añadir un botón que vacíe el textarea y elimine los términos guardados en storage.
 
 ### 3.3 Feedback visual al guardar
 
@@ -80,10 +66,6 @@ Ficheros afectados: `content.js`, `options.html`, `options.js`.
 ### 4.1 Colores personalizables por término
 
 Permitir al usuario asignar un color diferente a cada término en lugar de usar siempre amarillo.
-
-### 4.2 Toggle activar/desactivar resaltado
-
-Añadir un toggle en el popup para activar o desactivar el resaltado sin borrar los términos guardados.
 
 ### 4.3 Modo filtro: mostrar solo vendedores resaltados
 
