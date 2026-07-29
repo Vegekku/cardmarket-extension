@@ -48,23 +48,10 @@ button {
     font-size: 13px;
 }
 
-#highlightBtn {
-    background: #0240ca;
-    color: #fff;
-}
-
-#highlightBtn:disabled {
-    background: #aaa;
-    cursor: not-allowed;
-}
-
-#clearBtn {
+#clearBtn:disabled {
     background: #e0e0e0;
-    color: #333;
-}
-
-#clearBtn:hover {
-    background: #ccc;
+    color: #aaa;
+    cursor: not-allowed;
 }
 
 .toggle-row {
