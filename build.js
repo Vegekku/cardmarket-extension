@@ -15,7 +15,7 @@ mkdirSync('dist/icons', { recursive: true });
 const staticFiles = ['icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png', 'src/popup.html', 'src/popup.css', 'manifest.json'];
 staticFiles.forEach(f => copyFileSync(f, `dist/${f.replace('src/', '')}`));
 
-const logPlugin = { name: 'log', setup(build) { build.onEnd(() => console.log('rebuilt')); } };
+const logPlugin = { name: 'log', setup(build) { build.onEnd(() => console.log(`[${new Date().toLocaleString('es-ES')}] rebuilt`)); } };
 
 const ctx = await esbuild.context({
     entryPoints: {
@@ -35,16 +35,18 @@ const ctx = await esbuild.context({
 
 if (watch) {
     await ctx.watch();
-    console.log('esbuild watching...');
+    const ts = () => `[${new Date().toLocaleString('es-ES')}]`;
+    console.log(`${ts()} esbuild watching...`);
     const { watch: fsWatch } = await import('fs');
     [...staticFiles].forEach(f => {
         fsWatch(f, () => {
             copyFileSync(f, `dist/${f.replace('src/', '')}`);
-            console.log(`copied ${f}`);
+            console.log(`${ts()} copied ${f}`);
+            ctx.rebuild();
         });
     });
 } else {
     await ctx.rebuild();
     await ctx.dispose();
-    console.log('Build done.');
+    console.log(`[${new Date().toLocaleString('es-ES')}] Build done.`);
 }

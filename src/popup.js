@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     chrome.storage.sync.get(['terms', 'enabled'], function(data) {
         if (data.terms && data.terms.length > 0) {
-            termsEl.value = data.terms.join(', ');
+            termsEl.value = data.terms.join('\n');
         }
         enabled = data.enabled !== false;
         toggle.checked = enabled;
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     const saveAndBroadcast = debounce(function() {
-        const terms = termsEl.value.split(',').map(t => t.trim()).filter(Boolean);
+        const terms = termsEl.value.split(/[\s,]+/).filter(Boolean).sort((a, b) => a.localeCompare(b));
         clearBtn.disabled = terms.length === 0;
         chrome.storage.sync.set({ terms }, () => broadcastToCardmarket({ terms, enabled }));
     }, 500);
