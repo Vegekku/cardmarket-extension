@@ -27,7 +27,7 @@ function clearHighlights() {
  */
 function highlightRows(terms, root) {
     terms.filter(Boolean).forEach(term => {
-        root.querySelectorAll(`a[href*="/Users/${term}"]`).forEach(a => {
+        root.querySelectorAll(`a[href$="/Users/${term}"]`).forEach(a => {
             a.closest('div.article-row')?.style.setProperty('--bs-table-bg', 'rgba(0, 150, 200, 0.3)');
         });
     });
