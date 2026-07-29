@@ -4,15 +4,15 @@
  */
 
 /**
- * Inyecta content.js en la pestaña activa.
- * @param {Function} [callback]
+ * Envía un mensaje UPDATE_HIGHLIGHT a todas las pestañas abiertas de Cardmarket.
+ * @param {{ terms?: string[], enabled?: boolean }} data
  */
-function injectContent(callback) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        chrome.scripting.executeScript(
-            { target: { tabId: tabs[0].id }, files: ['content.js'] },
-            callback
-        );
+function broadcastToCardmarket(data) {
+    chrome.tabs.query({ url: '*://*.cardmarket.com/*/Products/*' }, function(tabs) {
+        tabs.forEach(tab => {
+            chrome.tabs.sendMessage(tab.id, { type: 'UPDATE_HIGHLIGHT', data })
+                .catch(() => {});
+        });
     });
 }
 
@@ -48,16 +48,22 @@ document.addEventListener('DOMContentLoaded', function() {
     toggle.addEventListener('change', function() {
         const enabled = toggle.checked;
         highlightBtn.disabled = !enabled;
-        chrome.storage.sync.set({ enabled }, () => injectContent());
+        chrome.storage.sync.set({ enabled }, () => {
+            chrome.storage.sync.get('terms', data => broadcastToCardmarket({ ...data, enabled }));
+        });
     });
 
     highlightBtn.addEventListener('click', function() {
         const terms = termsEl.value.split(',').map(t => t.trim()).filter(Boolean);
-        chrome.storage.sync.set({ terms }, () => injectContent());
+        chrome.storage.sync.set({ terms }, () => {
+            chrome.storage.sync.get('enabled', data => broadcastToCardmarket({ terms, enabled: data.enabled !== false }));
+        });
     });
 
     clearBtn.addEventListener('click', function() {
         termsEl.value = '';
-        chrome.storage.sync.remove('terms', () => injectContent());
+        chrome.storage.sync.remove('terms', () => {
+            chrome.storage.sync.get('enabled', data => broadcastToCardmarket({ terms: [], enabled: data.enabled !== false }));
+        });
     });
 });

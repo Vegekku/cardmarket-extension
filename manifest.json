@@ -4,7 +4,7 @@
     "description": "Resalta términos de búsqueda en Cardmarket para localizar vendedores rápidamente.",
     "version": "1.0.0",
     "homepage_url": "https://github.com/vegekku/cardmarket-extension",
-    "permissions": ["activeTab", "storage", "scripting"],
+    "permissions": ["storage", "tabs"],
     "icons": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

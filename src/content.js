@@ -2,6 +2,7 @@
  * @module content
  * @description Script inyectado en cardmarket.com. Lee los términos guardados
  * y resalta las filas de artículos cuyos vendedores coincidan.
+ * Escucha mensajes del popup para actualizar el resaltado sin reinyectarse.
  */
 
 if (typeof __BUILD_TIME__ !== 'undefined') console.log(`[Cardmarket] build: ${__BUILD_TIME__}`);
@@ -51,9 +52,12 @@ function observeNewContent(terms) {
     return observer;
 }
 
-if (activeObserver) { activeObserver.disconnect(); activeObserver = null; }
-
-chrome.storage.sync.get(['terms', 'enabled'], function(data) {
+/**
+ * Aplica o limpia el resaltado según los datos de storage proporcionados.
+ * @param {{ terms?: string[], enabled?: boolean }} data
+ */
+function applyHighlight(data) {
+    if (activeObserver) { activeObserver.disconnect(); activeObserver = null; }
     clearHighlights();
     if (data.enabled === false) return;
     if (data.terms && data.terms.length > 0) {
@@ -61,4 +65,12 @@ chrome.storage.sync.get(['terms', 'enabled'], function(data) {
         if (table) highlightRows(data.terms, table);
         activeObserver = observeNewContent(data.terms);
     }
+}
+
+// Carga inicial desde storage
+chrome.storage.sync.get(['terms', 'enabled'], applyHighlight);
+
+// Escucha mensajes del popup
+chrome.runtime.onMessage.addListener(function(message) {
+    if (message.type === 'UPDATE_HIGHLIGHT') applyHighlight(message.data);
 });
