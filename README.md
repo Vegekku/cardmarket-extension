@@ -9,7 +9,8 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Los usuarios se guardan automáticamente y se resalta en azul-cian la fila completa de cada usuario coincidente en el listado de artículos.
 - Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por las páginas de producto de Cardmarket.
 - El botón **Vaciar** elimina todos los usuarios guardados.
-- El toggle **Resaltado activo** permite activar o desactivar el resaltado sin borrar los usuarios.
+- El toggle **Activar resaltado** permite activar o desactivar el resaltado sin borrar los usuarios.
+- Al guardar o vaciar la lista se muestra un mensaje de confirmación temporal en el popup.
 
 ## Instalación
 

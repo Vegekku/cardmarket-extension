@@ -45,10 +45,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const termsEl = document.getElementById('terms');
     const clearBtn = document.getElementById('clearBtn');
     const toggle = document.getElementById('enabledToggle');
+    const saveStatus = document.getElementById('saveStatus');
 
     applyAutoResize(termsEl);
 
     let enabled = true;
+    let fadeTimer;
+
+    /**
+     * Muestra un mensaje de feedback temporal en el popup.
+     * @param {string} msg
+     */
+    function showFeedback(msg) {
+        clearTimeout(fadeTimer);
+        saveStatus.textContent = msg;
+        saveStatus.classList.add('visible');
+        fadeTimer = setTimeout(() => saveStatus.classList.remove('visible'), 1000);
+    }
 
     chrome.storage.sync.get(['terms', 'enabled'], function(data) {
         if (data.terms && data.terms.length > 0) {
@@ -62,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveAndBroadcast = debounce(function() {
         const terms = termsEl.value.split(/[\s,]+/).filter(Boolean).sort((a, b) => a.localeCompare(b));
         clearBtn.disabled = terms.length === 0;
-        chrome.storage.sync.set({ terms }, () => broadcastToCardmarket({ terms, enabled }));
+        chrome.storage.sync.set({ terms }, () => { broadcastToCardmarket({ terms, enabled }); showFeedback('Guardado ✓'); });
     }, 500);
 
     termsEl.addEventListener('input', saveAndBroadcast);
@@ -77,6 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
     clearBtn.addEventListener('click', function() {
         termsEl.value = '';
         clearBtn.disabled = true;
-        chrome.storage.sync.remove('terms', () => broadcastToCardmarket({ terms: [], enabled }));
+        chrome.storage.sync.remove('terms', () => { broadcastToCardmarket({ terms: [], enabled }); showFeedback('Vaciado ✓'); });
     });
 });

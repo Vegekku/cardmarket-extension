@@ -6,8 +6,8 @@
 |--------|--------|
 | 1 — Bugs críticos | |
 | 2 — Calidad de código | |
-| 3 — UX / Popup | [3.3](#33-feedback-visual-al-guardar), [3.5](#35-página-de-opciones), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido) |
-| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click) |
+| 3 — UX / Popup | [3.5](#35-página-de-opciones), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido), [3.8](#38-accesibilidad-wcag) |
+| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox) |
 
 ---
 
@@ -29,10 +29,6 @@
 ---
 
 ## 3. UX / Popup
-
-### 3.3 Feedback visual al guardar
-
-Mostrar un mensaje temporal (ej. "Guardado ✓") durante ~1 segundo tras pulsar el botón de resaltar.
 
 ### 3.5 Página de opciones
 
@@ -58,6 +54,27 @@ Pendiente de decidir:
 El ajuste se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `content.js`, `options.html`, `options.js`.
+
+### 3.8 Accesibilidad WCAG
+
+Auditoría completa de accesibilidad de la extensión. Problemas identificados:
+
+- **Contraste insuficiente (WCAG 1.4.3 AA / 1.4.6 AAA)**:
+  - Botón "Vaciar": `#666` sobre `#e0e0e0` (~3.1:1, falla AA).
+  - Toast `#saveStatus`: `#2a9d5c` sobre `#d4f5e2` (~3.8:1, falla AA).
+  - Placeholder del textarea: `#767676` sobre `#fff` (~4.5:1, pasa AA justo, falla AAA).
+- **Semántica HTML (WCAG 1.3.1)**:
+  - `<h3>` sin `<h1>`/`<h2>` previo — jerarquía de headings rota.
+  - `<textarea>` sin `<label>` asociado; el `placeholder` no es suficiente.
+- **Regiones dinámicas (WCAG 4.1.3)**: `#saveStatus` cambia de contenido dinámicamente pero carece de `role="status"` y `aria-live="polite"` — los lectores de pantalla no lo anuncian.
+- **CSS muerto**: `.toggle-row { display: none }` — residuo de refactorización, eliminar.
+
+Pendiente de decidir la estrategia de verificación, teniendo en cuenta el crecimiento previsto del proyecto (página de opciones en 3.5, UI inyectada en content.js en múltiples mejoras del bloque 4):
+
+- **Fase 1 (ahora)**: añadir regla en `.amazonq/rules/accessibility.md` con checklist WCAG AA/AAA aplicable a cada fichero HTML/CSS tocado. Sin dependencias extra, coste cero.
+- **Fase 2 (cuando exista `options.html` u otro HTML propio)**: integrar `@axe-core/cli` + Playwright como script `npm run a11y` que audite todos los HTML propios de la extensión en un browser headless. Añadir al flujo de cierre de feature como paso previo al commit.
+
+Ficheros afectados: `src/popup.html`, `src/popup.css`, `src/options.html` (futuro), `.amazonq/rules/accessibility.md` (nuevo), `package.json` (fase 2).
 
 ---
 
@@ -151,3 +168,17 @@ Pendiente de decidir:
 - Feedback visual al añadir/quitar (ej. animación breve o cambio de color transitorio).
 
 Ficheros afectados: `content.js`.
+
+### 4.11 Compatibilidad con Firefox
+
+Adaptar la extensión para que funcione también en Firefox, además de los navegadores basados en Chromium (Chrome, Edge, Brave, Opera).
+
+Firefox usa la API `browser.*` basada en promesas, frente a la API `chrome.*` con callbacks de Chrome. La solución recomendada es integrar [`webextension-polyfill`](https://github.com/mozilla/webextension-polyfill) de Mozilla, que normaliza ambas APIs y permite mantener un único codebase.
+
+Pendiente de analizar:
+- Ajustes necesarios en `manifest.json` para Firefox (campo `browser_specific_settings`, revisión de permisos y `content_scripts`).
+- Compatibilidad de las APIs usadas actualmente (`chrome.storage.sync`, `chrome.scripting`, mensajería) con el polyfill.
+- Proceso de publicación en [Firefox Add-ons (AMO)](https://addons.mozilla.org/) y diferencias con la Chrome Web Store.
+- Si el script de build (`build.js`) necesita cambios para generar un artefacto separado para Firefox.
+
+Ficheros afectados: `manifest.json`, `build.js`, `package.json`, `src/background.js`, `src/content.js`, `src/popup.js`.
