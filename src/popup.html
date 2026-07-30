@@ -6,14 +6,13 @@
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
+    <span id="saveStatus"></span>
     <h3>Resaltar usuarios</h3>
     <textarea id="terms" placeholder="Introduce usuarios separados por espacio o salto de línea..."></textarea>
-    <div class="actions">
-        <button id="clearBtn">Vaciar</button>
-    </div>
-    <div class="toggle-row">
+    <div class="bottom-row">
         <input type="checkbox" id="enabledToggle">
         <label for="enabledToggle">Resaltado activo</label>
+        <button id="clearBtn">Vaciar</button>
     </div>
     <script src="popup.js"></script>
 </body>
