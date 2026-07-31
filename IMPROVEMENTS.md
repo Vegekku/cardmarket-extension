@@ -56,6 +56,30 @@ Opciones que se añadirán cuando se aborden sus mejoras correspondientes:
 
 Ficheros afectados: `manifest.json`, `src/options.html` (nuevo), `src/options.js` (nuevo), `src/content.js`.
 
+Mejoras pendientes sobre esta página: [3.5.1](#351-habilitardeshabilitar-botones-de-opciones-según-cambios-pendientes), [3.5.2](#352-previsualización-en-vivo-del-color-de-resaltado-en-opciones), [3.5.3](#353-aplicar-cambios-de-color-en-tiempo-real-sin-recargar).
+
+#### 3.5.1 Habilitar/deshabilitar botones de opciones según cambios pendientes
+
+Los botones "Guardar" y "Restablecer" de la página de opciones deben habilitarse o deshabilitarse dinámicamente:
+- "Guardar" solo habilitado cuando hay cambios respecto a los valores guardados actualmente.
+- "Restablecer" solo habilitado cuando los valores actuales difieren de los valores por defecto.
+
+Ficheros afectados: `src/options.js`.
+
+#### 3.5.2 Previsualización en vivo del color de resaltado en opciones
+
+Mostrar en la página de opciones una previsualización del aspecto del resaltado sin necesidad de navegar a Cardmarket. Al cambiar el color, la previsualización se actualiza en tiempo real mostrando una fila de ejemplo con el color seleccionado aplicado, tanto en modo claro como oscuro.
+
+Ficheros afectados: `src/options.html`, `src/options.js`, `src/styles/options.css`.
+
+#### 3.5.3 Aplicar cambios de color en tiempo real sin recargar
+
+Dos situaciones en las que el resaltado no se actualiza sin recargar la página:
+- Al guardar un nuevo color desde la página de opciones, las pestañas abiertas de Cardmarket no lo aplican hasta recargar. Solución: escuchar `chrome.storage.onChanged` en `content.js` para detectar cambios en `highlightColors` y reaplicar el resaltado.
+- Al cambiar el modo claro/oscuro en Cardmarket, el color correspondiente no se aplica hasta recargar. Solución: observar el atributo `data-bs-theme` en `<html>` con un `MutationObserver` y reaplicar cuando cambie.
+
+Ficheros afectados: `src/content.js`.
+
 ### 3.6 Ocultar secciones de la UI de Cardmarket
 
 Permitir al usuario ocultar secciones de la interfaz de Cardmarket que no le resulten útiles (banners, sidebars, secciones de navegación, etc.) mediante CSS inyectado.
