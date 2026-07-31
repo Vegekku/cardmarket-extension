@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cardmarket Highlighter — Opciones</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; font-size: 14px; margin: 0; color: #333; min-height: 100vh; display: flex; flex-direction: column; }
+    h1 { font-size: 16px; margin: 0 0 24px; color: #555; font-weight: normal; }
+    h2 { font-size: 14px; margin: 24px 0 10px; border-bottom: 1px solid #ddd; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; color: #888; font-weight: 600; }
+    h2:first-of-type { margin-top: 0; }
+
+    .layout { display: flex; flex: 1; }
+    .sidebar { width: 180px; min-width: 180px; background: #f5f5f5; border-right: 1px solid #ddd; padding: 24px 0; display: flex; flex-direction: column; }
+    .sidebar-header { display: flex; align-items: center; gap: 10px; padding: 0 16px 16px; }
+    .sidebar-header img { width: 32px; height: 32px; flex-shrink: 0; }
+    .sidebar-title { font-size: 12px; font-weight: bold; color: #555; line-height: 1.3; }
+    .tab-btn { background: none; border: none; border-left: 3px solid transparent; padding: 10px 16px; text-align: left; cursor: pointer; font-size: 14px; color: #555; width: 100%; transition: background 0.1s, color 0.1s; }
+    .tab-btn:hover { background: #ebebeb; color: #333; }
+    .tab-btn.active { border-left-color: #0096c8; background: #fff; color: #333; font-weight: bold; }
+    .content { flex: 1; padding: 28px 32px; max-width: 560px; }
+
+    .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .row label { flex: 1; color: #444; }
+    .row .hint { font-size: 12px; color: #999; margin-top: 2px; }
+    .color-pair { display: flex; align-items: center; gap: 10px; }
+    .color-pair span { font-size: 12px; color: #666; }
+    input[type=color] { width: 48px; height: 28px; padding: 1px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer; }
+
+    .actions { margin-top: 28px; display: flex; gap: 10px; align-items: center; }
+    button { padding: 7px 18px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    #save { background: #0096c8; color: #fff; }
+    #save:hover { background: #007aa8; }
+    #reset { background: #f0f0f0; color: #555; border: 1px solid #ddd; }
+    #reset:hover { background: #e4e4e4; }
+    .status { margin-top: 12px; font-size: 13px; min-height: 18px; color: #2a9d5c; }
+
+    .about-version { font-size: 13px; color: #666; margin-bottom: 24px; }
+    .about-links { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .about-links a { color: #337ab7; text-decoration: none; font-size: 14px; }
+    .about-links a:hover { text-decoration: underline; }
+    .about-support { border-top: 1px solid #ddd; padding-top: 24px; }
+    .about-support p { font-size: 13px; color: #666; margin: 0 0 14px; line-height: 1.5; }
+    .donate-btn { display: inline-block; padding: 7px 18px; background: #0070ba; color: #fff; border-radius: 4px; text-decoration: none; font-size: 14px; }
+    .donate-btn:hover { background: #005ea6; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <img src="icons/icon48.png" alt="">
+        <span class="sidebar-title">Cardmarket Highlighter</span>
+      </div>
+      <button class="tab-btn active" data-tab="appearance">Apariencia</button>
+      <button class="tab-btn" data-tab="about">Acerca de</button>
+    </nav>
+
+    <main class="content">
+
+      <div class="tab-panel active" id="panel-appearance">
+        <h1>Apariencia</h1>
+
+        <h2>Color de resaltado</h2>
+        <div class="row">
+          <div>
+            <label>Modo claro</label>
+            <div class="hint">Páginas con fondo claro</div>
+          </div>
+          <input type="color" id="colorLight">
+        </div>
+        <div class="row">
+          <div>
+            <label>Modo oscuro</label>
+            <div class="hint">Páginas con fondo oscuro</div>
+          </div>
+          <input type="color" id="colorDark">
+        </div>
+
+        <div class="actions">
+          <button id="save">Guardar</button>
+          <button id="reset">Restablecer</button>
+        </div>
+        <div class="status" id="status"></div>
+      </div>
+
+      <div class="tab-panel" id="panel-about">
+        <h1>Acerca de</h1>
+        <p class="about-version" id="about-version"></p>
+        <div class="about-links">
+          <a id="about-store" href="" target="_blank">Valorar en la Chrome Web Store</a>
+          <a href="https://github.com/vegekku/cardmarket-extension/blob/main/CHANGELOG.md" target="_blank">Novedades</a>
+          <a href="https://github.com/vegekku/cardmarket-extension/issues/new" target="_blank">Reportar un problema</a>
+          <a id="about-privacy" href="" target="_blank">Política de privacidad</a>
+        </div>
+        <div class="about-support">
+          <p>Desarrollo esta extensión en los ratos libres que me dejan mis dos hijas (spoiler: no son muchos). Hecha con cariño entre pañales y madrugadas — si te ha gustado y quieres que añada más funcionalidades, cualquier donación ayuda a seguir adelante.</p>
+          <a id="about-donate" href="" target="_blank" class="donate-btn">Apoya las madrugadas de papá</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

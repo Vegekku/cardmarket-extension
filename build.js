@@ -12,7 +12,7 @@ const dev = watch || process.argv.includes('--dev');
 
 mkdirSync('dist/icons', { recursive: true });
 
-const staticFiles = ['icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png', 'src/popup.html', 'src/popup.css', 'manifest.json'];
+const staticFiles = ['icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png', 'src/popup.html', 'src/popup.css', 'src/options.html', 'manifest.json'];
 staticFiles.forEach(f => copyFileSync(f, `dist/${f.replace('src/', '')}`));
 
 const logPlugin = { name: 'log', setup(build) { build.onEnd(() => console.log(`[${new Date().toLocaleString('es-ES')}] rebuilt`)); } };
@@ -22,6 +22,7 @@ const ctx = await esbuild.context({
         content:    'src/content.js',
         background: 'src/background.js',
         popup:      'src/popup.js',
+        options:    'src/options.js',
     },
     bundle: true,
     minify: !dev,
