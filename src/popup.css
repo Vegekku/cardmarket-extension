@@ -115,16 +115,28 @@ button {
     cursor: pointer;
     font: inherit;
     font-size: 12px;
-    color: #555;
-    background: #ebebeb;
     transition: background 0.15s;
 }
 
-button:hover:not(:disabled) {
-    background: #dedede;
+.btn-primary {
+    background: #0096c8;
+    color: #fff;
 }
 
-#clearBtn:disabled {
+.btn-primary:hover:not(:disabled) {
+    background: #007aa8;
+}
+
+.btn-destructive {
+    background: #f0e0de;
+    color: #c0392b;
+}
+
+.btn-destructive:hover:not(:disabled) {
+    background: #e8ceca;
+}
+
+.btn-destructive:disabled {
     background: #ebebeb;
     color: #bbb;
     cursor: not-allowed;

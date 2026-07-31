@@ -28,11 +28,11 @@
     input[type=color] { width: 48px; height: 28px; padding: 1px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer; }
 
     .actions { margin-top: 28px; display: flex; gap: 10px; align-items: center; }
-    button { padding: 7px 18px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
-    #save { background: #0096c8; color: #fff; }
-    #save:hover { background: #007aa8; }
-    #reset { background: #f0f0f0; color: #555; border: 1px solid #ddd; }
-    #reset:hover { background: #e4e4e4; }
+    button { padding: 7px 18px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: background 0.15s; }
+    .btn-primary { background: #0096c8; color: #fff; }
+    .btn-primary:hover { background: #007aa8; }
+    .btn-secondary { background: #f0f0f0; color: #555; border: 1px solid #ddd; }
+    .btn-secondary:hover { background: #e4e4e4; }
     .status { margin-top: 12px; font-size: 13px; min-height: 18px; color: #2a9d5c; }
 
     .about-version { font-size: 13px; color: #666; margin-bottom: 24px; }
@@ -81,8 +81,8 @@
         </div>
 
         <div class="actions">
-          <button id="save">Guardar</button>
-          <button id="reset">Restablecer</button>
+          <button id="save" class="btn-primary">Guardar</button>
+          <button id="reset" class="btn-secondary">Restablecer</button>
         </div>
         <div class="status" id="status"></div>
       </div>
