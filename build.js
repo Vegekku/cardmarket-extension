@@ -12,8 +12,13 @@ const dev = watch || process.argv.includes('--dev');
 
 mkdirSync('dist/icons', { recursive: true });
 
-const staticFiles = ['icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png', 'src/popup.html', 'src/popup.css', 'src/options.html', 'manifest.json'];
-staticFiles.forEach(f => copyFileSync(f, `dist/${f.replace('src/', '')}`));
+const staticFiles = [
+    'icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png',
+    'src/popup.html', 'src/options.html',
+    'src/styles/common.css', 'src/styles/popup.css', 'src/styles/options.css',
+    'manifest.json'
+];
+staticFiles.forEach(f => copyFileSync(f, `dist/${f.replace('src/styles/', '').replace('src/', '')}`));
 
 const logPlugin = { name: 'log', setup(build) { build.onEnd(() => console.log(`[${new Date().toLocaleString('es-ES')}] rebuilt`)); } };
 
@@ -41,7 +46,7 @@ if (watch) {
     const { watch: fsWatch } = await import('fs');
     [...staticFiles].forEach(f => {
         fsWatch(f, () => {
-            copyFileSync(f, `dist/${f.replace('src/', '')}`);
+            copyFileSync(f, `dist/${f.replace('src/styles/', '').replace('src/', '')}`);
             console.log(`${ts()} copied ${f}`);
             ctx.rebuild();
         });

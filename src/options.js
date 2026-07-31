@@ -49,13 +49,14 @@ function initTabs() {
 }
 
 /**
- * Muestra un mensaje de estado temporal.
+ * Muestra un mensaje de estado temporal usando el toast compartido.
  * @param {string} msg
  */
 function showStatus(msg) {
-    const el = document.getElementById('status');
+    const el = document.getElementById('saveStatus');
     el.textContent = msg;
-    setTimeout(() => { el.textContent = ''; }, 2000);
+    el.classList.add('visible');
+    setTimeout(() => el.classList.remove('visible'), 2000);
 }
 
 function init() {

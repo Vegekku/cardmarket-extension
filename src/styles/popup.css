@@ -47,12 +47,6 @@ textarea:focus {
     box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
 }
 
-.actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 8px;
-}
-
 .bottom-row {
     display: flex;
     align-items: center;
@@ -101,7 +95,7 @@ textarea:focus {
 }
 
 .toggle-label input:checked + .toggle-track {
-    background: #2a9d5c;
+    background: var(--color-primary);
 }
 
 .toggle-label input:checked + .toggle-track .toggle-thumb {
@@ -109,56 +103,8 @@ textarea:focus {
 }
 
 button {
-    padding: 4px 12px;
-    border: none;
     border-radius: 6px;
-    cursor: pointer;
     font: inherit;
-    font-size: 12px;
-    transition: background 0.15s;
+    font-size: 14px;
 }
 
-.btn-primary {
-    background: #0096c8;
-    color: #fff;
-}
-
-.btn-primary:hover:not(:disabled) {
-    background: #007aa8;
-}
-
-.btn-destructive {
-    background: #f0e0de;
-    color: #c0392b;
-}
-
-.btn-destructive:hover:not(:disabled) {
-    background: #e8ceca;
-}
-
-.btn-destructive:disabled {
-    background: #ebebeb;
-    color: #bbb;
-    cursor: not-allowed;
-}
-
-#saveStatus {
-    position: fixed;
-    top: 8px;
-    left: 12px;
-    right: 12px;
-    background: #d4f5e2;
-    color: #2a9d5c;
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 8px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    z-index: 999;
-    text-align: center;
-}
-
-#saveStatus.visible {
-    opacity: 1;
-}
