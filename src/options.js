@@ -67,25 +67,56 @@ function init() {
 
     const lightInput = document.getElementById('colorLight');
     const darkInput = document.getElementById('colorDark');
+    const saveBtn = document.getElementById('save');
+    const resetBtn = document.getElementById('reset');
+
+    /** @type {{ light: string, dark: string }} */
+    let savedColors = { ...DEFAULT_COLORS };
+
+    const defaultHexLight = rgbaToHex(DEFAULT_COLORS.light);
+    const defaultHexDark = rgbaToHex(DEFAULT_COLORS.dark);
+
+    /**
+     * Actualiza el estado habilitado/deshabilitado de los botones según cambios pendientes.
+     */
+    function updateButtons() {
+        const changed = lightInput.value !== rgbaToHex(savedColors.light)
+            || darkInput.value !== rgbaToHex(savedColors.dark);
+        const isDefault = lightInput.value === defaultHexLight
+            && darkInput.value === defaultHexDark;
+        saveBtn.disabled = !changed;
+        resetBtn.disabled = isDefault;
+    }
 
     chrome.storage.sync.get('highlightColors', data => {
         const colors = { ...DEFAULT_COLORS, ...(data.highlightColors || {}) };
+        savedColors = { ...colors };
         lightInput.value = rgbaToHex(colors.light);
         darkInput.value = rgbaToHex(colors.dark);
+        updateButtons();
     });
 
-    document.getElementById('save').addEventListener('click', () => {
+    lightInput.addEventListener('input', updateButtons);
+    darkInput.addEventListener('input', updateButtons);
+
+    saveBtn.addEventListener('click', () => {
         const colors = {
             light: hexToRgba(lightInput.value),
             dark: hexToRgba(darkInput.value),
         };
-        chrome.storage.sync.set({ highlightColors: colors }, () => showStatus('Guardado ✓'));
+        chrome.storage.sync.set({ highlightColors: colors }, () => {
+            savedColors = { ...colors };
+            updateButtons();
+            showStatus('Guardado ✓');
+        });
     });
 
-    document.getElementById('reset').addEventListener('click', () => {
+    resetBtn.addEventListener('click', () => {
         chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS }, () => {
-            lightInput.value = rgbaToHex(DEFAULT_COLORS.light);
-            darkInput.value = rgbaToHex(DEFAULT_COLORS.dark);
+            savedColors = { ...DEFAULT_COLORS };
+            lightInput.value = defaultHexLight;
+            darkInput.value = defaultHexDark;
+            updateButtons();
             showStatus('Restablecido ✓');
         });
     });
