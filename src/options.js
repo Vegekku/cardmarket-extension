@@ -88,16 +88,25 @@ function init() {
         resetBtn.disabled = isDefault;
     }
 
+    /**
+     * Actualiza el color de fondo de las previsualizaciones según los pickers.
+     */
+    function updatePreview() {
+        document.querySelectorAll('#previewLight .highlighted').forEach(r => r.style.backgroundColor = hexToRgba(lightInput.value));
+        document.querySelectorAll('#previewDark .highlighted').forEach(r => r.style.backgroundColor = hexToRgba(darkInput.value));
+    }
+
     chrome.storage.sync.get('highlightColors', data => {
         const colors = { ...DEFAULT_COLORS, ...(data.highlightColors || {}) };
         savedColors = { ...colors };
         lightInput.value = rgbaToHex(colors.light);
         darkInput.value = rgbaToHex(colors.dark);
+        updatePreview();
         updateButtons();
     });
 
-    lightInput.addEventListener('input', updateButtons);
-    darkInput.addEventListener('input', updateButtons);
+    lightInput.addEventListener('input', () => { updatePreview(); updateButtons(); });
+    darkInput.addEventListener('input', () => { updatePreview(); updateButtons(); });
 
     saveBtn.addEventListener('click', () => {
         const colors = {
@@ -116,6 +125,7 @@ function init() {
             savedColors = { ...DEFAULT_COLORS };
             lightInput.value = defaultHexLight;
             darkInput.value = defaultHexDark;
+            updatePreview();
             updateButtons();
             showStatus('Restablecido ✓');
         });

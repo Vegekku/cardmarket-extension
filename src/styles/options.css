@@ -29,10 +29,35 @@ h2:first-of-type { margin-top: 0; }
 .tab-btn.active { border-left-color: var(--color-primary); background: #fff; color: #333; font-weight: bold; }
 .content { flex: 1; padding: 28px 32px; max-width: 560px; }
 
-.row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .row label { flex: 1; color: #444; }
 .row .hint { font-size: 12px; color: #999; margin-top: 2px; }
 input[type=color] { width: 48px; height: 28px; padding: 1px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer; }
+
+.preview-wrap { border-radius: 4px; border: 1px solid #ddd; overflow: hidden; margin-bottom: 20px; padding: 10px; }
+.preview-wrap--light { background: #fff; }
+.preview-wrap--dark { background: #14161b; border-color: #333; }
+
+.table-body .article-row { display: flex; align-items: center; gap: 8px; padding: 5px 10px; font-size: 12px; border-bottom: 1px solid #dee2e6; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6; }
+.table-body .article-row:first-child { border-top: 1px solid #dee2e6; }
+.table-body .article-row:nth-child(odd) { background: #f5f5f5; }
+.preview-wrap--dark .article-row { border-left-color: #2e323c; border-right-color: #2e323c; border-bottom-color: #2e323c; }
+.preview-wrap--dark .article-row:first-child { border-top-color: #2e323c; }
+.preview-wrap--dark .article-row:nth-child(odd) { background: #1d1f26; }
+
+.sell-count { font-size: 11px; background: #e9ecef; color: #555; border-radius: 3px; padding: 1px 4px; white-space: nowrap; }
+.sell-count em { font-style: italic; color: #c0392b; }
+.preview-wrap--dark .sell-count { background: #2e3240; color: #adb5bd; }
+
+.seller-name { flex: 1; color: #0240ca; font-size: 12px; }
+.preview-wrap--dark .seller-name { color: #7fa6fe; }
+
+.badge-cond { font-size: 10px; background: #5cb85c; color: #fff; border-radius: 3px; padding: 1px 4px; }
+
+.price { font-size: 12px; font-weight: bold; color: #0240ca; white-space: nowrap; }
+.preview-wrap--dark .price { color: #7fa6fe; }
+
+.qty { font-size: 11px; color: #888; width: 16px; text-align: right; }
 
 .actions { margin-top: 28px; display: flex; gap: 10px; align-items: center; }
 button { border-radius: 4px; font-size: 14px; }
