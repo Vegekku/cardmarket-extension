@@ -13,7 +13,13 @@
     "type": "git",
     "url": "git+https://github.com/Vegekku/cardmarket-extension.git"
   },
+  "keywords": [],
+  "author": "vegekku",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Vegekku/cardmarket-extension/issues"
+  },
+  "homepage": "https://github.com/Vegekku/cardmarket-extension#readme",
   "devDependencies": {
     "esbuild": "^0.28.1"
   }
