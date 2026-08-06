@@ -1,0 +1,152 @@
+/**
+ * @module popup.css
+ * @description Estilos del popup de la extensión.
+ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    min-width: 280px;
+    margin: 0;
+    padding: 14px;
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    color: #1a1a1a;
+    background: #fafafa;
+}
+
+h3 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #111;
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    min-height: 60px;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: none;
+    font: inherit;
+    font-size: 13px;
+    field-sizing: content;
+    background: #fff;
+    color: #1a1a1a;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #aaa;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.bottom-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #444;
+}
+
+.toggle-label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-label input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-track {
+    position: relative;
+    width: 32px;
+    height: 18px;
+    background: #ccc;
+    border-radius: 9px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    transition: left 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.toggle-label input:checked + .toggle-track {
+    background: #2a9d5c;
+}
+
+.toggle-label input:checked + .toggle-track .toggle-thumb {
+    left: 16px;
+}
+
+button {
+    padding: 4px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    color: #555;
+    background: #ebebeb;
+    transition: background 0.15s;
+}
+
+button:hover:not(:disabled) {
+    background: #dedede;
+}
+
+#clearBtn:disabled {
+    background: #ebebeb;
+    color: #bbb;
+    cursor: not-allowed;
+}
+
+#saveStatus {
+    position: fixed;
+    top: 8px;
+    left: 12px;
+    right: 12px;
+    background: #d4f5e2;
+    color: #2a9d5c;
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 999;
+    text-align: center;
+}
+
+#saveStatus.visible {
+    opacity: 1;
+}

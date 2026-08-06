@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resaltador de usuarios</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <span id="saveStatus"></span>
+    <h3>Resaltar usuarios</h3>
+    <textarea id="terms" placeholder="Introduce usuarios separados por espacio o salto de línea..."></textarea>
+    <div class="bottom-row">
+        <label class="toggle-label" title="Activa o desactiva el resaltado de usuarios en la página sin necesidad de modificar o vaciar tu lista de usuarios.">
+            <input type="checkbox" id="enabledToggle">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span>Activar resaltado</span>
+        </label>
+        <button id="clearBtn">Vaciar</button>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
