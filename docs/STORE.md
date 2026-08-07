@@ -1,7 +1,7 @@
 # Chrome Web Store — Ficha de la extensión
 
 ## Versión publicada
-v1.0.0
+v1.1.0
 
 ## Ficha de Play Store
 
@@ -11,7 +11,7 @@ v1.0.0
 Cardmarket Highlighter
 
 #### Resumen del paquete (máx. 132 caracteres)
-Resalta vendedores favoritos en Cardmarket para localizarlos rápidamente en los listados de artículos.
+Resalta usuarios en Cardmarket para localizarlos rápidamente en los listados de artículos.
 
 #### Descripción (máx. 16000 caracteres)
 Cardmarket Highlighter resalta visualmente los vendedores que más te interesan en los listados de artículos de Cardmarket, el marketplace europeo de cartas coleccionables (Magic, Pokémon, Yu-Gi-Oh!, Digimon, etc.).
@@ -23,11 +23,9 @@ Funcionalidades principales:
 • Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por Cardmarket.
 • Toggle para activar o desactivar el resaltado sin borrar la lista de usuarios.
 • Botón Vaciar para eliminar todos los usuarios guardados de una vez.
-• Color de resaltado configurable por separado para modo claro y oscuro desde la página de opciones.
-• Los cambios de color se aplican en tiempo real en las pestañas abiertas sin necesidad de recargar.
-• Al cambiar entre modo claro y oscuro en Cardmarket, el color correspondiente se aplica automáticamente.
+• Feedback visual en el popup al guardar o vaciar la lista de usuarios.
 
-Compatibilidad: Chrome con Manifest V3. Funciona en todas las páginas de Cardmarket.
+Compatibilidad: Chrome con Manifest V3. Funciona en las páginas de producto de Cardmarket (/Products/).
 
 #### Categoría
 Herramientas
@@ -37,13 +35,12 @@ Español (es)
 
 ### Recursos gráficos
 
-### Capturas de pantalla (máx. 5 capturas)
+#### Capturas de pantalla (máx. 5 capturas)
 
 1. Popup de la extensión con varios usuarios introducidos y el toggle de resaltado activado.
 2. Listado de artículos de una carta con filas de vendedores resaltadas en azul-cian.
-3. Página de opciones con los selectores de color para modo claro y oscuro y la previsualización en vivo.
 
-### Privacidad
+## Privacidad
 
 ### Una sola finalidad
 
@@ -56,7 +53,7 @@ Esta extensión resalta visualmente vendedores favoritos en los listados de art�
 Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de color entre sesiones y dispositivos vinculados al perfil de Chrome.
 
 #### Justificación de tabs (máx. 1000 caracteres)
-Se usa chrome.tabs para enviar mensajes a las pestañas abiertas de Cardmarket y aplicar el resaltado en tiempo real sin necesidad de recargar la página al guardar cambios desde el popup.
+Se usa chrome.tabs para enviar mensajes desde el popup a las pestañas abiertas de Cardmarket y aplicar el resaltado sin necesidad de recargar la página.
 
 #### Justificación de Permiso de host (máx. 1000 caracteres)
 El permiso sobre *://*.cardmarket.com/* es necesario para inyectar el script de resaltado en las páginas de Cardmarket y aplicar el resaltado sobre los listados de artículos.
@@ -87,3 +84,10 @@ El permiso sobre *://*.cardmarket.com/* es necesario para inyectar el script de 
 
 #### URL de la Política de Privacidad
 https://vegekku.github.io/cardmarket-extension/privacy.html
+
+## Instrucciones de la prueba
+
+### Instrucciones adicionales (máx. 500 caracteres)
+Esta extensión funciona en las páginas de producto de Cardmarket (ej. https://www.cardmarket.com/es/Magic/Products/Singles/...).
+
+Para probarla: instala la extensión, abre el popup, introduce un nombre de usuario de Cardmarket (ej. el de cualquier vendedor visible en el listado) y pulsa fuera del textarea para guardar. Al navegar a una página de producto, la fila de ese vendedor quedará resaltada en azul-cian.
