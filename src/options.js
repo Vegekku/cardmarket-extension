@@ -3,8 +3,7 @@
  * @description Lógica de la página de opciones: carga y guarda la configuración
  * de color de resaltado por modo claro/oscuro.
  */
-import previewLightHtml from './preview-light.html';
-import previewDarkHtml from './preview-dark.html';
+import previewHtml from './preview.html';
 
 /** @type {{ light: string, dark: string }} */
 const DEFAULT_COLORS = {
@@ -68,11 +67,13 @@ function showStatus(msg) {
  * @returns {{ lightRows: NodeList, darkRows: NodeList }}
  */
 function initPreview() {
-    document.getElementById('previewLight').innerHTML = previewLightHtml;
-    document.getElementById('previewDark').innerHTML = previewDarkHtml;
+    const lightWrap = document.getElementById('previewLight');
+    const darkWrap = document.getElementById('previewDark');
+    lightWrap.innerHTML = previewHtml;
+    darkWrap.innerHTML = previewHtml;
     return {
-        lightRows: document.querySelectorAll('#previewLightRows [data-highlighted]'),
-        darkRows: document.querySelectorAll('#previewDarkRows [data-highlighted]'),
+        lightRows: lightWrap.querySelectorAll('[data-highlighted]'),
+        darkRows: darkWrap.querySelectorAll('[data-highlighted]'),
     };
 }
 
