@@ -1,4 +1,5 @@
+.DS_Store
 .amazonq/
-packages/
 dist/
 node_modules/
+packages/

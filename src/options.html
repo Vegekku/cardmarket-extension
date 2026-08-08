@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cardmarket Highlighter — Opciones</title>
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="options.css">
+  <link rel="stylesheet" href="preview.css">
+</head>
+<body>
+  <span class="save-status" id="saveStatus"></span>
+  <div class="layout">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <img src="icons/icon48.png" alt="">
+        <span class="sidebar-title">Cardmarket Highlighter</span>
+      </div>
+      <button class="tab-btn active" data-tab="appearance">Apariencia</button>
+      <button class="tab-btn" data-tab="about">Acerca de</button>
+    </nav>
+
+    <main class="content">
+
+      <div class="tab-panel active" id="panel-appearance">
+        <h1>Apariencia</h1>
+
+        <h2>Color de resaltado</h2>
+        <div class="row">
+          <div>
+            <label>Modo claro</label>
+            <div class="hint">Páginas con fondo claro</div>
+          </div>
+          <input type="color" id="colorLight">
+        </div>
+        <div id="previewLight" class="preview-wrap"></div>
+
+        <div class="row">
+          <div>
+            <label>Modo oscuro</label>
+            <div class="hint">Páginas con fondo oscuro</div>
+          </div>
+          <input type="color" id="colorDark">
+        </div>
+        <div id="previewDark" class="preview-wrap" data-bs-theme="dark"></div>
+
+        <div class="actions">
+          <button id="save" class="btn-primary" disabled>Guardar</button>
+          <button id="reset" class="btn-secondary" disabled>Restablecer</button>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-about">
+        <h1>Acerca de</h1>
+        <p class="about-version" id="about-version"></p>
+        <div class="about-links">
+          <a id="about-store" href="" target="_blank">Valorar en la Chrome Web Store</a>
+          <a href="https://github.com/vegekku/cardmarket-extension/blob/main/CHANGELOG.md" target="_blank">Novedades</a>
+          <a href="https://github.com/vegekku/cardmarket-extension/issues/new" target="_blank">Reportar un problema</a>
+          <a id="about-privacy" href="https://vegekku.github.io/cardmarket-extension/privacy.html" target="_blank">Política de privacidad</a>
+        </div>
+        <div class="about-support">
+          <p>Desarrollo esta extensión en los ratos libres que me dejan mis dos hijas (spoiler: no son muchos). Hecha con cariño entre pañales y madrugadas — si te ha gustado y quieres que añada más funcionalidades, cualquier donación ayuda a seguir adelante.</p>
+          <a id="about-donate" href="https://www.paypal.com/donate/?hosted_button_id=GPVK6CD3YM6NL" target="_blank" class="donate-btn">Apoya las madrugadas de papá</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
