@@ -6,7 +6,7 @@
 |--------|--------|
 | 1 — Bugs críticos | |
 | 2 — Calidad de código | [2.1](#21-internacionalización-i18n), [2.2](#22-grafo-git-lineal-en-el-flujo-de-release) |
-| 3 — UX / Popup | [3.5](#35-página-de-opciones), [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
+| 3 — UX / Popup | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
 | 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.12](#412-visualización-de-imágenes-de-cartas-en-listados) |
 
 ---
@@ -72,48 +72,6 @@ Ficheros afectados: `src/content.js`, `src/popup.html`, `src/popup.js`, `src/opt
 ---
 
 ## 3. UX / Popup
-
-### 3.5 Página de opciones
-
-Añadir una página de opciones accesible desde `chrome://extensions` para centralizar la configuración de la extensión.
-
-Opciones a exponer en esta primera iteración:
-- Color de resaltado por defecto, con soporte para modo claro y oscuro por separado. El modo se detecta mediante el atributo `data-bs-theme` en la etiqueta `<html>` de Cardmarket. Por defecto `rgba(0, 150, 200, 0.3)` para ambos modos.
-
-Opciones que se añadirán cuando se aborden sus mejoras correspondientes:
-- Tamaño de checkbox en listado de pedido ([3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido))
-- Ocultar secciones de la UI de Cardmarket ([3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket))
-- Simplificación de selectores y filtros ([3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket))
-- Modo filtro activo por defecto ([4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados))
-- Valores por defecto del filtro de precio ([4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta))
-- Estado por defecto colapsar/expandir bloques de juego en pedido ([4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos))
-- Visualización de imágenes de cartas en listados ([4.12](#412-visualización-de-imágenes-de-cartas-en-listados))
-
-Ficheros afectados: `manifest.json`, `src/options.html` (nuevo), `src/options.js` (nuevo), `src/content.js`.
-
-Mejoras pendientes sobre esta página: [3.5.1](#351-habilitardeshabilitar-botones-de-opciones-según-cambios-pendientes), [3.5.2](#352-previsualización-en-vivo-del-color-de-resaltado-en-opciones), [3.5.3](#353-aplicar-cambios-de-color-en-tiempo-real-sin-recargar).
-
-#### 3.5.1 Habilitar/deshabilitar botones de opciones según cambios pendientes
-
-Los botones "Guardar" y "Restablecer" de la página de opciones deben habilitarse o deshabilitarse dinámicamente:
-- "Guardar" solo habilitado cuando hay cambios respecto a los valores guardados actualmente.
-- "Restablecer" solo habilitado cuando los valores actuales difieren de los valores por defecto.
-
-Ficheros afectados: `src/options.js`.
-
-#### 3.5.2 Previsualización en vivo del color de resaltado en opciones
-
-Mostrar en la página de opciones una previsualización del aspecto del resaltado sin necesidad de navegar a Cardmarket. Al cambiar el color, la previsualización se actualiza en tiempo real mostrando una fila de ejemplo con el color seleccionado aplicado, tanto en modo claro como oscuro.
-
-Ficheros afectados: `src/options.html`, `src/options.js`, `src/styles/options.css`.
-
-#### 3.5.3 Aplicar cambios de color en tiempo real sin recargar
-
-Dos situaciones en las que el resaltado no se actualiza sin recargar la página:
-- Al guardar un nuevo color desde la página de opciones, las pestañas abiertas de Cardmarket no lo aplican hasta recargar. Solución: escuchar `chrome.storage.onChanged` en `content.js` para detectar cambios en `highlightColors` y reaplicar el resaltado.
-- Al cambiar el modo claro/oscuro en Cardmarket, el color correspondiente no se aplica hasta recargar. Solución: observar el atributo `data-bs-theme` en `<html>` con un `MutationObserver` y reaplicar cuando cambie.
-
-Ficheros afectados: `src/content.js`.
 
 ### 3.6 Ocultar secciones de la UI de Cardmarket
 
