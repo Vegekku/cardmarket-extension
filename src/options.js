@@ -3,6 +3,8 @@
  * @description Lógica de la página de opciones: carga y guarda la configuración
  * de color de resaltado por modo claro/oscuro.
  */
+import previewLightHtml from './preview-light.html';
+import previewDarkHtml from './preview-dark.html';
 
 /** @type {{ light: string, dark: string }} */
 const DEFAULT_COLORS = {
@@ -59,12 +61,28 @@ function showStatus(msg) {
     setTimeout(() => el.classList.remove('visible'), 2000);
 }
 
+/**
+ * Inyecta el HTML de las previews y aplica el color de resaltado inline en las filas marcadas.
+ * @param {string} lightColor
+ * @param {string} darkColor
+ * @returns {{ lightRows: NodeList, darkRows: NodeList }}
+ */
+function initPreview() {
+    document.getElementById('previewLight').innerHTML = previewLightHtml;
+    document.getElementById('previewDark').innerHTML = previewDarkHtml;
+    return {
+        lightRows: document.querySelectorAll('#previewLightRows [data-highlighted]'),
+        darkRows: document.querySelectorAll('#previewDarkRows [data-highlighted]'),
+    };
+}
+
 function init() {
     document.getElementById('about-version').textContent =
         `Versión ${chrome.runtime.getManifest().version}`;
 
     initTabs();
 
+    const { lightRows, darkRows } = initPreview();
     const lightInput = document.getElementById('colorLight');
     const darkInput = document.getElementById('colorDark');
     const saveBtn = document.getElementById('save');
@@ -92,8 +110,8 @@ function init() {
      * Actualiza el color de fondo de las previsualizaciones según los pickers.
      */
     function updatePreview() {
-        document.querySelectorAll('#previewLight .highlighted').forEach(r => r.style.setProperty('--highlight-color', hexToRgba(lightInput.value)));
-        document.querySelectorAll('#previewDark .highlighted').forEach(r => r.style.setProperty('--highlight-color', hexToRgba(darkInput.value)));
+        lightRows.forEach(r => r.style.setProperty('--bs-table-bg', hexToRgba(lightInput.value)));
+        darkRows.forEach(r => r.style.setProperty('--bs-table-bg', hexToRgba(darkInput.value)));
     }
 
     chrome.storage.sync.get('highlightColors', data => {

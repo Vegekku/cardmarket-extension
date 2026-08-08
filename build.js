@@ -15,7 +15,7 @@ mkdirSync('dist/icons', { recursive: true });
 const staticFiles = [
     'icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png',
     'src/popup.html', 'src/options.html',
-    'src/styles/common.css', 'src/styles/popup.css', 'src/styles/options.css',
+    'src/styles/common.css', 'src/styles/popup.css', 'src/styles/options.css', 'src/styles/preview.css',
     'manifest.json'
 ];
 staticFiles.forEach(f => copyFileSync(f, `dist/${f.replace('src/styles/', '').replace('src/', '')}`));
@@ -34,6 +34,7 @@ const ctx = await esbuild.context({
     define: dev ? { __BUILD_TIME__: JSON.stringify(new Date().toLocaleString('es-ES')) } : {},
     outdir: 'dist',
     plugins: [logPlugin],
+    loader: { '.html': 'text' },
     format: 'esm',
     platform: 'browser',
     target: 'chrome110',
