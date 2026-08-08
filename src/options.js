@@ -92,8 +92,8 @@ function init() {
      * Actualiza el color de fondo de las previsualizaciones según los pickers.
      */
     function updatePreview() {
-        document.querySelectorAll('#previewLight .highlighted').forEach(r => r.style.backgroundColor = hexToRgba(lightInput.value));
-        document.querySelectorAll('#previewDark .highlighted').forEach(r => r.style.backgroundColor = hexToRgba(darkInput.value));
+        document.querySelectorAll('#previewLight .highlighted').forEach(r => r.style.setProperty('--highlight-color', hexToRgba(lightInput.value)));
+        document.querySelectorAll('#previewDark .highlighted').forEach(r => r.style.setProperty('--highlight-color', hexToRgba(darkInput.value)));
     }
 
     chrome.storage.sync.get('highlightColors', data => {
