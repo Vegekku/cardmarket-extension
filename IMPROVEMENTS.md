@@ -5,7 +5,7 @@
 | Bloque | Puntos |
 |--------|--------|
 | 1 — Bugs críticos | |
-| 2 — Calidad de código | [2.1](#21-internacionalización-i18n), [2.2](#22-grafo-git-lineal-en-el-flujo-de-release) |
+| 2 — Calidad de código | [2.1](#21-internacionalización-i18n) |
 | 3 — UX / Popup | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
 | 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.12](#412-visualización-de-imágenes-de-cartas-en-listados) |
 
@@ -25,41 +25,6 @@
 ---
 
 ## 2. Calidad de código
-
-### 2.2 Grafo Git lineal en el flujo de release
-
-El flujo de release actual genera dos merge commits extra en el grafo (uno en `main` y otro en `develop`), produciendo bifurcaciones innecesarias. El objetivo es que `main` y `develop` compartan un historial completamente lineal tras cada release.
-
-**Causa raíz**: la PR `release/vX.Y.Z` → `main` se mergea con merge commit, y la sincronización de vuelta a `develop` también se hace mediante una PR con merge commit.
-
-**Solución acordada**:
-1. **Squash merge** en la PR `release/vX.Y.Z` → `main`: todos los commits de la rama (bump de versión, CHANGELOG) se aplastan en un único commit limpio en `main`. El tag de versión apunta a ese commit.
-2. **Fast-forward de `develop`**: en lugar de crear una PR de sync `release/` → `develop` y mergearla, el workflow actualiza directamente el ref de `develop` para que apunte al mismo SHA que `main` tras el squash. Sin merge commit, sin bifurcación.
-
-**Grafo resultante**:
-```
-main:    ...A --- B(squash release v1.1.0) ← tag v1.1.0
-develop:                                  ↑ fast-forward aquí
-```
-
-**Ficheros afectados**:
-- `.amazonq/rules/git-workflow.md` — paso 10 cambia a squash merge; paso 12 cambia a fast-forward directo (eliminar mención a PR de sync)
-- `.github/workflows/auto-release-pr.yml` — sustituir creación de PR `release/` → `develop` por actualización directa del ref:
-  ```yaml
-  - name: Fast-forward develop to main
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    run: |
-      SHA=$(gh api repos/${{ github.repository }}/git/ref/heads/main --jq '.object.sha')
-      gh api repos/${{ github.repository }}/git/refs/heads/develop \
-        -X PATCH \
-        -f sha="$SHA" \
-        -F force=false
-  ```
-
-**Precondición**: este enfoque asume que no hay commits nuevos en `develop` mientras la rama `release/` está abierta. Si los hubiera, el fast-forward fallaría (`force=false`) y habría que resolver manualmente. En la práctica esto no ocurre porque el flujo de release bloquea trabajo paralelo en `develop`.
-
----
 
 ### 2.1 Internacionalización (i18n)
 
