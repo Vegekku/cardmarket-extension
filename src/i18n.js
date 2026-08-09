@@ -184,3 +184,22 @@ export function loadMessages() {
         chrome.storage.local.get('lang', data => resolve(getMessages(data.lang || 'es')));
     });
 }
+
+/**
+ * Aplica las traducciones al documento actual usando atributos data-i18n.
+ * - `data-i18n` → textContent
+ * - `data-i18n-placeholder` → placeholder
+ * - `data-i18n-title` → title
+ * @param {Record<string, string>} m
+ */
+export function applyMessages(m) {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        el.textContent = m[el.dataset.i18n] ?? el.textContent;
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = m[el.dataset.i18nPlaceholder] ?? el.placeholder;
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        el.title = m[el.dataset.i18nTitle] ?? el.title;
+    });
+}

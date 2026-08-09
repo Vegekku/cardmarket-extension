@@ -2,7 +2,7 @@
  * @module popup
  * @description Lógica del popup: carga usuarios y estado del toggle, autoguarda al escribir.
  */
-import { loadMessages } from './i18n.js';
+import { loadMessages, applyMessages } from './i18n.js';
 
 /**
  * Envía un mensaje UPDATE_HIGHLIGHT a todas las pestañas abiertas de Cardmarket.
@@ -47,8 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearBtn = document.getElementById('clearBtn');
     const toggle = document.getElementById('enabledToggle');
     const saveStatus = document.getElementById('saveStatus');
-    const toggleLabel = document.getElementById('toggleLabel');
-    const toggleLabelText = document.getElementById('toggleLabelText');
 
     applyAutoResize(termsEl);
 
@@ -70,11 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadMessages().then(m => {
         msg = m;
         document.title = m.popupTitle;
-        document.getElementById('popupHeading').textContent = m.popupHeading;
-        termsEl.placeholder = m.popupPlaceholder;
-        toggleLabelText.textContent = m.toggleLabel;
-        toggleLabel.title = m.toggleTitle;
-        clearBtn.textContent = m.clearBtn;
+        applyMessages(m);
     });
 
     chrome.storage.sync.get(['terms', 'enabled'], function(data) {

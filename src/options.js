@@ -4,7 +4,7 @@
  * de color de resaltado por modo claro/oscuro.
  */
 import previewHtml from './preview.html';
-import { loadMessages } from './i18n.js';
+import { loadMessages, applyMessages } from './i18n.js';
 
 /** @type {{ light: string, dark: string }} */
 const DEFAULT_COLORS = {
@@ -127,27 +127,9 @@ function init() {
 
     loadMessages().then(m => {
         document.title = m.optionsTitle;
-        document.querySelector('[data-tab="appearance"]').textContent = m.tabAppearance;
-        document.querySelector('[data-tab="about"]').textContent = m.tabAbout;
-        document.querySelector('#panel-appearance h1').textContent = m.h1Appearance;
-        document.querySelector('#panel-appearance h2').textContent = m.h2HighlightColor;
-        const [labelLight, labelDark] = document.querySelectorAll('#panel-appearance label');
-        labelLight.textContent = m.labelLight;
-        labelDark.textContent = m.labelDark;
-        const [hintLight, hintDark] = document.querySelectorAll('#panel-appearance .hint');
-        hintLight.textContent = m.hintLight;
-        hintDark.textContent = m.hintDark;
-        saveBtn.textContent = m.btnSave;
-        resetBtn.textContent = m.btnReset;
-        document.querySelector('#panel-about h1').textContent = m.h1About;
+        applyMessages(m);
         document.getElementById('about-version').textContent =
             `${m.versionPrefix} ${chrome.runtime.getManifest().version}`;
-        document.getElementById('about-store').textContent = m.linkStore;
-        document.querySelector('a[href*="CHANGELOG"]').textContent = m.linkChangelog;
-        document.querySelector('a[href*="issues/new"]').textContent = m.linkIssues;
-        document.getElementById('about-privacy').textContent = m.linkPrivacy;
-        document.querySelector('.about-support p').textContent = m.supportText;
-        document.getElementById('about-donate').textContent = m.btnDonate;
 
         saveBtn.addEventListener('click', () => {
             const colors = {
