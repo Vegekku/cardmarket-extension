@@ -139,7 +139,7 @@ function init() {
             chrome.storage.sync.set({ highlightColors: colors }, () => {
                 savedColors = { ...colors };
                 updateButtons();
-                showStatus(m.savedStatus);
+                showStatus(`${m.saved} ✓`);
             });
         });
 
@@ -150,7 +150,7 @@ function init() {
                 darkInput.value = defaultHexDark;
                 updatePreview();
                 updateButtons();
-                showStatus(m.resetStatus);
+                showStatus(`${m.resetStatus} ✓`);
             });
         });
     });

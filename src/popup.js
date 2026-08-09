@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveAndBroadcast = debounce(function() {
         const terms = termsEl.value.split(/[\s,]+/).filter(Boolean).sort((a, b) => a.localeCompare(b));
         clearBtn.disabled = terms.length === 0;
-        chrome.storage.sync.set({ terms }, () => { broadcastToCardmarket({ terms, enabled }); showFeedback(msg.saved || 'Guardado ✓'); });
+        chrome.storage.sync.set({ terms }, () => { broadcastToCardmarket({ terms, enabled }); showFeedback(`${msg.saved} ✓`); });
     }, 500);
 
     termsEl.addEventListener('input', saveAndBroadcast);
@@ -98,6 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
     clearBtn.addEventListener('click', function() {
         termsEl.value = '';
         clearBtn.disabled = true;
-        chrome.storage.sync.remove('terms', () => { broadcastToCardmarket({ terms: [], enabled }); showFeedback(msg.cleared || 'Vaciado ✓'); });
+        chrome.storage.sync.remove('terms', () => { broadcastToCardmarket({ terms: [], enabled }); showFeedback(`${msg.cleared} ✓`); });
     });
 });
