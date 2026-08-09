@@ -28,7 +28,7 @@
     },
     "content_scripts": [
       {
-        "matches": ["*://*.cardmarket.com/*/Products/*"],
+        "matches": ["*://*.cardmarket.com/*"],
         "js": ["content.js"]
       }
     ]

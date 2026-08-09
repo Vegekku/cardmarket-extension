@@ -2,6 +2,7 @@
  * @module popup
  * @description Lógica del popup: carga usuarios y estado del toggle, autoguarda al escribir.
  */
+import { loadMessages } from './i18n.js';
 
 /**
  * Envía un mensaje UPDATE_HIGHLIGHT a todas las pestañas abiertas de Cardmarket.
@@ -46,11 +47,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearBtn = document.getElementById('clearBtn');
     const toggle = document.getElementById('enabledToggle');
     const saveStatus = document.getElementById('saveStatus');
+    const toggleLabel = document.getElementById('toggleLabel');
+    const toggleLabelText = document.getElementById('toggleLabelText');
 
     applyAutoResize(termsEl);
 
     let enabled = true;
     let fadeTimer;
+    let msg = {};
 
     /**
      * Muestra un mensaje de feedback temporal en el popup.
@@ -62,6 +66,16 @@ document.addEventListener('DOMContentLoaded', function() {
         saveStatus.classList.add('visible');
         fadeTimer = setTimeout(() => saveStatus.classList.remove('visible'), 1000);
     }
+
+    loadMessages().then(m => {
+        msg = m;
+        document.title = m.popupTitle;
+        document.getElementById('popupHeading').textContent = m.popupHeading;
+        termsEl.placeholder = m.popupPlaceholder;
+        toggleLabelText.textContent = m.toggleLabel;
+        toggleLabel.title = m.toggleTitle;
+        clearBtn.textContent = m.clearBtn;
+    });
 
     chrome.storage.sync.get(['terms', 'enabled'], function(data) {
         if (data.terms && data.terms.length > 0) {
@@ -75,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveAndBroadcast = debounce(function() {
         const terms = termsEl.value.split(/[\s,]+/).filter(Boolean).sort((a, b) => a.localeCompare(b));
         clearBtn.disabled = terms.length === 0;
-        chrome.storage.sync.set({ terms }, () => { broadcastToCardmarket({ terms, enabled }); showFeedback('Guardado ✓'); });
+        chrome.storage.sync.set({ terms }, () => { broadcastToCardmarket({ terms, enabled }); showFeedback(msg.saved || 'Guardado ✓'); });
     }, 500);
 
     termsEl.addEventListener('input', saveAndBroadcast);
@@ -90,6 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
     clearBtn.addEventListener('click', function() {
         termsEl.value = '';
         clearBtn.disabled = true;
-        chrome.storage.sync.remove('terms', () => { broadcastToCardmarket({ terms: [], enabled }); showFeedback('Vaciado ✓'); });
+        chrome.storage.sync.remove('terms', () => { broadcastToCardmarket({ terms: [], enabled }); showFeedback(msg.cleared || 'Vaciado ✓'); });
     });
 });

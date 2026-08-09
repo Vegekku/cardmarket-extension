@@ -83,6 +83,9 @@ function applyHighlight(data) {
     }
 }
 
+// Persiste el idioma de Cardmarket para que popup y opciones puedan leerlo
+chrome.storage.local.set({ lang: document.documentElement.lang || 'es' });
+
 // Carga inicial desde storage
 chrome.storage.sync.get(['terms', 'enabled', 'highlightColors'], applyHighlight);
 
