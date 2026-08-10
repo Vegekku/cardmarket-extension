@@ -6,8 +6,8 @@
 |--------|--------|
 | 1 — Bugs críticos | |
 | 2 — Calidad de código | |
-| 3 — UX / Popup | [3.5](#35-página-de-opciones), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido), [3.8](#38-accesibilidad-wcag) |
-| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox) |
+| 3 — UX / Popup | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
+| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.12](#412-visualización-de-imágenes-de-cartas-en-listados) |
 
 ---
 
@@ -30,18 +30,17 @@
 
 ## 3. UX / Popup
 
-### 3.5 Página de opciones
+### 3.6 Ocultar secciones de la UI de Cardmarket
 
-Añadir una página de opciones accesible desde `chrome://extensions` para centralizar la configuración de la extensión.
+Permitir al usuario ocultar secciones de la interfaz de Cardmarket que no le resulten útiles (banners, sidebars, secciones de navegación, etc.) mediante CSS inyectado.
 
-Pendiente de definir qué opciones exponer (candidatos según otras mejoras pendientes):
-- Color de resaltado por defecto o por término ([4.1](#41-colores-personalizables-por-término))
-- Toggle para activar/desactivar el resaltado ([4.2](#42-toggle-activardesactivar-resaltado))
-- Gestión de la lista de términos guardados
-- Ocultar/mostrar secciones de la UI de Cardmarket (banners, sidebars, secciones de navegación, etc.)
-- Simplificación de selectores y filtros de Cardmarket: reducir opciones visibles en dropdowns para agilizar la navegación
+Pendiente de analizar:
+- Qué secciones son candidatas a ocultar (requiere inspección del DOM de las páginas principales).
+- Si el ocultado debe ser por página/contexto o global.
 
-Ficheros afectados: `manifest.json`, `options.html` (nuevo), `options.js` (nuevo), `content.js`.
+Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
+
+Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`.
 
 ### 3.7 Tamaño configurable del checkbox en el listado de pedido
 
@@ -76,13 +75,25 @@ Pendiente de decidir la estrategia de verificación, teniendo en cuenta el creci
 
 Ficheros afectados: `src/popup.html`, `src/popup.css`, `src/options.html` (futuro), `.amazonq/rules/accessibility.md` (nuevo), `package.json` (fase 2).
 
+### 3.9 Simplificación de selectores y filtros de Cardmarket
+
+Reducir las opciones visibles en los dropdowns de Cardmarket para agilizar la navegación, ocultando valores poco usados.
+
+Pendiente de analizar:
+- La implementación debe ser dinámica: la extensión accede a la URL correspondiente, extrae los elementos y sus opciones del DOM, y genera los controles de configuración en la página de opciones. Esto cubre posibles cambios futuros en la UI de Cardmarket sin necesidad de actualizar la extensión.
+- Qué selectores/filtros son candidatos (requiere inspección del DOM).
+
+Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
+
+Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`.
+
 ---
 
 ## 4. Funcionalidad nueva
 
 ### 4.1 Colores personalizables por término
 
-Permitir al usuario asignar un color diferente a cada término en lugar de usar siempre amarillo.
+Permitir al usuario asignar un color diferente a cada término en lugar de usar siempre el color por defecto. Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
 ### 4.3 Modo filtro: mostrar solo vendedores resaltados
 
@@ -96,7 +107,9 @@ Pendiente de decidir:
   - **Auto-carga completa**: la extensión pulsa "ver más" en bucle hasta agotar resultados y luego filtra.
   - **Auto-carga bajo demanda**: carga el siguiente lote, filtra, y continúa si no hay coincidencias.
 
-Ficheros afectados: `content.js`, `popup.html`, `popup.js`.
+El estado activo/inactivo del modo filtro por defecto podría ser configurable desde la página de opciones ([3.5](#35-página-de-opciones)).
+
+Ficheros afectados: `src/content.js`, `src/popup.html`, `src/popup.js`.
 
 ### 4.4 Navegación entre coincidencias
 
@@ -111,7 +124,7 @@ Pendiente de analizar:
 - Juegos disponibles a incluir en el selector (Magic, Pokémon, Yu-Gi-Oh!, Digimon, etc.).
 - Dónde inyectar el selector en el DOM sin romper el layout existente.
 
-Ficheros afectados: `content.js`.
+Ficheros afectados: `src/content.js`.
 
 ### 4.5 Añadir vendedor al resaltado al comprar sus cartas
 
@@ -121,7 +134,7 @@ Pendiente de decidir:
 - El vendedor añadido automáticamente se resaltará en `rgba(100, 200, 100, 0.25)` — verde suave, reservado para distinguirlo visualmente de los términos manuales. Color descartado para el resaltado general (1.5) por reservarse para este uso.
 - Cómo detectar el evento de "añadir al carrito" en la página de Cardmarket (MutationObserver sobre el DOM o intercepción de la petición de red).
 
-Ficheros afectados: `content.js`, `popup.js`, `background.js`.
+Ficheros afectados: `src/content.js`, `src/popup.js`, `src/background.js`.
 
 ### 4.7 Filtro de precio en el listado de vendedores de una carta
 
@@ -131,8 +144,9 @@ Pendiente de analizar:
 - Estructura del DOM del listado de vendedores para identificar las filas y las celdas de precio.
 - Si el filtrado se aplica solo sobre los resultados ya cargados en el DOM o también sobre los que se cargan con paginación/scroll infinito.
 - URL pattern de la página de vendedores de una carta para restringir la inyección.
+- Los valores por defecto de precio mínimo y máximo podrían ser configurables desde la página de opciones ([3.5](#35-página-de-opciones)).
 
-Ficheros afectados: `content.js`.
+Ficheros afectados: `src/content.js`.
 
 ### 4.8 Mejoras en la vista de pedido con varios juegos
 
@@ -144,8 +158,9 @@ Cuando un pedido combina cartas de varios juegos, Cardmarket divide el listado p
 Pendiente de analizar:
 - Estructura del DOM de la página de pedido para identificar los bloques por juego, las filas de cartas y las celdas de precio.
 - URL pattern de la página de pedido para restringir la inyección.
+- El estado por defecto (colapsado/expandido) podría ser configurable desde la página de opciones ([3.5](#35-página-de-opciones)).
 
-Ficheros afectados: `content.js`.
+Ficheros afectados: `src/content.js`.
 
 ### 4.9 Pago selectivo de pedidos en el carrito
 
@@ -157,7 +172,7 @@ Pendiente de analizar:
 - Si Cardmarket expone algún mecanismo nativo para eliminar/restaurar pedidos completos o es necesario operar artículo a artículo.
 - URL pattern de la página del carrito para restringir la inyección.
 
-Ficheros afectados: `content.js`.
+Ficheros afectados: `src/content.js`.
 
 ### 4.10 Añadir / quitar vendedor con doble click
 
@@ -167,7 +182,7 @@ Pendiente de decidir:
 - Zona de doble click: fila completa (`div.article-row`) o celda del vendedor (el enlace `a[href*="/Users/"]`).
 - Feedback visual al añadir/quitar (ej. animación breve o cambio de color transitorio).
 
-Ficheros afectados: `content.js`.
+Ficheros afectados: `src/content.js`.
 
 ### 4.11 Compatibilidad con Firefox
 
@@ -182,3 +197,16 @@ Pendiente de analizar:
 - Si el script de build (`build.js`) necesita cambios para generar un artefacto separado para Firefox.
 
 Ficheros afectados: `manifest.json`, `build.js`, `package.json`, `src/background.js`, `src/content.js`, `src/popup.js`.
+
+### 4.12 Visualización de imágenes de cartas en listados
+
+Actualmente las imágenes de las cartas en los listados de artículos solo se muestran al pasar el ratón por encima del icono de cámara. Añadir la opción de mostrar las imágenes directamente en la fila, sin necesidad de hover.
+
+Pendiente de decidir:
+- Tamaño de la imagen inline (thumbnail pequeño en la fila vs. columna dedicada).
+- Si aplica solo al listado de vendedores de una carta o también a otros listados con icono de cámara.
+- Impacto en el rendimiento al cargar muchas imágenes simultáneamente (lazy loading).
+
+Se expone en la página de opciones ([3.5](#35-página-de-opciones)) como opción configurable (activar/desactivar).
+
+Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`.

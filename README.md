@@ -6,11 +6,19 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 
 ### Resaltado de usuarios
 - Introduce uno o varios nombres de usuario en el popup separados por espacio, salto de línea o coma.
-- Los usuarios se guardan automáticamente y se resalta en azul-cian la fila completa de cada usuario coincidente en el listado de artículos.
-- Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por las páginas de producto de Cardmarket.
+- Los usuarios se guardan automáticamente y se resalta la fila completa de cada usuario coincidente en el listado de artículos.
+- Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por Cardmarket.
 - El botón **Vaciar** elimina todos los usuarios guardados.
 - El toggle **Activar resaltado** permite activar o desactivar el resaltado sin borrar los usuarios.
 - Al guardar o vaciar la lista se muestra un mensaje de confirmación temporal en el popup.
+- El color de resaltado se actualiza en tiempo real al cambiar el tema claro/oscuro de Cardmarket.
+- La interfaz del popup y la página de opciones se muestran en el idioma de Cardmarket (español, inglés, francés, alemán e italiano).
+
+### Página de opciones
+- Accesible desde `chrome://extensions` → botón **Detalles** → **Opciones de la extensión**.
+- Permite configurar el color de resaltado por separado para modo claro y modo oscuro.
+- Incluye previsualización en vivo del color seleccionado antes de guardar.
+- Los cambios de color se aplican en todas las pestañas abiertas de Cardmarket sin recargar.
 
 ## Instalación
 
@@ -40,25 +48,35 @@ Los usuarios introducidos se guardan en `chrome.storage.sync`, vinculados al per
 ```
 cardmarket-extension/
 ├── src/
-│   ├── background.js    # Service worker
-│   ├── content.js       # Script inyectado: resalta usuarios en la página
-│   ├── popup.html       # Popup del icono de la extensión
-│   ├── popup.css        # Estilos del popup
-│   └── popup.js         # Lógica del popup
-├── dist/            # Build generado (no commitear)
+│   ├── content.js         # Script inyectado: resalta usuarios en la página y persiste el idioma
+│   ├── i18n.js            # Traducciones de la UI (es, en, fr, de, it)
+│   ├── popup.html         # Popup del icono de la extensión
+│   ├── popup.js           # Lógica del popup
+│   ├── options.html       # Página de opciones de la extensión
+│   ├── options.js         # Lógica de la página de opciones
+│   ├── preview.html       # Fragmento HTML para la previsualización de colores
+│   └── styles/
+│       ├── common.css     # Estilos compartidos (popup y opciones)
+│       ├── popup.css      # Estilos específicos del popup
+│       ├── options.css    # Estilos específicos de opciones
+│       └── preview.css    # Estilos de la previsualización
+├── docs/
+│   ├── STORE.md           # Descripción y capturas para la Chrome Web Store
+│   └── privacy.html       # Política de privacidad
+├── dist/                  # Build generado (no commitear)
 ├── icons/
 │   ├── icon16.png
 │   ├── icon48.png
 │   └── icon128.png
-├── build.js         # Script de build (esbuild)
-├── zip.js           # Genera el zip para la Chrome Web Store
+├── build.js               # Script de build (esbuild)
+├── zip.js                 # Genera el zip para la Chrome Web Store
 ├── package.json
-├── manifest.json    # Configuración de la extensión
-├── CHANGELOG.md     # Historial de versiones
-└── IMPROVEMENTS.md  # Ideas y mejoras pendientes
+├── manifest.json          # Configuración de la extensión
+├── CHANGELOG.md           # Historial de versiones
+└── IMPROVEMENTS.md        # Ideas y mejoras pendientes
 ```
 
 ## Compatibilidad
 
 - Chrome con Manifest V3.
-- Funciona en `*://*.cardmarket.com/*/Products/*`.
+- Funciona en `*://*.cardmarket.com/*`.
