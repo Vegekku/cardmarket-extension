@@ -5,21 +5,7 @@
  */
 import previewHtml from './preview.html';
 import { loadMessages, applyMessages } from './i18n.js';
-
-/** @type {{ light: string, dark: string }} */
-const DEFAULT_COLORS = {
-    light: 'rgba(0, 150, 200, 0.3)',
-    dark: 'rgba(0, 150, 200, 0.3)',
-};
-
-/** @type {number} */
-const DEFAULT_CHECKBOX_SIZE = 1;
-
-/** @type {number} */
-const DEFAULT_CHECKED_OPACITY = 0.3;
-
-/** @type {boolean} */
-const DEFAULT_CHECKED_OPACITY_ENABLED = false;
+import { DEFAULT_COLOR, DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED } from './defaults.js';
 
 /**
  * Convierte un color rgba a hex aproximado para el input[type=color].

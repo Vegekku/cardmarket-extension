@@ -5,16 +5,9 @@
  * Escucha mensajes del popup para actualizar el resaltado sin reinyectarse.
  */
 
+import { DEFAULT_COLOR, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY } from './defaults.js';
+
 if (typeof __BUILD_TIME__ !== 'undefined') console.log(`[Cardmarket] build: ${__BUILD_TIME__}`);
-
-/** Color por defecto si no hay configuración guardada. */
-const DEFAULT_COLOR = 'rgba(0, 150, 200, 0.3)';
-
-/** Tamaño por defecto de los checkboxes en em. */
-const DEFAULT_CHECKBOX_SIZE = 1;
-
-/** Opacidad por defecto de la fila al marcar su checkbox. */
-const DEFAULT_CHECKED_OPACITY = 0.3;
 
 /** @type {HTMLStyleElement|null} */
 let checkboxStyleEl = null;
