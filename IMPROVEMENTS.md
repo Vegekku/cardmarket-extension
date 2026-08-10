@@ -47,13 +47,10 @@ Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`.
 
 Los checkboxes nativos de Cardmarket en el listado de cartas de un pedido son demasiado pequeños. Agrandarlos mediante CSS inyectado y exponer un ajuste de tamaño configurable por el usuario.
 
-Pendiente de decidir:
-- Tamaño por defecto a aplicar (ej. `20px`, `24px`).
-- Selector CSS exacto de los checkboxes en la página de pedido (pendiente de inspeccionar el DOM).
+- **3.7.1** Tamaño configurable del checkbox (implementado).
+- **3.7.2** Opacidad configurable de la fila al marcar el checkbox: al marcar un checkbox de pedido, reducir la opacidad de su fila (`opacity: 0.3` por defecto) para indicar visualmente que ya está procesada. El valor de opacidad es configurable por el usuario desde la página de opciones.
 
-El ajuste se expone en la página de opciones ([3.5](#35-página-de-opciones)).
-
-Ficheros afectados: `content.js`, `options.html`, `options.js`.
+Ficheros afectados: `content.js`, `options.html`, `options.js`, `src/i18n.js`.
 
 ### 3.8 Accesibilidad WCAG
 
