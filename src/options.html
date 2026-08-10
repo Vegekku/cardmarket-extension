@@ -43,7 +43,7 @@
         </div>
         <div id="previewDark" class="preview-wrap" data-bs-theme="dark"></div>
 
-        <h2 data-i18n="h2CheckboxSize"></h2>
+        <h2 data-i18n="h2OrderSettings"></h2>
         <div class="row">
           <div>
             <label for="checkboxSize" data-i18n="labelCheckboxSize"></label>
@@ -55,11 +55,19 @@
           </div>
         </div>
 
-        <h2 data-i18n="h2CheckedOpacity"></h2>
         <div class="row">
           <div>
-            <label for="checkedOpacity" data-i18n="labelCheckedOpacity"></label>
+            <label data-i18n="labelCheckedOpacityEnabled"></label>
             <div class="hint" data-i18n="hintCheckedOpacity"></div>
+          </div>
+          <label class="toggle-label toggle-right">
+            <input type="checkbox" id="checkedOpacityEnabled">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </label>
+        </div>
+        <div class="row" id="checkedOpacityRow" hidden>
+          <div>
+            <label for="checkedOpacity" data-i18n="labelCheckedOpacity"></label>
           </div>
           <div class="range-control">
             <input type="range" id="checkedOpacity" min="0" max="1" step="0.05">

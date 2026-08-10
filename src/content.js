@@ -116,36 +116,38 @@ function applyHighlight(data) {
  * Instala un listener delegado en el documento para detectar cambios futuros.
  * @param {number} opacity
  */
-function applyCheckedRowOpacity(opacity) {
+function applyCheckedRowOpacity(enabled, opacity) {
     document.querySelectorAll('table.product-table tr').forEach(tr => {
         const cb = tr.querySelector('input.form-check-input[type="checkbox"]');
-        if (cb) tr.style.opacity = cb.checked ? opacity : '';
+        if (cb) tr.style.opacity = (enabled && cb.checked) ? opacity : '';
     });
 }
 
 /**
  * Instala (o reinstala) el listener delegado para cambios de checkbox en tablas de pedido.
+ * @param {boolean} enabled
  * @param {number} opacity
  */
-function initCheckedRowOpacityListener(opacity) {
+function initCheckedRowOpacityListener(enabled, opacity) {
     document.removeEventListener('change', document._mkmCheckboxHandler || null);
     document._mkmCheckboxHandler = e => {
         const cb = e.target;
         if (cb.type !== 'checkbox' || !cb.classList.contains('form-check-input')) return;
         const tr = cb.closest('tr');
-        if (tr) tr.style.opacity = cb.checked ? opacity : '';
+        if (tr) tr.style.opacity = (enabled && cb.checked) ? opacity : '';
     };
     document.addEventListener('change', document._mkmCheckboxHandler);
 }
 chrome.storage.local.set({ lang: document.documentElement.lang || 'es' });
 
 // Carga inicial desde storage
-chrome.storage.sync.get(['terms', 'enabled', 'highlightColors', 'checkboxSize', 'checkedOpacity'], data => {
+chrome.storage.sync.get(['terms', 'enabled', 'highlightColors', 'checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled'], data => {
     applyHighlight(data);
     applyCheckboxSize(data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
+    const opacityEnabled = data.checkedOpacityEnabled ?? false;
     const opacity = data.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
-    applyCheckedRowOpacity(opacity);
-    initCheckedRowOpacityListener(opacity);
+    applyCheckedRowOpacity(opacityEnabled, opacity);
+    initCheckedRowOpacityListener(opacityEnabled, opacity);
 });
 
 // Escucha mensajes del popup
@@ -157,10 +159,13 @@ chrome.runtime.onMessage.addListener(function(message) {
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'sync') return;
     if ('checkboxSize' in changes) applyCheckboxSize(changes.checkboxSize.newValue ?? DEFAULT_CHECKBOX_SIZE);
-    if ('checkedOpacity' in changes) {
-        const opacity = changes.checkedOpacity.newValue ?? DEFAULT_CHECKED_OPACITY;
-        applyCheckedRowOpacity(opacity);
-        initCheckedRowOpacityListener(opacity);
+    if ('checkedOpacity' in changes || 'checkedOpacityEnabled' in changes) {
+        chrome.storage.sync.get(['checkedOpacity', 'checkedOpacityEnabled'], d => {
+            const opacityEnabled = d.checkedOpacityEnabled ?? false;
+            const opacity = d.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
+            applyCheckedRowOpacity(opacityEnabled, opacity);
+            initCheckedRowOpacityListener(opacityEnabled, opacity);
+        });
     }
     if (!('highlightColors' in changes || 'terms' in changes || 'enabled' in changes)) return;
     chrome.storage.sync.get(['terms', 'enabled', 'highlightColors'], applyHighlight);
