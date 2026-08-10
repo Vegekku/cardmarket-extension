@@ -1,7 +1,7 @@
 # Chrome Web Store — Ficha de la extensión
 
 ## Versión publicada
-v1.2.0
+v1.2.1
 
 ## Ficha de Play Store
 
