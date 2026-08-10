@@ -5,7 +5,7 @@
  */
 import previewHtml from './preview.html';
 import { loadMessages, applyMessages } from './i18n.js';
-import { DEFAULT_COLOR, DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED } from './defaults.js';
+import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED } from './defaults.js';
 
 /**
  * Convierte un color rgba a hex aproximado para el input[type=color].

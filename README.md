@@ -51,6 +51,7 @@ Los usuarios introducidos se guardan en `chrome.storage.sync`, vinculados al per
 cardmarket-extension/
 ├── src/
 │   ├── content.js         # Script inyectado: resalta usuarios en la página y persiste el idioma
+│   ├── defaults.js        # Constantes de valores por defecto compartidas entre módulos
 │   ├── i18n.js            # Traducciones de la UI (es, en, fr, de, it)
 │   ├── popup.html         # Popup del icono de la extensión
 │   ├── popup.js           # Lógica del popup
