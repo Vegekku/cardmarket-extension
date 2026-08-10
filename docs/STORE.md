@@ -1,7 +1,7 @@
 # Chrome Web Store — Ficha de la extensión
 
 ## Versión publicada
-v1.1.0
+v1.2.0
 
 ## Ficha de Play Store
 
@@ -19,13 +19,15 @@ Cardmarket Highlighter resalta visualmente los vendedores que más te interesan 
 Funcionalidades principales:
 
 • Introduce uno o varios nombres de usuario en el popup separados por espacio, salto de línea o coma.
-• Las filas de los vendedores coincidentes se resaltan en azul-cian en el listado de artículos.
+• Las filas de los vendedores coincidentes se resaltan en el listado de artículos.
 • Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por Cardmarket.
 • Toggle para activar o desactivar el resaltado sin borrar la lista de usuarios.
 • Botón Vaciar para eliminar todos los usuarios guardados de una vez.
 • Feedback visual en el popup al guardar o vaciar la lista de usuarios.
+• Página de opciones con selector de color de resaltado independiente para modo claro y oscuro, con previsualización en vivo.
+• Interfaz disponible en español, inglés, francés, alemán e italiano (se adapta automáticamente al idioma de Cardmarket).
 
-Compatibilidad: Chrome con Manifest V3. Funciona en las páginas de producto de Cardmarket (/Products/).
+Compatibilidad: Chrome con Manifest V3. Funciona en todas las páginas de Cardmarket.
 
 #### Categoría
 Herramientas
