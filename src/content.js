@@ -10,6 +10,31 @@ if (typeof __BUILD_TIME__ !== 'undefined') console.log(`[Cardmarket] build: ${__
 /** Color por defecto si no hay configuración guardada. */
 const DEFAULT_COLOR = 'rgba(0, 150, 200, 0.3)';
 
+/** Tamaño por defecto de los checkboxes en em. */
+const DEFAULT_CHECKBOX_SIZE = 1;
+
+/** @type {HTMLStyleElement|null} */
+let checkboxStyleEl = null;
+
+/**
+ * Inyecta o actualiza el CSS que controla el tamaño de los checkboxes del listado de pedido.
+ * Si el tamaño es el por defecto, elimina el estilo inyectado.
+ * @param {number} size - Tamaño en em
+ */
+function applyCheckboxSize(size) {
+    if (size === DEFAULT_CHECKBOX_SIZE) {
+        if (checkboxStyleEl) { checkboxStyleEl.remove(); checkboxStyleEl = null; }
+        return;
+    }
+    if (!checkboxStyleEl) {
+        checkboxStyleEl = document.createElement('style');
+        checkboxStyleEl.id = 'mkm-checkbox-size';
+        document.head.appendChild(checkboxStyleEl);
+    }
+    checkboxStyleEl.textContent =
+        `table.product-table .form-check-input { width: ${size}em !important; height: ${size}em !important; }`;
+}
+
 /**
  * Devuelve el color de resaltado según el modo claro/oscuro activo en Cardmarket.
  * @param {{ light: string, dark: string } | undefined} colors
@@ -87,16 +112,20 @@ function applyHighlight(data) {
 chrome.storage.local.set({ lang: document.documentElement.lang || 'es' });
 
 // Carga inicial desde storage
-chrome.storage.sync.get(['terms', 'enabled', 'highlightColors'], applyHighlight);
+chrome.storage.sync.get(['terms', 'enabled', 'highlightColors', 'checkboxSize'], data => {
+    applyHighlight(data);
+    applyCheckboxSize(data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
+});
 
 // Escucha mensajes del popup
 chrome.runtime.onMessage.addListener(function(message) {
     if (message.type === 'UPDATE_HIGHLIGHT') applyHighlight(message.data);
 });
 
-// Reaplica cuando cambia highlightColors, terms o enabled desde otra pestaña/opciones
+// Reaplica cuando cambia highlightColors, terms, enabled o checkboxSize desde otra pestaña/opciones
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'sync') return;
+    if ('checkboxSize' in changes) applyCheckboxSize(changes.checkboxSize.newValue ?? DEFAULT_CHECKBOX_SIZE);
     if (!('highlightColors' in changes || 'terms' in changes || 'enabled' in changes)) return;
     chrome.storage.sync.get(['terms', 'enabled', 'highlightColors'], applyHighlight);
 });

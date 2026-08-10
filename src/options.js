@@ -12,6 +12,9 @@ const DEFAULT_COLORS = {
     dark: 'rgba(0, 150, 200, 0.3)',
 };
 
+/** @type {number} */
+const DEFAULT_CHECKBOX_SIZE = 1;
+
 /**
  * Convierte un color rgba a hex aproximado para el input[type=color].
  * Ignora el canal alpha (no soportado por input[type=color]).
@@ -86,9 +89,13 @@ function init() {
     const darkInput = document.getElementById('colorDark');
     const saveBtn = document.getElementById('save');
     const resetBtn = document.getElementById('reset');
+    const checkboxSizeInput = document.getElementById('checkboxSize');
+    const checkboxSizeValue = document.getElementById('checkboxSizeValue');
 
     /** @type {{ light: string, dark: string }} */
     let savedColors = { ...DEFAULT_COLORS };
+    /** @type {number} */
+    let savedCheckboxSize = DEFAULT_CHECKBOX_SIZE;
 
     const defaultHexLight = rgbaToHex(DEFAULT_COLORS.light);
     const defaultHexDark = rgbaToHex(DEFAULT_COLORS.dark);
@@ -98,9 +105,11 @@ function init() {
      */
     function updateButtons() {
         const changed = lightInput.value !== rgbaToHex(savedColors.light)
-            || darkInput.value !== rgbaToHex(savedColors.dark);
+            || darkInput.value !== rgbaToHex(savedColors.dark)
+            || parseFloat(checkboxSizeInput.value) !== savedCheckboxSize;
         const isDefault = lightInput.value === defaultHexLight
-            && darkInput.value === defaultHexDark;
+            && darkInput.value === defaultHexDark
+            && parseFloat(checkboxSizeInput.value) === DEFAULT_CHECKBOX_SIZE;
         saveBtn.disabled = !changed;
         resetBtn.disabled = isDefault;
     }
@@ -113,17 +122,24 @@ function init() {
         darkRows.forEach(r => r.style.setProperty('--bs-table-bg', hexToRgba(darkInput.value)));
     }
 
-    chrome.storage.sync.get('highlightColors', data => {
+    chrome.storage.sync.get(['highlightColors', 'checkboxSize'], data => {
         const colors = { ...DEFAULT_COLORS, ...(data.highlightColors || {}) };
         savedColors = { ...colors };
         lightInput.value = rgbaToHex(colors.light);
         darkInput.value = rgbaToHex(colors.dark);
+        savedCheckboxSize = data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE;
+        checkboxSizeInput.value = savedCheckboxSize;
+        checkboxSizeValue.textContent = `${savedCheckboxSize}em`;
         updatePreview();
         updateButtons();
     });
 
     lightInput.addEventListener('input', () => { updatePreview(); updateButtons(); });
     darkInput.addEventListener('input', () => { updatePreview(); updateButtons(); });
+    checkboxSizeInput.addEventListener('input', () => {
+        checkboxSizeValue.textContent = `${checkboxSizeInput.value}em`;
+        updateButtons();
+    });
 
     loadMessages().then(m => {
         document.title = m.optionsTitle;
@@ -136,18 +152,23 @@ function init() {
                 light: hexToRgba(lightInput.value),
                 dark: hexToRgba(darkInput.value),
             };
-            chrome.storage.sync.set({ highlightColors: colors }, () => {
+            const checkboxSize = parseFloat(checkboxSizeInput.value);
+            chrome.storage.sync.set({ highlightColors: colors, checkboxSize }, () => {
                 savedColors = { ...colors };
+                savedCheckboxSize = checkboxSize;
                 updateButtons();
                 showStatus(`${m.saved} ✓`);
             });
         });
 
         resetBtn.addEventListener('click', () => {
-            chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS }, () => {
+            chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS, checkboxSize: DEFAULT_CHECKBOX_SIZE }, () => {
                 savedColors = { ...DEFAULT_COLORS };
+                savedCheckboxSize = DEFAULT_CHECKBOX_SIZE;
                 lightInput.value = defaultHexLight;
                 darkInput.value = defaultHexDark;
+                checkboxSizeInput.value = DEFAULT_CHECKBOX_SIZE;
+                checkboxSizeValue.textContent = `${DEFAULT_CHECKBOX_SIZE}em`;
                 updatePreview();
                 updateButtons();
                 showStatus(`${m.resetStatus} ✓`);
