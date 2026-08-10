@@ -113,7 +113,7 @@ function applyHighlight(data) {
 
 /**
  * Aplica la opacidad configurada a las filas cuyo checkbox esté marcado.
- * Instala un listener delegado en el documento para detectar cambios futuros.
+ * @param {boolean} enabled
  * @param {number} opacity
  */
 function applyCheckedRowOpacity(enabled, opacity) {

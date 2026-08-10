@@ -6,7 +6,7 @@
 |-----------|--------|
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
-| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
+| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
 | 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.12](#412-visualización-de-imágenes-de-cartas-en-listados), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor) |
 | 5 — Expansión | |
 
@@ -42,15 +42,6 @@ Pendiente de analizar:
 Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`.
-
-### 3.7 Tamaño configurable del checkbox en el listado de pedido
-
-Los checkboxes nativos de Cardmarket en el listado de cartas de un pedido son demasiado pequeños. Agrandarlos mediante CSS inyectado y exponer un ajuste de tamaño configurable por el usuario.
-
-- **3.7.1** Tamaño configurable del checkbox (implementado).
-- **3.7.2** Opacidad configurable de la fila al marcar el checkbox: al marcar un checkbox de pedido, reducir la opacidad de su fila (`opacity: 0.3` por defecto) para indicar visualmente que ya está procesada. El valor de opacidad es configurable por el usuario desde la página de opciones.
-
-Ficheros afectados: `content.js`, `options.html`, `options.js`, `src/i18n.js`.
 
 ### 3.8 Accesibilidad WCAG
 
