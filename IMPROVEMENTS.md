@@ -7,7 +7,7 @@
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
 | 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
-| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.12](#412-visualización-de-imágenes-de-cartas-en-listados), [4.13](#413-página-web-pública-de-la-extensión) |
+| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.12](#412-visualización-de-imágenes-de-cartas-en-listados), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor) |
 | 5 — Expansión | |
 
 ---
@@ -199,21 +199,40 @@ Pendiente de analizar:
 
 Ficheros afectados: `manifest.json`, `build.js`, `package.json`, `src/background.js`, `src/content.js`, `src/popup.js`.
 
+### 4.12 Visualización de imágenes de cartas en listados
+
+Mostrar las imágenes de las cartas directamente en la fila del listado, sin necesidad de hover. El tooltip de hover existente se mantiene para visualizar la imagen a mayor tamaño.
+
+Implementación: el `<img>` se extrae del atributo `data-bs-title` del `<span class="thumbnail-icon">` y se inyecta dentro del mismo `<span>`, eliminando el `<span class="fonticon-camera">`. El tooltip de Bootstrap sigue funcionando sobre el `<span>` padre.
+
+Pendiente de decidir:
+- Tamaño del thumbnail inline: tamaño fijo vs. configurable por el usuario.
+- Lazy loading para no degradar el rendimiento con listados largos.
+- En qué páginas aplicar la mejora. Confirmadas con icono de cámara:
+  - Listado de pedido (`/Orders/`)
+  - Artículos de un vendedor (`/Users/{seller}/Offers/Singles`)
+  - Listado de vendedores de una carta (`/Products/Singles/{expansion}/{card}`)
+  - Posiblemente otras — requiere inspección del DOM en cada URL.
+- Si la activación es global o configurable por tipo de página.
+
+Se expone en la página de opciones como opción activar/desactivar (y posiblemente tamaño configurable).
+
+Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`, `src/i18n.js`.
+
 ### 4.13 Página web pública de la extensión
 
 Crear un directorio `/pages` con `index.html` y mover `privacy.html` desde `docs/`. Configurar GitHub Pages apuntando a `/pages` como raíz. La página puede incluir descripción de la extensión, capturas y enlace a la Chrome Web Store.
 
 Ficheros afectados: `pages/index.html`, `pages/privacy.html` (movido desde `docs/`), `manifest.json` (actualizar URL de política de privacidad si aplica).
 
-### 4.12 Visualización de imágenes de cartas en listados
+### 4.14 Selector de vista lista/cuadrícula en artículos de vendedor
 
-Actualmente las imágenes de las cartas en los listados de artículos solo se muestran al pasar el ratón por encima del icono de cámara. Añadir la opción de mostrar las imágenes directamente en la fila, sin necesidad de hover.
+En la página de artículos de un vendedor (`/Users/{seller}/Offers/Singles`) Cardmarket solo ofrece vista en lista, sin los botones de cambio de vista lista/cuadrícula que sí aparecen en otras páginas. Inyectar esos mismos botones para permitir cambiar entre ambas vistas.
 
-Pendiente de decidir:
-- Tamaño de la imagen inline (thumbnail pequeño en la fila vs. columna dedicada).
-- Si aplica solo al listado de vendedores de una carta o también a otros listados con icono de cámara.
-- Impacto en el rendimiento al cargar muchas imágenes simultáneamente (lazy loading).
+Pendiente de analizar:
+- Estructura del DOM de los botones de vista en las páginas donde sí existen, para replicarlos fielmente.
+- Cómo Cardmarket gestiona el cambio de vista (CSS, clases, JS nativo) para reproducir el comportamiento.
+- Si con la mejora 4.12 (imagen inline) la vista en lista ya es suficientemente visual y esta mejora pierde relevancia.
+- URL pattern exacto de la página de artículos de vendedor para restringir la inyección.
 
-Se expone en la página de opciones ([3.5](#35-página-de-opciones)) como opción configurable (activar/desactivar).
-
-Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`.
+Ficheros afectados: `src/content.js`.
