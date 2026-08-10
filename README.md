@@ -12,6 +12,7 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - El toggle **Activar resaltado** permite activar o desactivar el resaltado sin borrar los usuarios.
 - Al guardar o vaciar la lista se muestra un mensaje de confirmación temporal en el popup.
 - El color de resaltado se actualiza en tiempo real al cambiar el tema claro/oscuro de Cardmarket.
+- La interfaz del popup y la página de opciones se muestran en el idioma de Cardmarket (español, inglés, francés, alemán e italiano).
 
 ### Página de opciones
 - Accesible desde `chrome://extensions` → botón **Detalles** → **Opciones de la extensión**.
@@ -47,8 +48,8 @@ Los usuarios introducidos se guardan en `chrome.storage.sync`, vinculados al per
 ```
 cardmarket-extension/
 ├── src/
-│   ├── background.js      # Service worker
-│   ├── content.js         # Script inyectado: resalta usuarios en la página
+│   ├── content.js         # Script inyectado: resalta usuarios en la página y persiste el idioma
+│   ├── i18n.js            # Traducciones de la UI (es, en, fr, de, it)
 │   ├── popup.html         # Popup del icono de la extensión
 │   ├── popup.js           # Lógica del popup
 │   ├── options.html       # Página de opciones de la extensión
@@ -78,4 +79,4 @@ cardmarket-extension/
 ## Compatibilidad
 
 - Chrome con Manifest V3.
-- Funciona en `*://*.cardmarket.com/*/Products/*`.
+- Funciona en `*://*.cardmarket.com/*`.
