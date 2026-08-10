@@ -5,7 +5,7 @@
 | Bloque | Puntos |
 |--------|--------|
 | 1 — Bugs críticos | |
-| 2 — Calidad de código | [2.1](#21-internacionalización-i18n) |
+| 2 — Calidad de código | |
 | 3 — UX / Popup | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.7](#37-tamaño-configurable-del-checkbox-en-el-listado-de-pedido), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
 | 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.12](#412-visualización-de-imágenes-de-cartas-en-listados) |
 
@@ -25,14 +25,6 @@
 ---
 
 ## 2. Calidad de código
-
-### 2.1 Internacionalización (i18n)
-
-Cardmarket está disponible en 5 idiomas: español, inglés, francés, alemán e italiano. Al cambiar de idioma la página se recarga y el atributo `lang` de `<html>` cambia. Adaptar la extensión para que su UI (popup, opciones) se muestre en el mismo idioma que el usuario tiene seleccionado en Cardmarket.
-
-Mecanismo: `content.js` lee `document.documentElement.lang` en cada carga y lo persiste en `chrome.storage.local`. El popup y la página de opciones leen ese valor al abrirse y aplican los textos correspondientes.
-
-Ficheros afectados: `src/content.js`, `src/popup.html`, `src/popup.js`, `src/options.html`, `src/options.js`.
 
 ---
 

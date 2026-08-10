@@ -4,6 +4,7 @@
  * de color de resaltado por modo claro/oscuro.
  */
 import previewHtml from './preview.html';
+import { loadMessages, applyMessages } from './i18n.js';
 
 /** @type {{ light: string, dark: string }} */
 const DEFAULT_COLORS = {
@@ -78,9 +79,6 @@ function initPreview() {
 }
 
 function init() {
-    document.getElementById('about-version').textContent =
-        `Versión ${chrome.runtime.getManifest().version}`;
-
     initTabs();
 
     const { lightRows, darkRows } = initPreview();
@@ -127,26 +125,33 @@ function init() {
     lightInput.addEventListener('input', () => { updatePreview(); updateButtons(); });
     darkInput.addEventListener('input', () => { updatePreview(); updateButtons(); });
 
-    saveBtn.addEventListener('click', () => {
-        const colors = {
-            light: hexToRgba(lightInput.value),
-            dark: hexToRgba(darkInput.value),
-        };
-        chrome.storage.sync.set({ highlightColors: colors }, () => {
-            savedColors = { ...colors };
-            updateButtons();
-            showStatus('Guardado ✓');
-        });
-    });
+    loadMessages().then(m => {
+        document.title = m.optionsTitle;
+        applyMessages(m);
+        document.getElementById('about-version').textContent =
+            `${m.versionPrefix} ${chrome.runtime.getManifest().version}`;
 
-    resetBtn.addEventListener('click', () => {
-        chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS }, () => {
-            savedColors = { ...DEFAULT_COLORS };
-            lightInput.value = defaultHexLight;
-            darkInput.value = defaultHexDark;
-            updatePreview();
-            updateButtons();
-            showStatus('Restablecido ✓');
+        saveBtn.addEventListener('click', () => {
+            const colors = {
+                light: hexToRgba(lightInput.value),
+                dark: hexToRgba(darkInput.value),
+            };
+            chrome.storage.sync.set({ highlightColors: colors }, () => {
+                savedColors = { ...colors };
+                updateButtons();
+                showStatus(`${m.saved} ✓`);
+            });
+        });
+
+        resetBtn.addEventListener('click', () => {
+            chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS }, () => {
+                savedColors = { ...DEFAULT_COLORS };
+                lightInput.value = defaultHexLight;
+                darkInput.value = defaultHexDark;
+                updatePreview();
+                updateButtons();
+                showStatus(`${m.resetStatus} ✓`);
+            });
         });
     });
 }

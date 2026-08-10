@@ -8,15 +8,15 @@
 </head>
 <body>
     <span class="save-status" id="saveStatus"></span>
-    <h3>Resaltar usuarios</h3>
-    <textarea id="terms" placeholder="Introduce usuarios separados por espacio o salto de línea..."></textarea>
+    <h3 id="popupHeading" data-i18n="popupHeading"></h3>
+    <textarea id="terms" data-i18n-placeholder="popupPlaceholder"></textarea>
     <div class="bottom-row">
-        <label class="toggle-label" title="Activa o desactiva el resaltado de usuarios en la página sin necesidad de modificar o vaciar tu lista de usuarios.">
+        <label class="toggle-label" id="toggleLabel" data-i18n-title="toggleTitle">
             <input type="checkbox" id="enabledToggle">
             <span class="toggle-track"><span class="toggle-thumb"></span></span>
-            <span>Activar resaltado</span>
+            <span id="toggleLabelText" data-i18n="toggleLabel"></span>
         </label>
-        <button id="clearBtn" class="btn-destructive">Vaciar</button>
+        <button id="clearBtn" class="btn-destructive" data-i18n="clearBtn"></button>
     </div>
     <script src="popup.js"></script>
 </body>
