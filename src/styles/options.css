@@ -48,7 +48,20 @@ button { border-radius: 4px; font-size: 14px; }
 
 .range-control { display: flex; align-items: center; gap: 8px; }
 .range-control input[type=range] { width: 120px; cursor: pointer; }
-.range-control span { font-size: 13px; color: #555; min-width: 32px; text-align: right; }
+#checkboxSizePreview {
+    cursor: default;
+    flex-shrink: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border: 1px solid #dee2e6;
+    vertical-align: top;
+    border-radius: .25em;
+}
 
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }

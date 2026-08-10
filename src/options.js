@@ -90,7 +90,7 @@ function init() {
     const saveBtn = document.getElementById('save');
     const resetBtn = document.getElementById('reset');
     const checkboxSizeInput = document.getElementById('checkboxSize');
-    const checkboxSizeValue = document.getElementById('checkboxSizeValue');
+    const checkboxSizePreview = document.getElementById('checkboxSizePreview');
 
     /** @type {{ light: string, dark: string }} */
     let savedColors = { ...DEFAULT_COLORS };
@@ -129,7 +129,8 @@ function init() {
         darkInput.value = rgbaToHex(colors.dark);
         savedCheckboxSize = data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE;
         checkboxSizeInput.value = savedCheckboxSize;
-        checkboxSizeValue.textContent = `${savedCheckboxSize}em`;
+        checkboxSizePreview.style.width = `${savedCheckboxSize}em`;
+        checkboxSizePreview.style.height = `${savedCheckboxSize}em`;
         updatePreview();
         updateButtons();
     });
@@ -137,7 +138,8 @@ function init() {
     lightInput.addEventListener('input', () => { updatePreview(); updateButtons(); });
     darkInput.addEventListener('input', () => { updatePreview(); updateButtons(); });
     checkboxSizeInput.addEventListener('input', () => {
-        checkboxSizeValue.textContent = `${checkboxSizeInput.value}em`;
+        checkboxSizePreview.style.width = `${checkboxSizeInput.value}em`;
+        checkboxSizePreview.style.height = `${checkboxSizeInput.value}em`;
         updateButtons();
     });
 
@@ -168,7 +170,8 @@ function init() {
                 lightInput.value = defaultHexLight;
                 darkInput.value = defaultHexDark;
                 checkboxSizeInput.value = DEFAULT_CHECKBOX_SIZE;
-                checkboxSizeValue.textContent = `${DEFAULT_CHECKBOX_SIZE}em`;
+                checkboxSizePreview.style.width = `${DEFAULT_CHECKBOX_SIZE}em`;
+                checkboxSizePreview.style.height = `${DEFAULT_CHECKBOX_SIZE}em`;
                 updatePreview();
                 updateButtons();
                 showStatus(`${m.resetStatus} ✓`);
