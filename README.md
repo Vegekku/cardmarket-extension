@@ -19,6 +19,8 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Permite configurar el color de resaltado por separado para modo claro y modo oscuro.
 - Incluye previsualización en vivo del color seleccionado antes de guardar.
 - Los cambios de color se aplican en todas las pestañas abiertas de Cardmarket sin recargar.
+- Permite ajustar el tamaño de los checkboxes en el listado de pedido (rango de 1em a 3em, con previsualización en vivo del checkbox).
+- Permite activar el atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
 
 ## Instalación
 
@@ -49,6 +51,7 @@ Los usuarios introducidos se guardan en `chrome.storage.sync`, vinculados al per
 cardmarket-extension/
 ├── src/
 │   ├── content.js         # Script inyectado: resalta usuarios en la página y persiste el idioma
+│   ├── defaults.js        # Constantes de valores por defecto compartidas entre módulos
 │   ├── i18n.js            # Traducciones de la UI (es, en, fr, de, it)
 │   ├── popup.html         # Popup del icono de la extensión
 │   ├── popup.js           # Lógica del popup
