@@ -5,8 +5,8 @@
 | Prioridad | Puntos |
 |-----------|--------|
 | 1 — Bugs críticos | |
-| 2 — Infraestructura y calidad | |
-| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket), [3.10](#310-preview-de-pedido-en-opciones) |
+| 2 — Infraestructura y calidad | [2.1](#21-refactorización-de-optionsjs-y-contentjs) |
+| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
 | 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket) |
 | 5 — Expansión | |
 
@@ -26,6 +26,22 @@
 ---
 
 ## 2. Infraestructura y calidad
+
+### 2.1 Refactorización de options.js y content.js
+
+Ambos ficheros han crecido orgánicamente y acumulan problemas de calidad que conviene abordar antes de añadir más funcionalidad.
+
+**`options.js`**:
+- La función `init()` es un monolito de ~150 líneas con responsabilidades mezcladas: carga de storage, gestión de estado, event listeners y lógica de UI.
+- El estado mutable (`savedColors`, `savedCheckboxSize`, etc.) está disperso como variables sueltas en el scope de `init()`.
+- `updateButtons()` duplica lógica de comparación que ya existe en el handler de `resetBtn`.
+- `initOrderPreview` recibe controles como parámetro pero `init()` también los referencia directamente — acoplamiento bidireccional innecesario.
+
+**`content.js`**:
+- `initCheckedRowOpacityListener` usa `document._mkmCheckboxHandler` como propiedad del DOM para guardar estado — patrón frágil.
+- La lógica del `_earlyObserver` y `pendingInlineImages` está entrelazada y es difícil de seguir.
+
+Ficheros afectados: `src/options.js`, `src/content.js`.
 
 ---
 
@@ -76,18 +92,6 @@ Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`.
 
-### 3.10 Preview de pedido en opciones
-
-Añadir una previsualización de la fila de pedido en la página de opciones para que el usuario pueda ver el efecto de las configuraciones de la sección Pedido (tamaño de checkboxes, opacidad de filas marcadas, imágenes inline) antes de guardar. La preview se alterna entre modo claro y oscuro mediante un toggle, sin necesidad de mostrar ambos simultáneamente.
-
-- Algunas filas de la preview se mostrarán con el checkbox marcado por defecto para que el efecto de opacidad sea visible sin interacción.
-- El usuario puede interactuar con los checkboxes de la preview (marcar/desmarcar), pero su estado no se persiste.
-
-Ficheros afectados: `src/options.html`, `src/options.js`, `src/styles/options.css`.
-
----
-
-## 4. Funcionalidad nueva
 
 ### 4.1 Colores personalizables por término
 
