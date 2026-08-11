@@ -107,8 +107,6 @@ function initOrderPreview(controls) {
     content.innerHTML = orderPreviewHtml;
     wrap.appendChild(content);
 
-    const rows = wrap.querySelectorAll('tbody tr');
-
     /** Aplica el tamaño de checkbox a la preview */
     function applyCheckboxSizePreview() {
         applyCheckboxSize(parseFloat(controls.checkboxSizeInput.value), wrap);
