@@ -30,13 +30,19 @@ function resolveColor(colors) {
 
 /** @type {MutationObserver|null} */
 let activeObserver = null;
-/** @type {{ enabled: boolean, height: number } | null} */
-let pendingInlineImages = null;
 
-// Observer global instalado inmediatamente en páginas de pedido, antes del callback del storage
+/**
+ * Estado de imágenes inline. Se inicializa desde storage y lo usa _earlyObserver
+ * para procesar nodos añadidos al DOM antes de que el callback de storage haya terminado.
+ * @type {{ enabled: boolean, height: number } | null}
+ */
+let _inlineImagesState = null;
+
+// Instalado inmediatamente en páginas de pedido para capturar nodos inyectados por Ajax
+// antes de que el callback de storage.sync.get haya resuelto.
 const _earlyObserver = new MutationObserver(() => {
-    if (pendingInlineImages?.enabled) {
-        document.querySelectorAll('span.thumbnail-icon').forEach(span => injectThumbnail(span, pendingInlineImages.height));
+    if (_inlineImagesState?.enabled) {
+        document.querySelectorAll('span.thumbnail-icon').forEach(span => injectThumbnail(span, _inlineImagesState.height));
     }
 });
 if (location.pathname.includes('/Orders/')) {
@@ -49,12 +55,9 @@ if (location.pathname.includes('/Orders/')) {
  * @param {number} height
  */
 function applyInlineImagesPage(enabled, height) {
-    pendingInlineImages = { enabled, height };
+    _inlineImagesState = enabled ? { enabled, height } : null;
     if (!location.pathname.includes('/Orders/')) return;
-    if (!enabled) {
-        pendingInlineImages = null;
-        _earlyObserver.disconnect();
-    }
+    if (!enabled) _earlyObserver.disconnect();
     applyInlineImages(enabled, height);
 }
 
@@ -119,20 +122,23 @@ function applyHighlight(data) {
     }
 }
 
+/** @type {((e: Event) => void) | null} */
+let _checkboxHandler = null;
+
 /**
  * Instala (o reinstala) el listener delegado para cambios de checkbox en tablas de pedido.
  * @param {boolean} enabled
  * @param {number} opacity
  */
 function initCheckedRowOpacityListener(enabled, opacity) {
-    document.removeEventListener('change', document._mkmCheckboxHandler || null);
-    document._mkmCheckboxHandler = e => {
+    if (_checkboxHandler) document.removeEventListener('change', _checkboxHandler);
+    _checkboxHandler = e => {
         const cb = e.target;
         if (cb.type !== 'checkbox' || !cb.classList.contains('form-check-input')) return;
         const tr = cb.closest('tr');
         if (tr) tr.style.opacity = (enabled && cb.checked) ? opacity : '';
     };
-    document.addEventListener('change', document._mkmCheckboxHandler);
+    document.addEventListener('change', _checkboxHandler);
 }
 chrome.storage.local.set({ lang: document.documentElement.lang || 'es' });
 
