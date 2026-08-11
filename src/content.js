@@ -47,13 +47,15 @@ let activeObserver = null;
 /** @type {{ enabled: boolean, height: number } | null} */
 let pendingInlineImages = null;
 
-// Observer global instalado inmediatamente, antes del callback del storage
+// Observer global instalado inmediatamente en páginas de pedido, antes del callback del storage
 const _earlyObserver = new MutationObserver(() => {
     if (pendingInlineImages?.enabled) {
         document.querySelectorAll('span.thumbnail-icon').forEach(span => injectThumbnail(span, pendingInlineImages.height));
     }
 });
-_earlyObserver.observe(document.documentElement, { childList: true, subtree: true });
+if (location.pathname.includes('/Orders/')) {
+    _earlyObserver.observe(document.documentElement, { childList: true, subtree: true });
+}
 
 /**
  * Extrae el src del img contenido en el atributo data-bs-title de un span.thumbnail-icon.
@@ -96,6 +98,7 @@ function applyInlineImages(enabled, height) {
     if (!location.pathname.includes('/Orders/')) return;
     if (!enabled) {
         pendingInlineImages = null;
+        _earlyObserver.disconnect();
         document.querySelectorAll('span.thumbnail-icon[data-mkm-inline]').forEach(span => {
             span.querySelector('img[loading="lazy"]')?.remove();
             delete span.dataset.mkmInline;
