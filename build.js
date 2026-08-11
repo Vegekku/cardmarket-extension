@@ -24,9 +24,10 @@ const logPlugin = { name: 'log', setup(build) { build.onEnd(() => console.log(`[
 
 const ctx = await esbuild.context({
     entryPoints: {
-        content: 'src/content.js',
-        popup:   'src/popup.js',
-        options: 'src/options.js',
+        'content-highlight': 'src/content-highlight.js',
+        'content-order':     'src/content-order.js',
+        popup:               'src/popup.js',
+        options:             'src/options.js',
     },
     bundle: true,
     minify: !dev,

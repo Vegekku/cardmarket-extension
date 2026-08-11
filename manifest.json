@@ -27,12 +27,12 @@
     },
     "content_scripts": [
         {
-            "matches": [
-                "*://*.cardmarket.com/*"
-            ],
-            "js": [
-                "content.js"
-            ]
+            "matches": ["*://*.cardmarket.com/*/Products/*"],
+            "js": ["content-highlight.js"]
+        },
+        {
+            "matches": ["*://*.cardmarket.com/*/Orders/*"],
+            "js": ["content-order.js"]
         }
     ]
 }
