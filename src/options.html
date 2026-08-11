@@ -34,7 +34,7 @@
         </div>
         <div id="previewLight" class="preview-wrap"></div>
 
-        <div class="row">
+        <div class="row section-start">
           <div>
             <label data-i18n="labelDark"></label>
             <div class="hint" data-i18n="hintDark"></div>
@@ -55,7 +55,7 @@
           </div>
         </div>
 
-        <div class="row">
+        <div class="row section-start">
           <div>
             <label data-i18n="labelCheckedOpacityEnabled"></label>
             <div class="hint" data-i18n="hintCheckedOpacity"></div>
@@ -72,6 +72,27 @@
           <div class="range-control">
             <input type="range" id="checkedOpacity" min="0" max="1" step="0.05">
             <span id="checkedOpacityValue"></span>
+          </div>
+        </div>
+
+        <div class="row section-start">
+          <div>
+            <label data-i18n="labelInlineImages"></label>
+            <div class="hint" data-i18n="hintInlineImages"></div>
+          </div>
+          <label class="toggle-label toggle-right">
+            <input type="checkbox" id="inlineImagesEnabled">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </label>
+        </div>
+        <div class="row" id="inlineImageHeightRow" hidden>
+          <div>
+            <label for="inlineImageHeight" data-i18n="labelInlineImageHeight"></label>
+            <div class="hint" data-i18n="hintInlineImageHeight"></div>
+          </div>
+          <div class="range-control">
+            <input type="range" id="inlineImageHeight" min="24" max="96" step="8">
+            <span id="inlineImageHeightValue"></span>
           </div>
         </div>
 

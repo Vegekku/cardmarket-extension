@@ -5,7 +5,7 @@
  */
 import previewHtml from './preview.html';
 import { loadMessages, applyMessages } from './i18n.js';
-import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED } from './defaults.js';
+import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from './defaults.js';
 
 /**
  * Convierte un color rgba a hex aproximado para el input[type=color].
@@ -87,6 +87,10 @@ function init() {
     const checkedOpacityValue = document.getElementById('checkedOpacityValue');
     const checkedOpacityEnabled = document.getElementById('checkedOpacityEnabled');
     const checkedOpacityRow = document.getElementById('checkedOpacityRow');
+    const inlineImagesEnabled = document.getElementById('inlineImagesEnabled');
+    const inlineImageHeightInput = document.getElementById('inlineImageHeight');
+    const inlineImageHeightValue = document.getElementById('inlineImageHeightValue');
+    const inlineImageHeightRow = document.getElementById('inlineImageHeightRow');
 
     /** @type {{ light: string, dark: string }} */
     let savedColors = { ...DEFAULT_COLORS };
@@ -96,6 +100,10 @@ function init() {
     let savedCheckedOpacity = DEFAULT_CHECKED_OPACITY;
     /** @type {boolean} */
     let savedCheckedOpacityEnabled = DEFAULT_CHECKED_OPACITY_ENABLED;
+    /** @type {boolean} */
+    let savedInlineImagesEnabled = DEFAULT_INLINE_IMAGES_ENABLED;
+    /** @type {number} */
+    let savedInlineImageHeight = DEFAULT_INLINE_IMAGE_HEIGHT;
 
     const defaultHexLight = rgbaToHex(DEFAULT_COLORS.light);
     const defaultHexDark = rgbaToHex(DEFAULT_COLORS.dark);
@@ -108,12 +116,16 @@ function init() {
             || darkInput.value !== rgbaToHex(savedColors.dark)
             || parseFloat(checkboxSizeInput.value) !== savedCheckboxSize
             || checkedOpacityEnabled.checked !== savedCheckedOpacityEnabled
-            || (checkedOpacityEnabled.checked && parseFloat(checkedOpacityInput.value) !== savedCheckedOpacity);
+            || (checkedOpacityEnabled.checked && parseFloat(checkedOpacityInput.value) !== savedCheckedOpacity)
+            || inlineImagesEnabled.checked !== savedInlineImagesEnabled
+            || (inlineImagesEnabled.checked && parseInt(inlineImageHeightInput.value) !== savedInlineImageHeight);
         const isDefault = lightInput.value === defaultHexLight
             && darkInput.value === defaultHexDark
             && parseFloat(checkboxSizeInput.value) === DEFAULT_CHECKBOX_SIZE
             && checkedOpacityEnabled.checked === DEFAULT_CHECKED_OPACITY_ENABLED
-            && parseFloat(checkedOpacityInput.value) === DEFAULT_CHECKED_OPACITY;
+            && parseFloat(checkedOpacityInput.value) === DEFAULT_CHECKED_OPACITY
+            && inlineImagesEnabled.checked === DEFAULT_INLINE_IMAGES_ENABLED
+            && parseInt(inlineImageHeightInput.value) === DEFAULT_INLINE_IMAGE_HEIGHT;
         saveBtn.disabled = !changed;
         resetBtn.disabled = isDefault;
     }
@@ -126,7 +138,7 @@ function init() {
         darkRows.forEach(r => r.style.setProperty('--bs-table-bg', hexToRgba(darkInput.value)));
     }
 
-    chrome.storage.sync.get(['highlightColors', 'checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled'], data => {
+    chrome.storage.sync.get(['highlightColors', 'checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight'], data => {
         const colors = { ...DEFAULT_COLORS, ...(data.highlightColors || {}) };
         savedColors = { ...colors };
         lightInput.value = rgbaToHex(colors.light);
@@ -141,6 +153,12 @@ function init() {
         savedCheckedOpacityEnabled = data.checkedOpacityEnabled ?? DEFAULT_CHECKED_OPACITY_ENABLED;
         checkedOpacityEnabled.checked = savedCheckedOpacityEnabled;
         checkedOpacityRow.hidden = !savedCheckedOpacityEnabled;
+        savedInlineImagesEnabled = data.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED;
+        inlineImagesEnabled.checked = savedInlineImagesEnabled;
+        savedInlineImageHeight = data.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT;
+        inlineImageHeightInput.value = savedInlineImageHeight;
+        inlineImageHeightValue.textContent = `${savedInlineImageHeight}px`;
+        inlineImageHeightRow.hidden = !savedInlineImagesEnabled;
         updatePreview();
         updateButtons();
     });
@@ -160,6 +178,14 @@ function init() {
         checkedOpacityValue.textContent = checkedOpacityInput.value;
         updateButtons();
     });
+    inlineImagesEnabled.addEventListener('change', () => {
+        inlineImageHeightRow.hidden = !inlineImagesEnabled.checked;
+        updateButtons();
+    });
+    inlineImageHeightInput.addEventListener('input', () => {
+        inlineImageHeightValue.textContent = `${inlineImageHeightInput.value}px`;
+        updateButtons();
+    });
 
     loadMessages().then(m => {
         document.title = m.optionsTitle;
@@ -175,22 +201,28 @@ function init() {
             const checkboxSize = parseFloat(checkboxSizeInput.value);
             const checkedOpacity = parseFloat(checkedOpacityInput.value);
             const checkedOpacityEnabledVal = checkedOpacityEnabled.checked;
-            chrome.storage.sync.set({ highlightColors: colors, checkboxSize, checkedOpacity, checkedOpacityEnabled: checkedOpacityEnabledVal }, () => {
+            const inlineImagesEnabledVal = inlineImagesEnabled.checked;
+            const inlineImageHeight = parseInt(inlineImageHeightInput.value);
+            chrome.storage.sync.set({ highlightColors: colors, checkboxSize, checkedOpacity, checkedOpacityEnabled: checkedOpacityEnabledVal, inlineImagesEnabled: inlineImagesEnabledVal, inlineImageHeight }, () => {
                 savedColors = { ...colors };
                 savedCheckboxSize = checkboxSize;
                 savedCheckedOpacity = checkedOpacity;
                 savedCheckedOpacityEnabled = checkedOpacityEnabledVal;
+                savedInlineImagesEnabled = inlineImagesEnabledVal;
+                savedInlineImageHeight = inlineImageHeight;
                 updateButtons();
                 showStatus(`${m.saved} ✓`);
             });
         });
 
         resetBtn.addEventListener('click', () => {
-            chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS, checkboxSize: DEFAULT_CHECKBOX_SIZE, checkedOpacity: DEFAULT_CHECKED_OPACITY, checkedOpacityEnabled: DEFAULT_CHECKED_OPACITY_ENABLED }, () => {
+            chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS, checkboxSize: DEFAULT_CHECKBOX_SIZE, checkedOpacity: DEFAULT_CHECKED_OPACITY, checkedOpacityEnabled: DEFAULT_CHECKED_OPACITY_ENABLED, inlineImagesEnabled: DEFAULT_INLINE_IMAGES_ENABLED, inlineImageHeight: DEFAULT_INLINE_IMAGE_HEIGHT }, () => {
                 savedColors = { ...DEFAULT_COLORS };
                 savedCheckboxSize = DEFAULT_CHECKBOX_SIZE;
                 savedCheckedOpacity = DEFAULT_CHECKED_OPACITY;
                 savedCheckedOpacityEnabled = DEFAULT_CHECKED_OPACITY_ENABLED;
+                savedInlineImagesEnabled = DEFAULT_INLINE_IMAGES_ENABLED;
+                savedInlineImageHeight = DEFAULT_INLINE_IMAGE_HEIGHT;
                 lightInput.value = defaultHexLight;
                 darkInput.value = defaultHexDark;
                 checkboxSizeInput.value = DEFAULT_CHECKBOX_SIZE;
@@ -200,6 +232,10 @@ function init() {
                 checkedOpacityValue.textContent = DEFAULT_CHECKED_OPACITY;
                 checkedOpacityEnabled.checked = DEFAULT_CHECKED_OPACITY_ENABLED;
                 checkedOpacityRow.hidden = !DEFAULT_CHECKED_OPACITY_ENABLED;
+                inlineImagesEnabled.checked = DEFAULT_INLINE_IMAGES_ENABLED;
+                inlineImageHeightInput.value = DEFAULT_INLINE_IMAGE_HEIGHT;
+                inlineImageHeightValue.textContent = `${DEFAULT_INLINE_IMAGE_HEIGHT}px`;
+                inlineImageHeightRow.hidden = !DEFAULT_INLINE_IMAGES_ENABLED;
                 updatePreview();
                 updateButtons();
                 showStatus(`${m.resetStatus} ✓`);
