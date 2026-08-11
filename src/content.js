@@ -61,7 +61,6 @@ function applyInlineImagesPage(enabled, height) {
     applyInlineImages(enabled, height);
 }
 
-
 /**
  * Elimina el resaltado de todas las filas previamente marcadas.
  */
@@ -158,25 +157,26 @@ chrome.runtime.onMessage.addListener(function(message) {
     if (message.type === 'UPDATE_HIGHLIGHT') applyHighlight(message.data);
 });
 
-// Reaplica cuando cambia highlightColors, terms, enabled, checkboxSize o checkedOpacity desde otra pestaña/opciones
+// Reaplica cuando cambia cualquier preferencia desde otra pestaña/opciones
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'sync') return;
-    if ('inlineImagesEnabled' in changes || 'inlineImageHeight' in changes) {
-        chrome.storage.sync.get(['inlineImagesEnabled', 'inlineImageHeight'], d => {
-            applyInlineImagesPage(d.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED, d.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT);
-        });
-    }
-    if ('checkboxSize' in changes) applyCheckboxSize(changes.checkboxSize.newValue ?? DEFAULT_CHECKBOX_SIZE);
-    if ('checkedOpacity' in changes || 'checkedOpacityEnabled' in changes) {
-        chrome.storage.sync.get(['checkedOpacity', 'checkedOpacityEnabled'], d => {
+    const keys = Object.keys(changes);
+    const needsHighlight = keys.some(k => ['highlightColors', 'terms', 'enabled'].includes(k));
+    const needsOpacity = keys.some(k => ['checkedOpacity', 'checkedOpacityEnabled'].includes(k));
+    const needsInline = keys.some(k => ['inlineImagesEnabled', 'inlineImageHeight'].includes(k));
+    const needsCheckbox = 'checkboxSize' in changes;
+    if (!needsHighlight && !needsOpacity && !needsInline && !needsCheckbox) return;
+    chrome.storage.sync.get(['terms', 'enabled', 'highlightColors', 'checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight'], d => {
+        if (needsHighlight) applyHighlight(d);
+        if (needsCheckbox) applyCheckboxSize(d.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
+        if (needsOpacity) {
             const opacityEnabled = d.checkedOpacityEnabled ?? false;
             const opacity = d.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
             applyCheckedRowOpacity(opacityEnabled, opacity);
             initCheckedRowOpacityListener(opacityEnabled, opacity);
-        });
-    }
-    if (!('highlightColors' in changes || 'terms' in changes || 'enabled' in changes)) return;
-    chrome.storage.sync.get(['terms', 'enabled', 'highlightColors'], applyHighlight);
+        }
+        if (needsInline) applyInlineImagesPage(d.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED, d.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT);
+    });
 });
 
 // Reaplica cuando cambia el tema claro/oscuro en Cardmarket
