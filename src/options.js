@@ -4,8 +4,10 @@
  * de color de resaltado por modo claro/oscuro.
  */
 import previewHtml from './preview.html';
+import orderPreviewHtml from './order-preview.html';
 import { loadMessages, applyMessages } from './i18n.js';
 import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from './defaults.js';
+import { applyInlineImages } from './inline-images.js';
 
 /**
  * Convierte un color rgba a hex aproximado para el input[type=color].
@@ -71,6 +73,88 @@ function initPreview() {
         lightRows: lightWrap.querySelectorAll('[data-highlighted]'),
         darkRows: darkWrap.querySelectorAll('[data-highlighted]'),
     };
+}
+
+/**
+ * Inyecta el HTML de la preview de pedido, aplica el toggle de tema y conecta
+ * los controles de la sección Pedido para actualizar la preview en tiempo real.
+ * @param {{ checkboxSizeInput: HTMLInputElement, checkedOpacityEnabled: HTMLInputElement, checkedOpacityInput: HTMLInputElement, inlineImagesEnabled: HTMLInputElement, inlineImageHeightInput: HTMLInputElement }} controls
+ */
+function initOrderPreview(controls) {
+    const wrap = document.getElementById('orderPreviewWrap');
+
+    // Cabecera con toggle de tema
+    const header = document.createElement('div');
+    header.className = 'order-preview-header';
+    const toggleLabel = document.createElement('label');
+    toggleLabel.className = 'toggle-label';
+    const toggleInput = document.createElement('input');
+    toggleInput.type = 'checkbox';
+    toggleInput.id = 'orderPreviewTheme';
+    const toggleTrack = document.createElement('span');
+    toggleTrack.className = 'toggle-track';
+    toggleTrack.innerHTML = '<span class="toggle-thumb"></span>';
+    toggleLabel.appendChild(toggleInput);
+    toggleLabel.appendChild(toggleTrack);
+    const themeSpan = document.createElement('span');
+    themeSpan.id = 'orderPreviewThemeLabel';
+    header.appendChild(themeSpan);
+    header.appendChild(toggleLabel);
+    wrap.appendChild(header);
+
+    // Contenido de la tabla
+    const content = document.createElement('div');
+    content.innerHTML = orderPreviewHtml;
+    wrap.appendChild(content);
+
+    const rows = wrap.querySelectorAll('tbody tr');
+
+    /** Aplica el tamaño de checkbox a la preview */
+    function applyCheckboxSize() {
+        wrap.style.setProperty('--op-cb-size', `${controls.checkboxSizeInput.value}em`);
+    }
+
+    /** Aplica la opacidad a las filas marcadas en la preview */
+    function applyOpacity() {
+        const enabled = controls.checkedOpacityEnabled.checked;
+        const opacity = controls.checkedOpacityInput.value;
+        rows.forEach(tr => {
+            const cb = tr.querySelector('.form-check-input');
+            tr.style.opacity = (enabled && cb && cb.checked) ? opacity : '';
+        });
+    }
+
+    /** Aplica/elimina las imágenes inline en la preview */
+    function applyInlineImagesPreview() {
+        applyInlineImages(controls.inlineImagesEnabled.checked, parseInt(controls.inlineImageHeightInput.value), content);
+    }
+
+    // Toggle de tema claro/oscuro
+    toggleInput.addEventListener('change', () => {
+        wrap.dataset.bsTheme = toggleInput.checked ? 'dark' : '';
+        if (!toggleInput.checked) delete wrap.dataset.bsTheme;
+    });
+
+    // Checkboxes interactivos en la preview (sin persistir)
+    wrap.addEventListener('change', e => {
+        if (e.target.classList.contains('form-check-input') && e.target !== toggleInput) {
+            applyOpacity();
+        }
+    });
+
+    // Conectar controles
+    controls.checkboxSizeInput.addEventListener('input', applyCheckboxSize);
+    controls.checkedOpacityEnabled.addEventListener('change', applyOpacity);
+    controls.checkedOpacityInput.addEventListener('input', applyOpacity);
+    controls.inlineImagesEnabled.addEventListener('change', applyInlineImagesPreview);
+    controls.inlineImageHeightInput.addEventListener('input', applyInlineImagesPreview);
+
+    // Estado inicial
+    applyCheckboxSize();
+    applyOpacity();
+    applyInlineImagesPreview();
+
+    return { applyCheckboxSize, applyOpacity, applyInlineImages: applyInlineImagesPreview };
 }
 
 function init() {
@@ -161,7 +245,12 @@ function init() {
         inlineImageHeightRow.hidden = !savedInlineImagesEnabled;
         updatePreview();
         updateButtons();
+        orderPreview.applyCheckboxSize();
+        orderPreview.applyOpacity();
+        orderPreview.applyInlineImages();
     });
+
+    const orderPreview = initOrderPreview({ checkboxSizeInput, checkedOpacityEnabled, checkedOpacityInput, inlineImagesEnabled, inlineImageHeightInput });
 
     lightInput.addEventListener('input', () => { updatePreview(); updateButtons(); });
     darkInput.addEventListener('input', () => { updatePreview(); updateButtons(); });
@@ -192,6 +281,8 @@ function init() {
         applyMessages(m);
         document.getElementById('about-version').textContent =
             `${m.versionPrefix} ${chrome.runtime.getManifest().version}`;
+        const themeLabel = document.getElementById('orderPreviewThemeLabel');
+        if (themeLabel) themeLabel.textContent = m.orderPreviewTheme ?? 'Modo oscuro';
 
         saveBtn.addEventListener('click', () => {
             const colors = {
@@ -236,6 +327,9 @@ function init() {
                 inlineImageHeightInput.value = DEFAULT_INLINE_IMAGE_HEIGHT;
                 inlineImageHeightValue.textContent = `${DEFAULT_INLINE_IMAGE_HEIGHT}px`;
                 inlineImageHeightRow.hidden = !DEFAULT_INLINE_IMAGES_ENABLED;
+                orderPreview.applyCheckboxSize();
+                orderPreview.applyOpacity();
+                orderPreview.applyInlineImages();
                 updatePreview();
                 updateButtons();
                 showStatus(`${m.resetStatus} ✓`);
