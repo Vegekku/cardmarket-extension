@@ -5,7 +5,7 @@
  * Escucha mensajes del popup para actualizar el resaltado sin reinyectarse.
  */
 
-import { DEFAULT_COLOR, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY } from './defaults.js';
+import { DEFAULT_COLOR, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from './defaults.js';
 
 if (typeof __BUILD_TIME__ !== 'undefined') console.log(`[Cardmarket] build: ${__BUILD_TIME__}`);
 
@@ -42,7 +42,77 @@ function resolveColor(colors) {
     return theme === 'dark' ? (colors.dark || DEFAULT_COLOR) : (colors.light || DEFAULT_COLOR);
 }
 
+/** @type {MutationObserver|null} */
 let activeObserver = null;
+/** @type {{ enabled: boolean, height: number } | null} */
+let pendingInlineImages = null;
+
+// Observer global instalado inmediatamente, antes del callback del storage
+const _earlyObserver = new MutationObserver(() => {
+    if (pendingInlineImages?.enabled) {
+        document.querySelectorAll('span.thumbnail-icon').forEach(span => injectThumbnail(span, pendingInlineImages.height));
+    }
+});
+_earlyObserver.observe(document.documentElement, { childList: true, subtree: true });
+
+/**
+ * Extrae el src del img contenido en el atributo data-bs-title de un span.thumbnail-icon.
+ * @param {Element} span
+ * @returns {string|null}
+ */
+function extractThumbnailSrc(span) {
+    const title = span.getAttribute('data-bs-title') || '';
+    const decoded = title.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+    const m = decoded.match(/<img[^>]+src=["']([^"']+)["']/);
+    return m ? m[1] : null;
+}
+
+/**
+ * Inyecta el thumbnail inline en un span.thumbnail-icon si aún no se ha procesado.
+ * @param {Element} span
+ * @param {number} height
+ */
+function injectThumbnail(span, height) {
+    if (span.dataset.mkmInline) return;
+    const src = extractThumbnailSrc(span);
+    if (!src) return;
+    span.querySelector('.fonticon-camera')?.remove();
+    span.classList.remove('icon', 'is-24x24');
+    const img = document.createElement('img');
+    img.src = src;
+    img.loading = 'lazy';
+    img.height = height;
+    span.appendChild(img);
+    span.dataset.mkmInline = '1';
+}
+
+/**
+ * Aplica o elimina los thumbnails inline en la página de pedido.
+ * @param {boolean} enabled
+ * @param {number} height
+ */
+function applyInlineImages(enabled, height) {
+    pendingInlineImages = { enabled, height };
+    if (!location.pathname.includes('/Orders/')) return;
+    if (!enabled) {
+        pendingInlineImages = null;
+        document.querySelectorAll('span.thumbnail-icon[data-mkm-inline]').forEach(span => {
+            span.querySelector('img[loading="lazy"]')?.remove();
+            delete span.dataset.mkmInline;
+            span.classList.add('icon', 'is-24x24');
+            const icon = document.createElement('span');
+            icon.className = 'fonticon-camera';
+            span.appendChild(icon);
+        });
+        return;
+    }
+    document.querySelectorAll('span.thumbnail-icon[data-mkm-inline]').forEach(span => {
+        const img = span.querySelector('img[loading="lazy"]');
+        if (img) img.height = height;
+    });
+    document.querySelectorAll('span.thumbnail-icon:not([data-mkm-inline])').forEach(span => injectThumbnail(span, height));
+}
+
 
 /**
  * Elimina el resaltado de todas las filas previamente marcadas.
@@ -134,13 +204,14 @@ function initCheckedRowOpacityListener(enabled, opacity) {
 chrome.storage.local.set({ lang: document.documentElement.lang || 'es' });
 
 // Carga inicial desde storage
-chrome.storage.sync.get(['terms', 'enabled', 'highlightColors', 'checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled'], data => {
+chrome.storage.sync.get(['terms', 'enabled', 'highlightColors', 'checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight'], data => {
     applyHighlight(data);
     applyCheckboxSize(data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
     const opacityEnabled = data.checkedOpacityEnabled ?? false;
     const opacity = data.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
     applyCheckedRowOpacity(opacityEnabled, opacity);
     initCheckedRowOpacityListener(opacityEnabled, opacity);
+    applyInlineImages(data.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED, data.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT);
 });
 
 // Escucha mensajes del popup
@@ -151,6 +222,11 @@ chrome.runtime.onMessage.addListener(function(message) {
 // Reaplica cuando cambia highlightColors, terms, enabled, checkboxSize o checkedOpacity desde otra pestaña/opciones
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'sync') return;
+    if ('inlineImagesEnabled' in changes || 'inlineImageHeight' in changes) {
+        chrome.storage.sync.get(['inlineImagesEnabled', 'inlineImageHeight'], d => {
+            applyInlineImages(d.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED, d.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT);
+        });
+    }
     if ('checkboxSize' in changes) applyCheckboxSize(changes.checkboxSize.newValue ?? DEFAULT_CHECKBOX_SIZE);
     if ('checkedOpacity' in changes || 'checkedOpacityEnabled' in changes) {
         chrome.storage.sync.get(['checkedOpacity', 'checkedOpacityEnabled'], d => {
