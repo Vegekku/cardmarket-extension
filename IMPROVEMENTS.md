@@ -6,7 +6,7 @@
 |-----------|--------|
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
-| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
+| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket), [3.10](#310-preview-de-pedido-en-opciones) |
 | 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.12](#412-visualización-de-imágenes-de-cartas-en-listados), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor) |
 | 5 — Expansión | |
 
@@ -75,6 +75,15 @@ Pendiente de analizar:
 Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`.
+
+### 3.10 Preview de pedido en opciones
+
+Añadir una previsualización de la fila de pedido en la página de opciones para que el usuario pueda ver el efecto de las configuraciones de la sección Pedido (tamaño de checkboxes, opacidad de filas marcadas, imágenes inline) antes de guardar. La preview se alterna entre modo claro y oscuro mediante un toggle, sin necesidad de mostrar ambos simultáneamente.
+
+- Algunas filas de la preview se mostrarán con el checkbox marcado por defecto para que el efecto de opacidad sea visible sin interacción.
+- El usuario puede interactuar con los checkboxes de la preview (marcar/desmarcar), pero su estado no se persiste.
+
+Ficheros afectados: `src/options.html`, `src/options.js`, `src/styles/options.css`.
 
 ---
 
