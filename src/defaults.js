@@ -20,3 +20,9 @@ export const DEFAULT_CHECKED_OPACITY = 0.3;
 
 /** @type {boolean} */
 export const DEFAULT_CHECKED_OPACITY_ENABLED = false;
+
+/** @type {boolean} */
+export const DEFAULT_INLINE_IMAGES_ENABLED = false;
+
+/** @type {number} */
+export const DEFAULT_INLINE_IMAGE_HEIGHT = 24;
