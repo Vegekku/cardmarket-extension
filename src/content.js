@@ -6,31 +6,16 @@
  */
 
 import { DEFAULT_COLOR, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from './defaults.js';
-import { injectThumbnail, applyInlineImages } from './inline-images.js';
+import { injectThumbnail, applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from './order-features.js';
 
 if (typeof __BUILD_TIME__ !== 'undefined') console.log(`[Cardmarket] build: ${__BUILD_TIME__}`);
 
-/** @type {HTMLStyleElement|null} */
-let checkboxStyleEl = null;
-
-/**
- * Inyecta o actualiza el CSS que controla el tamaño de los checkboxes del listado de pedido.
- * Si el tamaño es el por defecto, elimina el estilo inyectado.
- * @param {number} size - Tamaño en em
- */
-function applyCheckboxSize(size) {
-    if (size === DEFAULT_CHECKBOX_SIZE) {
-        if (checkboxStyleEl) { checkboxStyleEl.remove(); checkboxStyleEl = null; }
-        return;
-    }
-    if (!checkboxStyleEl) {
-        checkboxStyleEl = document.createElement('style');
-        checkboxStyleEl.id = 'mkm-checkbox-size';
-        document.head.appendChild(checkboxStyleEl);
-    }
-    checkboxStyleEl.textContent =
-        `table.product-table .form-check-input { width: ${size}em !important; height: ${size}em !important; }`;
-}
+// Inyecta una vez el estilo estático que usa la custom property para el tamaño de checkbox
+(() => {
+    const style = document.createElement('style');
+    style.textContent = 'table.product-table .form-check-input { width: var(--op-cb-size, 1em) !important; height: var(--op-cb-size, 1em) !important; }';
+    document.head.appendChild(style);
+})();
 
 /**
  * Devuelve el color de resaltado según el modo claro/oscuro activo en Cardmarket.
@@ -132,18 +117,6 @@ function applyHighlight(data) {
         if (table) highlightRows(data.terms, table, data.highlightColors);
         activeObserver = observeNewContent(data.terms, data.highlightColors);
     }
-}
-
-/**
- * Aplica la opacidad configurada a las filas cuyo checkbox esté marcado.
- * @param {boolean} enabled
- * @param {number} opacity
- */
-function applyCheckedRowOpacity(enabled, opacity) {
-    document.querySelectorAll('table.product-table tr').forEach(tr => {
-        const cb = tr.querySelector('input.form-check-input[type="checkbox"]');
-        if (cb) tr.style.opacity = (enabled && cb.checked) ? opacity : '';
-    });
 }
 
 /**

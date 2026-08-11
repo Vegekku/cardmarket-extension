@@ -96,7 +96,7 @@
 /* Columna select */
 .order-preview-wrap .select { width: 32px; }
 
-/* Checkbox nativo — tamaño controlado por JS via CSS custom property */
+/* Checkbox nativo — tamaño controlado por JS via --op-cb-size */
 .order-preview-wrap .form-check { margin: 0; padding: 0; display: flex; align-items: center; }
 .order-preview-wrap .form-check-input {
     width: var(--op-cb-size, 1em);

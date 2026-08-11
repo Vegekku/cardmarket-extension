@@ -7,7 +7,7 @@ import previewHtml from './preview.html';
 import orderPreviewHtml from './order-preview.html';
 import { loadMessages, applyMessages } from './i18n.js';
 import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from './defaults.js';
-import { applyInlineImages } from './inline-images.js';
+import { applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from './order-features.js';
 
 /**
  * Convierte un color rgba a hex aproximado para el input[type=color].
@@ -110,18 +110,13 @@ function initOrderPreview(controls) {
     const rows = wrap.querySelectorAll('tbody tr');
 
     /** Aplica el tamaño de checkbox a la preview */
-    function applyCheckboxSize() {
-        wrap.style.setProperty('--op-cb-size', `${controls.checkboxSizeInput.value}em`);
+    function applyCheckboxSizePreview() {
+        applyCheckboxSize(parseFloat(controls.checkboxSizeInput.value), wrap);
     }
 
     /** Aplica la opacidad a las filas marcadas en la preview */
     function applyOpacity() {
-        const enabled = controls.checkedOpacityEnabled.checked;
-        const opacity = controls.checkedOpacityInput.value;
-        rows.forEach(tr => {
-            const cb = tr.querySelector('.form-check-input');
-            tr.style.opacity = (enabled && cb && cb.checked) ? opacity : '';
-        });
+        applyCheckedRowOpacity(controls.checkedOpacityEnabled.checked, controls.checkedOpacityInput.value, wrap);
     }
 
     /** Aplica/elimina las imágenes inline en la preview */
@@ -143,18 +138,18 @@ function initOrderPreview(controls) {
     });
 
     // Conectar controles
-    controls.checkboxSizeInput.addEventListener('input', applyCheckboxSize);
+    controls.checkboxSizeInput.addEventListener('input', applyCheckboxSizePreview);
     controls.checkedOpacityEnabled.addEventListener('change', applyOpacity);
     controls.checkedOpacityInput.addEventListener('input', applyOpacity);
     controls.inlineImagesEnabled.addEventListener('change', applyInlineImagesPreview);
     controls.inlineImageHeightInput.addEventListener('input', applyInlineImagesPreview);
 
     // Estado inicial
-    applyCheckboxSize();
+    applyCheckboxSizePreview();
     applyOpacity();
     applyInlineImagesPreview();
 
-    return { applyCheckboxSize, applyOpacity, applyInlineImages: applyInlineImagesPreview };
+    return { applyCheckboxSize: applyCheckboxSizePreview, applyOpacity, applyInlineImages: applyInlineImagesPreview };
 }
 
 function init() {

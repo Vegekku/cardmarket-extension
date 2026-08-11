@@ -1,7 +1,7 @@
 /**
- * @module inline-images
- * @description Lógica compartida para inyectar y eliminar thumbnails inline
- * en spans.thumbnail-icon de tablas product-table.
+ * @module order-features
+ * @description Lógica compartida para las features de la tabla de pedido
+ * (imágenes inline, opacidad de filas, tamaño de checkbox).
  * Usada tanto por content.js (página real) como por options.js (preview).
  */
 
@@ -37,7 +37,7 @@ export function injectThumbnail(span, height) {
 }
 
 /**
- * Aplica o elimina los thumbnails inline en un contexto dado (documento o elemento raíz).
+ * Aplica o elimina los thumbnails inline en un contexto dado.
  * @param {boolean} enabled
  * @param {number} height
  * @param {ParentNode} [root=document]
@@ -59,4 +59,27 @@ export function applyInlineImages(enabled, height, root = document) {
         if (img) img.height = height;
     });
     root.querySelectorAll('span.thumbnail-icon:not([data-mkm-inline])').forEach(span => injectThumbnail(span, height));
+}
+
+/**
+ * Aplica la opacidad configurada a las filas cuyo checkbox esté marcado.
+ * @param {boolean} enabled
+ * @param {number} opacity
+ * @param {ParentNode} [root=document]
+ */
+export function applyCheckedRowOpacity(enabled, opacity, root = document) {
+    root.querySelectorAll('table.product-table tr').forEach(tr => {
+        const cb = tr.querySelector('input.form-check-input[type="checkbox"]');
+        if (cb) tr.style.opacity = (enabled && cb.checked) ? opacity : '';
+    });
+}
+
+/**
+ * Setea la custom property --op-cb-size en el elemento raíz dado.
+ * En content.js se pasa document.documentElement; en options.js el wrap de la preview.
+ * @param {number} size - Tamaño en em
+ * @param {Element} [root=document.documentElement]
+ */
+export function applyCheckboxSize(size, root = document.documentElement) {
+    root.style.setProperty('--op-cb-size', `${size}em`);
 }
