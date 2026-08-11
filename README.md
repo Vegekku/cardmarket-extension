@@ -22,6 +22,7 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Permite ajustar el tamaño de los checkboxes en el listado de pedido (rango de 1em a 3em, con previsualización en vivo del checkbox).
 - Permite activar el atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
 - Permite activar la visualización de imágenes de cartas inline en el listado de pedido, con altura configurable.
+- Incluye previsualización en vivo de la sección Pedido (checkboxes, opacidad e imágenes inline) con toggle de modo claro/oscuro.
 
 ## Instalación
 
@@ -59,11 +60,14 @@ cardmarket-extension/
 │   ├── options.html       # Página de opciones de la extensión
 │   ├── options.js         # Lógica de la página de opciones
 │   ├── preview.html       # Fragmento HTML para la previsualización de colores
+│   ├── order-features.js  # Lógica compartida de features de pedido (imágenes inline, opacidad, checkbox size)
+│   ├── order-preview.html # Fragmento HTML para la previsualización de pedido en opciones
 │   └── styles/
 │       ├── common.css     # Estilos compartidos (popup y opciones)
 │       ├── popup.css      # Estilos específicos del popup
 │       ├── options.css    # Estilos específicos de opciones
-│       └── preview.css    # Estilos de la previsualización
+│       ├── preview.css    # Estilos de la previsualización de colores
+│       └── order-preview.css # Estilos de la previsualización de pedido
 ├── docs/
 │   ├── STORE.md           # Descripción y capturas para la Chrome Web Store
 │   └── privacy.html       # Política de privacidad

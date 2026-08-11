@@ -6,30 +6,16 @@
  */
 
 import { DEFAULT_COLOR, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from './defaults.js';
+import { injectThumbnail, applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from './order-features.js';
 
 if (typeof __BUILD_TIME__ !== 'undefined') console.log(`[Cardmarket] build: ${__BUILD_TIME__}`);
 
-/** @type {HTMLStyleElement|null} */
-let checkboxStyleEl = null;
-
-/**
- * Inyecta o actualiza el CSS que controla el tamaño de los checkboxes del listado de pedido.
- * Si el tamaño es el por defecto, elimina el estilo inyectado.
- * @param {number} size - Tamaño en em
- */
-function applyCheckboxSize(size) {
-    if (size === DEFAULT_CHECKBOX_SIZE) {
-        if (checkboxStyleEl) { checkboxStyleEl.remove(); checkboxStyleEl = null; }
-        return;
-    }
-    if (!checkboxStyleEl) {
-        checkboxStyleEl = document.createElement('style');
-        checkboxStyleEl.id = 'mkm-checkbox-size';
-        document.head.appendChild(checkboxStyleEl);
-    }
-    checkboxStyleEl.textContent =
-        `table.product-table .form-check-input { width: ${size}em !important; height: ${size}em !important; }`;
-}
+// Inyecta una vez el estilo estático que usa la custom property para el tamaño de checkbox
+(() => {
+    const style = document.createElement('style');
+    style.textContent = 'table.product-table .form-check-input { width: var(--op-cb-size, 1em) !important; height: var(--op-cb-size, 1em) !important; }';
+    document.head.appendChild(style);
+})();
 
 /**
  * Devuelve el color de resaltado según el modo claro/oscuro activo en Cardmarket.
@@ -58,62 +44,18 @@ if (location.pathname.includes('/Orders/')) {
 }
 
 /**
- * Extrae el src del img contenido en el atributo data-bs-title de un span.thumbnail-icon.
- * @param {Element} span
- * @returns {string|null}
- */
-function extractThumbnailSrc(span) {
-    const title = span.getAttribute('data-bs-title') || '';
-    const decoded = title.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-    const m = decoded.match(/<img[^>]+src=["']([^"']+)["']/);
-    return m ? m[1] : null;
-}
-
-/**
- * Inyecta el thumbnail inline en un span.thumbnail-icon si aún no se ha procesado.
- * @param {Element} span
- * @param {number} height
- */
-function injectThumbnail(span, height) {
-    if (span.dataset.mkmInline) return;
-    const src = extractThumbnailSrc(span);
-    if (!src) return;
-    span.querySelector('.fonticon-camera')?.remove();
-    span.classList.remove('icon', 'is-24x24');
-    const img = document.createElement('img');
-    img.src = src;
-    img.loading = 'lazy';
-    img.height = height;
-    span.appendChild(img);
-    span.dataset.mkmInline = '1';
-}
-
-/**
  * Aplica o elimina los thumbnails inline en la página de pedido.
  * @param {boolean} enabled
  * @param {number} height
  */
-function applyInlineImages(enabled, height) {
+function applyInlineImagesPage(enabled, height) {
     pendingInlineImages = { enabled, height };
     if (!location.pathname.includes('/Orders/')) return;
     if (!enabled) {
         pendingInlineImages = null;
         _earlyObserver.disconnect();
-        document.querySelectorAll('span.thumbnail-icon[data-mkm-inline]').forEach(span => {
-            span.querySelector('img[loading="lazy"]')?.remove();
-            delete span.dataset.mkmInline;
-            span.classList.add('icon', 'is-24x24');
-            const icon = document.createElement('span');
-            icon.className = 'fonticon-camera';
-            span.appendChild(icon);
-        });
-        return;
     }
-    document.querySelectorAll('span.thumbnail-icon[data-mkm-inline]').forEach(span => {
-        const img = span.querySelector('img[loading="lazy"]');
-        if (img) img.height = height;
-    });
-    document.querySelectorAll('span.thumbnail-icon:not([data-mkm-inline])').forEach(span => injectThumbnail(span, height));
+    applyInlineImages(enabled, height);
 }
 
 
@@ -178,18 +120,6 @@ function applyHighlight(data) {
 }
 
 /**
- * Aplica la opacidad configurada a las filas cuyo checkbox esté marcado.
- * @param {boolean} enabled
- * @param {number} opacity
- */
-function applyCheckedRowOpacity(enabled, opacity) {
-    document.querySelectorAll('table.product-table tr').forEach(tr => {
-        const cb = tr.querySelector('input.form-check-input[type="checkbox"]');
-        if (cb) tr.style.opacity = (enabled && cb.checked) ? opacity : '';
-    });
-}
-
-/**
  * Instala (o reinstala) el listener delegado para cambios de checkbox en tablas de pedido.
  * @param {boolean} enabled
  * @param {number} opacity
@@ -214,7 +144,7 @@ chrome.storage.sync.get(['terms', 'enabled', 'highlightColors', 'checkboxSize', 
     const opacity = data.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
     applyCheckedRowOpacity(opacityEnabled, opacity);
     initCheckedRowOpacityListener(opacityEnabled, opacity);
-    applyInlineImages(data.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED, data.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT);
+    applyInlineImagesPage(data.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED, data.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT);
 });
 
 // Escucha mensajes del popup
@@ -227,7 +157,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'sync') return;
     if ('inlineImagesEnabled' in changes || 'inlineImageHeight' in changes) {
         chrome.storage.sync.get(['inlineImagesEnabled', 'inlineImageHeight'], d => {
-            applyInlineImages(d.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED, d.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT);
+            applyInlineImagesPage(d.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED, d.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT);
         });
     }
     if ('checkboxSize' in changes) applyCheckboxSize(changes.checkboxSize.newValue ?? DEFAULT_CHECKBOX_SIZE);
