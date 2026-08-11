@@ -21,6 +21,7 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Los cambios de color se aplican en todas las pestañas abiertas de Cardmarket sin recargar.
 - Permite ajustar el tamaño de los checkboxes en el listado de pedido (rango de 1em a 3em, con previsualización en vivo del checkbox).
 - Permite activar el atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
+- Permite activar la visualización de imágenes de cartas inline en el listado de pedido, con altura configurable.
 
 ## Instalación
 
