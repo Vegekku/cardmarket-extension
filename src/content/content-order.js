@@ -1,7 +1,8 @@
 /**
  * @module content-order
  * @description Inyectado en páginas de Orders de Cardmarket.
- * Gestiona imágenes inline, opacidad de filas marcadas y tamaño de checkbox.
+ * Gestiona imágenes inline, opacidad de filas marcadas, tamaño de checkbox
+ * y mejoras de vista multi-juego (colapsar/expandir bloques y subtotal por juego).
  */
 import './content-common.js';
 import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from '../shared/defaults.js';
@@ -57,6 +58,76 @@ function initCheckedRowOpacityListener(enabled, opacity) {
     };
     document.addEventListener('change', _checkboxHandler);
 }
+
+/**
+ * Parsea un string de precio con formato "0,14 €" y devuelve el valor numérico.
+ * @param {string} text
+ * @returns {number}
+ */
+function parsePrice(text) {
+    return parseFloat(text.replace(/[^0-9,]/g, '').replace(',', '.')) || 0;
+}
+
+/**
+ * Calcula el subtotal de una tabla de artículos sumando las celdas .price.
+ * @param {Element} table
+ * @returns {string} Subtotal formateado con 2 decimales y símbolo €
+ */
+function calcSubtotal(table) {
+    let total = 0;
+    table.querySelectorAll('td.price').forEach(td => { total += parsePrice(td.textContent); });
+    return total.toFixed(2).replace('.', ',') + ' €';
+}
+
+/**
+ * Inyecta toggles de colapsar/expandir en cada bloque de juego.
+ * Si hay más de un bloque, también inyecta subtotales por juego en .summary.
+ */
+function initGameBlocks() {
+    const sections = document.querySelectorAll('.category-subsection');
+    if (!sections.length) return;
+    /** @type {{ name: string, subtotal: string }[]} */
+    const gameSubtotals = [];
+    sections.forEach(section => {
+        const header = section.querySelector(':scope > div');
+        const table = section.querySelector('table[id^="ArticleTable"]');
+        if (!header || !table) return;
+
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'mkm-game-toggle';
+        toggleBtn.style.cssText = 'background:none; border:none; cursor:pointer; font-size:1em; padding:0; line-height:1;';
+        toggleBtn.textContent = '▼';
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        toggleBtn.addEventListener('click', () => {
+            const collapsed = table.style.display === 'none';
+            table.style.display = collapsed ? '' : 'none';
+            toggleBtn.textContent = collapsed ? '▼' : '▶';
+            toggleBtn.setAttribute('aria-expanded', String(collapsed));
+        });
+
+        const h3 = header.querySelector('h3');
+        const leftGroup = document.createElement('div');
+        leftGroup.style.cssText = 'display:flex; align-items:center; gap:6px;';
+        h3.replaceWith(leftGroup);
+        leftGroup.append(toggleBtn, h3);
+
+        gameSubtotals.push({ name: h3.textContent.trim(), subtotal: calcSubtotal(table) });
+    });
+
+    if (sections.length < 2) return;
+
+    const itemValueRow = document.querySelector('.summary .item-value')?.closest('.d-flex');
+    if (!itemValueRow) return;
+    [...gameSubtotals].reverse().forEach(({ name, subtotal }) => {
+        const row = document.createElement('div');
+        row.className = 'd-flex mkm-game-subtotal-row';
+        row.style.cssText = 'font-size:.9em; opacity:.8; padding-left:1em;';
+        row.innerHTML = `<span class="flex-grow-1">${name}</span><span>${subtotal}</span>`;
+        itemValueRow.after(row);
+    });
+}
+
+initGameBlocks();
 
 // Carga inicial
 chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight'], data => {
