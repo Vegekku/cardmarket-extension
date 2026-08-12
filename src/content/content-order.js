@@ -4,8 +4,8 @@
  * Gestiona imágenes inline, opacidad de filas marcadas y tamaño de checkbox.
  */
 import './content-common.js';
-import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from './defaults.js';
-import { injectThumbnail, applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from './order-features.js';
+import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from '../shared/defaults.js';
+import { injectThumbnail, applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from '../shared/order-features.js';
 
 // Inyecta el estilo estático de la custom property para el tamaño de checkbox
 const style = document.createElement('style');

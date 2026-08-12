@@ -5,7 +5,7 @@
  * Escucha mensajes del popup y cambios de storage para actualizar el resaltado.
  */
 import './content-common.js';
-import { DEFAULT_COLOR } from './defaults.js';
+import { DEFAULT_COLOR } from '../shared/defaults.js';
 
 /**
  * Devuelve el color de resaltado según el modo claro/oscuro activo en Cardmarket.

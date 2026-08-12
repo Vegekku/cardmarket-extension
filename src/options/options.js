@@ -3,9 +3,9 @@
  * @description Lógica de la página de opciones: carga y guarda la configuración
  * de color de resaltado por modo claro/oscuro.
  */
-import { loadMessages, applyMessages } from './i18n.js';
-import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from './defaults.js';
-import { rgbaToHex, hexToRgba } from './color-utils.js';
+import { loadMessages, applyMessages } from '../shared/i18n.js';
+import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from '../shared/defaults.js';
+import { rgbaToHex, hexToRgba } from '../shared/color-utils.js';
 import { initPreview, updateColorPreview, initOrderPreview } from './options-preview.js';
 
 /**

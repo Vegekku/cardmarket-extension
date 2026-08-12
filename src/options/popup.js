@@ -2,7 +2,7 @@
  * @module popup
  * @description Lógica del popup: carga usuarios y estado del toggle, autoguarda al escribir.
  */
-import { loadMessages, applyMessages } from './i18n.js';
+import { loadMessages, applyMessages } from '../shared/i18n.js';
 
 /**
  * Envía un mensaje UPDATE_HIGHLIGHT a todas las pestañas abiertas de Cardmarket.

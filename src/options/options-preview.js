@@ -5,8 +5,8 @@
  */
 import previewHtml from './preview.html';
 import orderPreviewHtml from './order-preview.html';
-import { hexToRgba } from './color-utils.js';
-import { applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from './order-features.js';
+import { hexToRgba } from '../shared/color-utils.js';
+import { applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from '../shared/order-features.js';
 
 /**
  * Inyecta el HTML de las previews de color y devuelve las filas resaltadas.
