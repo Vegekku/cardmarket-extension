@@ -10,7 +10,7 @@
  * @param {Element} span
  * @returns {string|null}
  */
-export function extractThumbnailSrc(span) {
+function extractThumbnailSrc(span) {
     const title = span.getAttribute('data-bs-title') || '';
     const decoded = title.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
     const m = decoded.match(/<img[^>]+src=["']([^"']+)['"]/);
@@ -76,7 +76,7 @@ export function applyCheckedRowOpacity(enabled, opacity, root = document) {
 
 /**
  * Setea la custom property --op-cb-size en el elemento raíz dado.
- * En content.js se pasa document.documentElement; en options.js el wrap de la preview.
+ * En content-order.js se pasa document.documentElement; en options-preview.js el wrap de la preview.
  * @param {number} size - Tamaño en em
  * @param {Element} [root=document.documentElement]
  */

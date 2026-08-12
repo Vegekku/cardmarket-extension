@@ -126,8 +126,10 @@ function init() {
         applyStateToUI();
     });
 
-    lightInput.addEventListener('input', () => { updateColorPreview(lightRows, darkRows, lightInput.value, darkInput.value); updateButtons(); });
-    darkInput.addEventListener('input', () => { updateColorPreview(lightRows, darkRows, lightInput.value, darkInput.value); updateButtons(); });
+    [lightInput, darkInput].forEach(input => input.addEventListener('input', () => {
+        updateColorPreview(lightRows, darkRows, lightInput.value, darkInput.value);
+        updateButtons();
+    }));
     checkboxSizeInput.addEventListener('input', () => {
         checkboxSizePreview.style.width = `${checkboxSizeInput.value}em`;
         checkboxSizePreview.style.height = `${checkboxSizeInput.value}em`;
