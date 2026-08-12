@@ -226,7 +226,7 @@ const SUPPORTED = new Set(['es', 'en', 'fr', 'de', 'it']);
  * @param {string} lang
  * @returns {Record<string, string>}
  */
-export function getMessages(lang) {
+function getMessages(lang) {
     return MESSAGES[SUPPORTED.has(lang) ? lang : 'es'];
 }
 
