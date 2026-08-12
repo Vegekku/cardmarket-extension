@@ -7,8 +7,8 @@
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
 | 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
-| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket) |
-| 5 — Expansión | |
+| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket) |
+| 5 — Brainstorming | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
 ---
 
@@ -18,6 +18,7 @@
 - [2. Infraestructura y calidad](#2-infraestructura-y-calidad)
 - [3. UX / Popup](#3-ux--popup)
 - [4. Funcionalidad nueva](#4-funcionalidad-nueva)
+- [5. Brainstorming](#5-brainstorming)
 
 ---
 
@@ -77,10 +78,6 @@ Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/options.html`, `src/options/options.js`.
 
 
-### 4.1 Colores personalizables por término
-
-Permitir al usuario asignar un color diferente a cada término en lugar de usar siempre el color por defecto. Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
-
 ### 4.3 Modo filtro: mostrar solo vendedores resaltados
 
 Añadir una opción para que, además de resaltar las filas de los vendedores guardados, se oculten el resto de filas del listado, mostrando únicamente las coincidencias.
@@ -96,10 +93,6 @@ Pendiente de decidir:
 El estado activo/inactivo del modo filtro por defecto podría ser configurable desde la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/popup.html`, `src/options/popup.js`.
-
-### 4.4 Navegación entre coincidencias
-
-Añadir botones anterior/siguiente en el popup para desplazarse entre las coincidencias resaltadas en la página.
 
 ### 4.6 Selector de juego en el perfil de un vendedor
 
@@ -214,3 +207,17 @@ Pendiente de decidir:
 - Si la activación es global o configurable por tipo de página.
 
 Ficheros afectados: `src/content/content-order.js`, `src/options/options.html`, `src/options/options.js`, `src/shared/i18n.js`.
+
+---
+
+## 5. Brainstorming
+
+Ideas sin compromiso de implementación. Se promueven al bloque correspondiente si se decide abordarlas.
+
+### 4.1 Colores personalizables por término
+
+Permitir al usuario asignar un color diferente a cada término en lugar de usar siempre el color por defecto. Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
+
+### 4.4 Navegación entre coincidencias
+
+Añadir botones anterior/siguiente en el popup para desplazarse entre las coincidencias resaltadas en la página.
