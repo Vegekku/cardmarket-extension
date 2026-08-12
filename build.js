@@ -14,19 +14,20 @@ mkdirSync('dist/icons', { recursive: true });
 
 const staticFiles = [
     'icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png',
-    'src/popup.html', 'src/options.html',
-    'src/styles/common.css', 'src/styles/popup.css', 'src/styles/options.css', 'src/styles/preview.css', 'src/styles/order-preview.css',
+    'src/options/popup.html', 'src/options/options.html',
+    'src/options/styles/common.css', 'src/options/styles/popup.css', 'src/options/styles/options.css', 'src/options/styles/preview.css', 'src/options/styles/order-preview.css',
     'manifest.json'
 ];
-staticFiles.forEach(f => copyFileSync(f, `dist/${f.replace('src/styles/', '').replace('src/', '')}`));
+staticFiles.forEach(f => copyFileSync(f, `dist/${f.replace('src/options/styles/', '').replace('src/options/', '').replace('src/', '')}`));
 
 const logPlugin = { name: 'log', setup(build) { build.onEnd(() => console.log(`[${new Date().toLocaleString('es-ES')}] rebuilt`)); } };
 
 const ctx = await esbuild.context({
     entryPoints: {
-        content: 'src/content.js',
-        popup:   'src/popup.js',
-        options: 'src/options.js',
+        'content-highlight': 'src/content/content-highlight.js',
+        'content-order':     'src/content/content-order.js',
+        popup:               'src/options/popup.js',
+        options:             'src/options/options.js',
     },
     bundle: true,
     minify: !dev,
@@ -46,7 +47,7 @@ if (watch) {
     const { watch: fsWatch } = await import('fs');
     [...staticFiles].forEach(f => {
         fsWatch(f, () => {
-            copyFileSync(f, `dist/${f.replace('src/styles/', '').replace('src/', '')}`);
+            copyFileSync(f, `dist/${f.replace('src/options/styles/', '').replace('src/options/', '').replace('src/', '')}`);
             console.log(`${ts()} copied ${f}`);
             ctx.rebuild();
         });

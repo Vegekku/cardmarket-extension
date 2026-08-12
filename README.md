@@ -52,22 +52,29 @@ Los usuarios introducidos se guardan en `chrome.storage.sync`, vinculados al per
 ```
 cardmarket-extension/
 ├── src/
-│   ├── content.js         # Script inyectado: resalta usuarios en la página y persiste el idioma
-│   ├── defaults.js        # Constantes de valores por defecto compartidas entre módulos
-│   ├── i18n.js            # Traducciones de la UI (es, en, fr, de, it)
-│   ├── popup.html         # Popup del icono de la extensión
-│   ├── popup.js           # Lógica del popup
-│   ├── options.html       # Página de opciones de la extensión
-│   ├── options.js         # Lógica de la página de opciones
-│   ├── preview.html       # Fragmento HTML para la previsualización de colores
-│   ├── order-features.js  # Lógica compartida de features de pedido (imágenes inline, opacidad, checkbox size)
-│   ├── order-preview.html # Fragmento HTML para la previsualización de pedido en opciones
-│   └── styles/
-│       ├── common.css     # Estilos compartidos (popup y opciones)
-│       ├── popup.css      # Estilos específicos del popup
-│       ├── options.css    # Estilos específicos de opciones
-│       ├── preview.css    # Estilos de la previsualización de colores
-│       └── order-preview.css # Estilos de la previsualización de pedido
+│   ├── content/
+│   │   ├── content-common.js      # Inicialización compartida entre content scripts (idioma)
+│   │   ├── content-highlight.js   # Resaltado de usuarios en páginas de Products
+│   │   └── content-order.js       # Features de pedido (imágenes inline, opacidad, checkbox)
+│   ├── options/
+│   │   ├── options-preview.js     # Lógica de previsualizaciones (colores y pedido)
+│   │   ├── options.js             # Lógica de la página de opciones
+│   │   ├── options.html           # Página de opciones de la extensión
+│   │   ├── popup.js               # Lógica del popup
+│   │   ├── popup.html             # Popup del icono de la extensión
+│   │   ├── preview.html           # Fragmento HTML para la previsualización de colores
+│   │   ├── order-preview.html     # Fragmento HTML para la previsualización de pedido
+│   │   └── styles/
+│   │       ├── common.css         # Estilos compartidos (popup y opciones)
+│   │       ├── popup.css          # Estilos específicos del popup
+│   │       ├── options.css        # Estilos específicos de opciones
+│   │       ├── preview.css        # Estilos de la previsualización de colores
+│   │       └── order-preview.css  # Estilos de la previsualización de pedido
+│   └── shared/
+│       ├── color-utils.js         # Conversión entre formatos rgba y hex
+│       ├── defaults.js            # Constantes de valores por defecto compartidas
+│       ├── i18n.js                # Traducciones de la UI (es, en, fr, de, it)
+│       └── order-features.js      # Lógica compartida de features de pedido
 ├── docs/
 │   ├── STORE.md           # Descripción y capturas para la Chrome Web Store
 │   └── privacy.html       # Política de privacidad
