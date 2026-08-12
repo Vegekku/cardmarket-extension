@@ -5,7 +5,7 @@
 | Prioridad | Puntos |
 |-----------|--------|
 | 1 — Bugs críticos | |
-| 2 — Infraestructura y calidad | [2.1](#21-refactorización-de-optionsjs-y-contentjs) |
+| 2 — Infraestructura y calidad | |
 | 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
 | 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket) |
 | 5 — Expansión | |
@@ -27,22 +27,6 @@
 
 ## 2. Infraestructura y calidad
 
-### 2.1 Refactorización de options.js y content.js
-
-Ambos ficheros han crecido orgánicamente y acumulan problemas de calidad que conviene abordar antes de añadir más funcionalidad.
-
-**`options.js`**:
-- La función `init()` es un monolito de ~150 líneas con responsabilidades mezcladas: carga de storage, gestión de estado, event listeners y lógica de UI.
-- El estado mutable (`savedColors`, `savedCheckboxSize`, etc.) está disperso como variables sueltas en el scope de `init()`.
-- `updateButtons()` duplica lógica de comparación que ya existe en el handler de `resetBtn`.
-- `initOrderPreview` recibe controles como parámetro pero `init()` también los referencia directamente — acoplamiento bidireccional innecesario.
-
-**`content.js`**:
-- `initCheckedRowOpacityListener` usa `document._mkmCheckboxHandler` como propiedad del DOM para guardar estado — patrón frágil.
-- La lógica del `_earlyObserver` y `pendingInlineImages` está entrelazada y es difícil de seguir.
-
-Ficheros afectados: `src/options.js`, `src/content.js`.
-
 ---
 
 ## 3. UX / Popup
@@ -57,7 +41,7 @@ Pendiente de analizar:
 
 Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
-Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`.
+Ficheros afectados: `src/content/content-highlight.js`, `src/options/options.html`, `src/options/options.js`.
 
 ### 3.8 Accesibilidad WCAG
 
@@ -78,7 +62,7 @@ Pendiente de decidir la estrategia de verificación, teniendo en cuenta el creci
 - **Fase 1 (ahora)**: añadir regla en `.amazonq/rules/accessibility.md` con checklist WCAG AA/AAA aplicable a cada fichero HTML/CSS tocado. Sin dependencias extra, coste cero.
 - **Fase 2 (cuando exista `options.html` u otro HTML propio)**: integrar `@axe-core/cli` + Playwright como script `npm run a11y` que audite todos los HTML propios de la extensión en un browser headless. Añadir al flujo de cierre de feature como paso previo al commit.
 
-Ficheros afectados: `src/popup.html`, `src/popup.css`, `src/options.html` (futuro), `.amazonq/rules/accessibility.md` (nuevo), `package.json` (fase 2).
+Ficheros afectados: `src/options/popup.html`, `src/options/styles/popup.css`, `src/options/options.html`, `.amazonq/rules/accessibility.md` (nuevo), `package.json` (fase 2).
 
 ### 3.9 Simplificación de selectores y filtros de Cardmarket
 
@@ -90,7 +74,7 @@ Pendiente de analizar:
 
 Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
-Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`.
+Ficheros afectados: `src/content/content-highlight.js`, `src/options/options.html`, `src/options/options.js`.
 
 
 ### 4.1 Colores personalizables por término
@@ -111,7 +95,7 @@ Pendiente de decidir:
 
 El estado activo/inactivo del modo filtro por defecto podría ser configurable desde la página de opciones ([3.5](#35-página-de-opciones)).
 
-Ficheros afectados: `src/content.js`, `src/popup.html`, `src/popup.js`.
+Ficheros afectados: `src/content/content-highlight.js`, `src/options/popup.html`, `src/options/popup.js`.
 
 ### 4.4 Navegación entre coincidencias
 
@@ -126,7 +110,7 @@ Pendiente de analizar:
 - Juegos disponibles a incluir en el selector (Magic, Pokémon, Yu-Gi-Oh!, Digimon, etc.).
 - Dónde inyectar el selector en el DOM sin romper el layout existente.
 
-Ficheros afectados: `src/content.js`.
+Ficheros afectados: `src/content/content-highlight.js`.
 
 ### 4.5 Añadir vendedor al resaltado al comprar sus cartas
 
@@ -136,7 +120,7 @@ Pendiente de decidir:
 - El vendedor añadido automáticamente se resaltará en `rgba(100, 200, 100, 0.25)` — verde suave, reservado para distinguirlo visualmente de los términos manuales. Color descartado para el resaltado general (1.5) por reservarse para este uso.
 - Cómo detectar el evento de "añadir al carrito" en la página de Cardmarket (MutationObserver sobre el DOM o intercepción de la petición de red).
 
-Ficheros afectados: `src/content.js`, `src/popup.js`, `src/background.js`.
+Ficheros afectados: `src/content/content-highlight.js`, `src/options/popup.js`, `src/background.js`.
 
 ### 4.7 Filtro de precio en el listado de vendedores de una carta
 
@@ -148,7 +132,7 @@ Pendiente de analizar:
 - URL pattern de la página de vendedores de una carta para restringir la inyección.
 - Los valores por defecto de precio mínimo y máximo podrían ser configurables desde la página de opciones ([3.5](#35-página-de-opciones)).
 
-Ficheros afectados: `src/content.js`.
+Ficheros afectados: `src/content/content-highlight.js`.
 
 ### 4.8 Mejoras en la vista de pedido con varios juegos
 
@@ -162,7 +146,7 @@ Pendiente de analizar:
 - URL pattern de la página de pedido para restringir la inyección.
 - El estado por defecto (colapsado/expandido) podría ser configurable desde la página de opciones ([3.5](#35-página-de-opciones)).
 
-Ficheros afectados: `src/content.js`.
+Ficheros afectados: `src/content/content-order.js`.
 
 ### 4.9 Pago selectivo de pedidos en el carrito
 
@@ -174,7 +158,7 @@ Pendiente de analizar:
 - Si Cardmarket expone algún mecanismo nativo para eliminar/restaurar pedidos completos o es necesario operar artículo a artículo.
 - URL pattern de la página del carrito para restringir la inyección.
 
-Ficheros afectados: `src/content.js`.
+Ficheros afectados: `src/content/content-order.js`.
 
 ### 4.10 Añadir / quitar vendedor con doble click
 
@@ -184,7 +168,7 @@ Pendiente de decidir:
 - Zona de doble click: fila completa (`div.article-row`) o celda del vendedor (el enlace `a[href*="/Users/"]`).
 - Feedback visual al añadir/quitar (ej. animación breve o cambio de color transitorio).
 
-Ficheros afectados: `src/content.js`.
+Ficheros afectados: `src/content/content-highlight.js`.
 
 ### 4.11 Compatibilidad con Firefox
 
@@ -198,7 +182,7 @@ Pendiente de analizar:
 - Proceso de publicación en [Firefox Add-ons (AMO)](https://addons.mozilla.org/) y diferencias con la Chrome Web Store.
 - Si el script de build (`build.js`) necesita cambios para generar un artefacto separado para Firefox.
 
-Ficheros afectados: `manifest.json`, `build.js`, `package.json`, `src/background.js`, `src/content.js`, `src/popup.js`.
+Ficheros afectados: `manifest.json`, `build.js`, `package.json`, `src/background.js`, `src/content/content-highlight.js`, `src/content/content-order.js`, `src/options/popup.js`.
 
 ### 4.13 Página web pública de la extensión
 
@@ -215,7 +199,7 @@ Pendiente de analizar:
 - Cómo Cardmarket gestiona el cambio de vista (CSS, clases, JS nativo) para reproducir el comportamiento.
 - URL pattern exacto de la página de artículos de vendedor para restringir la inyección.
 
-Ficheros afectados: `src/content.js`.
+Ficheros afectados: `src/content/content-highlight.js`.
 
 ### 4.15 Imágenes inline en más páginas de Cardmarket
 
@@ -229,4 +213,4 @@ Extender la visualización de thumbnails inline (implementada en `/Orders/`) a o
 Pendiente de decidir:
 - Si la activación es global o configurable por tipo de página.
 
-Ficheros afectados: `src/content.js`, `src/options.html`, `src/options.js`, `src/i18n.js`.
+Ficheros afectados: `src/content/content-order.js`, `src/options/options.html`, `src/options/options.js`, `src/shared/i18n.js`.
