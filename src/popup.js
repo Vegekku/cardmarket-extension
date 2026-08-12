@@ -9,7 +9,7 @@ import { loadMessages, applyMessages } from './i18n.js';
  * @param {{ terms?: string[], enabled?: boolean }} data
  */
 function broadcastToCardmarket(data) {
-    chrome.tabs.query({ url: '*://*.cardmarket.com/*/Products/*' }, function(tabs) {
+    chrome.tabs.query({ url: '*://*.cardmarket.com/*' }, function(tabs) {
         tabs.forEach(tab => {
             chrome.tabs.sendMessage(tab.id, { type: 'UPDATE_HIGHLIGHT', data })
                 .catch(() => {});
@@ -56,11 +56,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /**
      * Muestra un mensaje de feedback temporal en el popup.
-     * @param {string} msg
+     * @param {string} text
      */
-    function showFeedback(msg) {
+    function showFeedback(text) {
         clearTimeout(fadeTimer);
-        saveStatus.textContent = msg;
+        saveStatus.textContent = text;
         saveStatus.classList.add('visible');
         fadeTimer = setTimeout(() => saveStatus.classList.remove('visible'), 1000);
     }

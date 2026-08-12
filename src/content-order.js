@@ -12,11 +12,6 @@ const style = document.createElement('style');
 style.textContent = 'table.product-table .form-check-input { width: var(--op-cb-size, 1em) !important; height: var(--op-cb-size, 1em) !important; }';
 document.head.appendChild(style);
 
-// Aplica el tamaño de checkbox inicial
-chrome.storage.sync.get('checkboxSize', data => {
-    applyCheckboxSize(data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
-});
-
 /**
  * Estado de imágenes inline. Lo usa _earlyObserver para procesar nodos
  * inyectados por Ajax antes de que el callback de storage.sync.get haya resuelto.
@@ -64,7 +59,8 @@ function initCheckedRowOpacityListener(enabled, opacity) {
 }
 
 // Carga inicial
-chrome.storage.sync.get(['checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight'], data => {
+chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight'], data => {
+    applyCheckboxSize(data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
     const opacityEnabled = data.checkedOpacityEnabled ?? false;
     const opacity = data.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
     applyCheckedRowOpacity(opacityEnabled, opacity);

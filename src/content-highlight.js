@@ -22,16 +22,6 @@ function resolveColor(colors) {
 let activeObserver = null;
 
 /**
- * Elimina el resaltado de todas las filas previamente marcadas.
- */
-function clearHighlights() {
-    const table = document.getElementById('table');
-    if (table) table.querySelectorAll('div.article-row').forEach(row => {
-        row.style.removeProperty('--bs-table-bg');
-    });
-}
-
-/**
  * Resalta las filas `div.article-row` que contienen un enlace a un usuario
  * cuyo nombre coincide con alguno de los términos dados.
  * @param {string[]} terms
@@ -70,13 +60,11 @@ function observeNewContent(terms, highlightColors) {
  */
 function applyHighlight(data) {
     if (activeObserver) { activeObserver.disconnect(); activeObserver = null; }
-    clearHighlights();
-    if (data.enabled === false) return;
-    if (data.terms && data.terms.length > 0) {
-        const table = document.getElementById('table');
-        if (table) highlightRows(data.terms, table, data.highlightColors);
-        activeObserver = observeNewContent(data.terms, data.highlightColors);
-    }
+    const table = document.getElementById('table');
+    if (table) table.querySelectorAll('div.article-row').forEach(row => row.style.removeProperty('--bs-table-bg'));
+    if (data.enabled === false || !data.terms?.length) return;
+    if (table) highlightRows(data.terms, table, data.highlightColors);
+    activeObserver = observeNewContent(data.terms, data.highlightColors);
 }
 
 // Carga inicial
