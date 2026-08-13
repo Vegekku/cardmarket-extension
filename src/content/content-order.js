@@ -87,7 +87,6 @@ function initGameBlocks() {
 
         const toggleBtn = document.createElement('button');
         toggleBtn.className = 'mkm-game-toggle';
-        toggleBtn.style.cssText = 'background:none; border:none; cursor:pointer; font-size:1em; padding:0; line-height:1;';
         toggleBtn.textContent = '▼';
         toggleBtn.setAttribute('aria-expanded', 'true');
         toggleBtn.addEventListener('click', () => {
@@ -100,7 +99,6 @@ function initGameBlocks() {
         const h3 = header.querySelector('h3');
         const leftGroup = document.createElement('div');
         leftGroup.className = 'mkm-game-left-group';
-        leftGroup.style.cssText = 'display:flex; align-items:center; gap:6px;';
         h3.replaceWith(leftGroup);
         leftGroup.append(toggleBtn, h3);
     });
@@ -112,16 +110,19 @@ function initGameBlocks() {
 
     const detailRow = document.createElement('div');
     detailRow.className = 'mkm-game-subtotal-row';
-    detailRow.style.cssText = 'padding-left:1em;';
     sections.forEach(section => {
         const header = section.querySelector(':scope > div');
         const table = section.querySelector('table[id^="ArticleTable"]');
         if (!header || !table) return;
-        const name = header.querySelector('h3')?.textContent.trim() ?? '';
+        const nameText = header.querySelector('h3')?.textContent.trim() ?? '';
         const row = document.createElement('div');
-        row.className = 'd-flex';
-        row.style.cssText = 'font-size:.9em; opacity:.8;';
-        row.innerHTML = `<span class="flex-grow-1">${name}</span><span>${calcSubtotal(table)}</span>`;
+        row.className = 'd-flex mkm-game-subtotal-item';
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'flex-grow-1';
+        nameSpan.textContent = nameText;
+        const valueSpan = document.createElement('span');
+        valueSpan.textContent = calcSubtotal(table);
+        row.append(nameSpan, valueSpan);
         detailRow.appendChild(row);
     });
     itemValueRow.after(detailRow);
