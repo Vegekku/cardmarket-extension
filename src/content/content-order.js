@@ -60,22 +60,15 @@ function initCheckedRowOpacityListener(enabled, opacity) {
 }
 
 /**
- * Parsea un string de precio con formato "0,14 €" y devuelve el valor numérico.
- * @param {string} text
- * @returns {number}
- */
-function parsePrice(text) {
-    return parseFloat(text.replace(/[^0-9,]/g, '').replace(',', '.')) || 0;
-}
-
-/**
- * Calcula el subtotal de una tabla de artículos sumando las celdas .price.
+ * Calcula el subtotal de una tabla de artículos usando data-amount y data-price de cada fila.
  * @param {Element} table
  * @returns {string} Subtotal formateado con 2 decimales y símbolo €
  */
 function calcSubtotal(table) {
     let total = 0;
-    table.querySelectorAll('td.price').forEach(td => { total += parsePrice(td.textContent); });
+    table.querySelectorAll('tr[data-amount][data-price]').forEach(tr => {
+        total += parseFloat(tr.dataset.amount) * parseFloat(tr.dataset.price);
+    });
     return total.toFixed(2).replace('.', ',') + ' €';
 }
 
