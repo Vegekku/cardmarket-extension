@@ -26,3 +26,12 @@ export const DEFAULT_INLINE_IMAGES_ENABLED = false;
 
 /** @type {number} */
 export const DEFAULT_INLINE_IMAGE_HEIGHT = 24;
+
+/** @type {boolean} */
+export const DEFAULT_GAME_BLOCKS_ENABLED = true;
+
+/** @type {boolean} */
+export const DEFAULT_GAME_BLOCKS_COLLAPSED = false;
+
+/** @type {boolean} */
+export const DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED = true;

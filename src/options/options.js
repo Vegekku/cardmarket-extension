@@ -4,7 +4,7 @@
  * de color de resaltado por modo claro/oscuro.
  */
 import { loadMessages, applyMessages } from '../shared/i18n.js';
-import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from '../shared/defaults.js';
+import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT, DEFAULT_GAME_BLOCKS_ENABLED, DEFAULT_GAME_BLOCKS_COLLAPSED, DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED } from '../shared/defaults.js';
 import { rgbaToHex, hexToRgba } from '../shared/color-utils.js';
 import { initPreview, updateColorPreview, initOrderPreview } from './options-preview.js';
 
@@ -51,6 +51,11 @@ function init() {
     const inlineImageHeightInput = document.getElementById('inlineImageHeight');
     const inlineImageHeightValue = document.getElementById('inlineImageHeightValue');
     const inlineImageHeightRow = document.getElementById('inlineImageHeightRow');
+    const gameBlocksEnabled = document.getElementById('gameBlocksEnabled');
+    const gameBlocksCollapsed = document.getElementById('gameBlocksCollapsed');
+    const gameBlocksCollapsedRow = document.getElementById('gameBlocksCollapsedRow');
+    const gameBlocksSubtotalEnabled = document.getElementById('gameBlocksSubtotalEnabled');
+    const gameBlocksSubtotalRow = document.getElementById('gameBlocksSubtotalRow');
 
     const defaultHexLight = rgbaToHex(DEFAULT_COLORS.light);
     const defaultHexDark = rgbaToHex(DEFAULT_COLORS.dark);
@@ -66,6 +71,9 @@ function init() {
         checkedOpacityEnabled: DEFAULT_CHECKED_OPACITY_ENABLED,
         inlineImagesEnabled: DEFAULT_INLINE_IMAGES_ENABLED,
         inlineImageHeight: DEFAULT_INLINE_IMAGE_HEIGHT,
+        gameBlocksEnabled: DEFAULT_GAME_BLOCKS_ENABLED,
+        gameBlocksCollapsed: DEFAULT_GAME_BLOCKS_COLLAPSED,
+        gameBlocksSubtotalEnabled: DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED,
     };
 
     /**
@@ -78,14 +86,20 @@ function init() {
             || checkedOpacityEnabled.checked !== saved.checkedOpacityEnabled
             || (checkedOpacityEnabled.checked && parseFloat(checkedOpacityInput.value) !== saved.checkedOpacity)
             || inlineImagesEnabled.checked !== saved.inlineImagesEnabled
-            || (inlineImagesEnabled.checked && parseInt(inlineImageHeightInput.value) !== saved.inlineImageHeight);
+            || (inlineImagesEnabled.checked && parseInt(inlineImageHeightInput.value) !== saved.inlineImageHeight)
+            || gameBlocksEnabled.checked !== saved.gameBlocksEnabled
+            || (gameBlocksEnabled.checked && gameBlocksCollapsed.checked !== saved.gameBlocksCollapsed)
+            || gameBlocksSubtotalEnabled.checked !== saved.gameBlocksSubtotalEnabled;
         const isDefault = lightInput.value === defaultHexLight
             && darkInput.value === defaultHexDark
             && parseFloat(checkboxSizeInput.value) === DEFAULT_CHECKBOX_SIZE
             && checkedOpacityEnabled.checked === DEFAULT_CHECKED_OPACITY_ENABLED
             && parseFloat(checkedOpacityInput.value) === DEFAULT_CHECKED_OPACITY
             && inlineImagesEnabled.checked === DEFAULT_INLINE_IMAGES_ENABLED
-            && parseInt(inlineImageHeightInput.value) === DEFAULT_INLINE_IMAGE_HEIGHT;
+            && parseInt(inlineImageHeightInput.value) === DEFAULT_INLINE_IMAGE_HEIGHT
+            && gameBlocksEnabled.checked === DEFAULT_GAME_BLOCKS_ENABLED
+            && gameBlocksCollapsed.checked === DEFAULT_GAME_BLOCKS_COLLAPSED
+            && gameBlocksSubtotalEnabled.checked === DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED;
         saveBtn.disabled = !changed;
         resetBtn.disabled = isDefault;
     }
@@ -107,6 +121,11 @@ function init() {
         inlineImageHeightInput.value = saved.inlineImageHeight;
         inlineImageHeightValue.textContent = `${saved.inlineImageHeight}px`;
         inlineImageHeightRow.hidden = !saved.inlineImagesEnabled;
+        gameBlocksEnabled.checked = saved.gameBlocksEnabled;
+        gameBlocksCollapsedRow.hidden = !saved.gameBlocksEnabled;
+        gameBlocksCollapsed.checked = saved.gameBlocksCollapsed;
+        gameBlocksSubtotalRow.hidden = !saved.gameBlocksEnabled;
+        gameBlocksSubtotalEnabled.checked = saved.gameBlocksSubtotalEnabled;
         updateColorPreview(lightRows, darkRows, lightInput.value, darkInput.value);
         updateButtons();
         orderPreview.applyCheckboxSize();
@@ -116,13 +135,16 @@ function init() {
 
     const orderPreview = initOrderPreview({ checkboxSizeInput, checkedOpacityEnabled, checkedOpacityInput, inlineImagesEnabled, inlineImageHeightInput });
 
-    chrome.storage.sync.get(['highlightColors', 'checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight'], data => {
+    chrome.storage.sync.get(['highlightColors', 'checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled'], data => {
         saved.colors = { ...DEFAULT_COLORS, ...(data.highlightColors || {}) };
         saved.checkboxSize = data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE;
         saved.checkedOpacity = data.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
         saved.checkedOpacityEnabled = data.checkedOpacityEnabled ?? DEFAULT_CHECKED_OPACITY_ENABLED;
         saved.inlineImagesEnabled = data.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED;
         saved.inlineImageHeight = data.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT;
+        saved.gameBlocksEnabled = data.gameBlocksEnabled ?? DEFAULT_GAME_BLOCKS_ENABLED;
+        saved.gameBlocksCollapsed = data.gameBlocksCollapsed ?? DEFAULT_GAME_BLOCKS_COLLAPSED;
+        saved.gameBlocksSubtotalEnabled = data.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED;
         applyStateToUI();
     });
 
@@ -151,6 +173,13 @@ function init() {
         inlineImageHeightValue.textContent = `${inlineImageHeightInput.value}px`;
         updateButtons();
     });
+    gameBlocksEnabled.addEventListener('change', () => {
+        gameBlocksCollapsedRow.hidden = !gameBlocksEnabled.checked;
+        gameBlocksSubtotalRow.hidden = !gameBlocksEnabled.checked;
+        updateButtons();
+    });
+    gameBlocksCollapsed.addEventListener('change', updateButtons);
+    gameBlocksSubtotalEnabled.addEventListener('change', updateButtons);
 
     loadMessages().then(m => {
         document.title = m.optionsTitle;
@@ -170,26 +199,35 @@ function init() {
             const checkedOpacityEnabledVal = checkedOpacityEnabled.checked;
             const inlineImagesEnabledVal = inlineImagesEnabled.checked;
             const inlineImageHeight = parseInt(inlineImageHeightInput.value);
-            chrome.storage.sync.set({ highlightColors: colors, checkboxSize, checkedOpacity, checkedOpacityEnabled: checkedOpacityEnabledVal, inlineImagesEnabled: inlineImagesEnabledVal, inlineImageHeight }, () => {
+            const gameBlocksEnabledVal = gameBlocksEnabled.checked;
+            const gameBlocksCollapsedVal = gameBlocksCollapsed.checked;
+            const gameBlocksSubtotalEnabledVal = gameBlocksSubtotalEnabled.checked;
+            chrome.storage.sync.set({ highlightColors: colors, checkboxSize, checkedOpacity, checkedOpacityEnabled: checkedOpacityEnabledVal, inlineImagesEnabled: inlineImagesEnabledVal, inlineImageHeight, gameBlocksEnabled: gameBlocksEnabledVal, gameBlocksCollapsed: gameBlocksCollapsedVal, gameBlocksSubtotalEnabled: gameBlocksSubtotalEnabledVal }, () => {
                 saved.colors = { ...colors };
                 saved.checkboxSize = checkboxSize;
                 saved.checkedOpacity = checkedOpacity;
                 saved.checkedOpacityEnabled = checkedOpacityEnabledVal;
                 saved.inlineImagesEnabled = inlineImagesEnabledVal;
                 saved.inlineImageHeight = inlineImageHeight;
+                saved.gameBlocksEnabled = gameBlocksEnabledVal;
+                saved.gameBlocksCollapsed = gameBlocksCollapsedVal;
+                saved.gameBlocksSubtotalEnabled = gameBlocksSubtotalEnabledVal;
                 updateButtons();
                 showStatus(`${m.saved} ✓`);
             });
         });
 
         resetBtn.addEventListener('click', () => {
-            chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS, checkboxSize: DEFAULT_CHECKBOX_SIZE, checkedOpacity: DEFAULT_CHECKED_OPACITY, checkedOpacityEnabled: DEFAULT_CHECKED_OPACITY_ENABLED, inlineImagesEnabled: DEFAULT_INLINE_IMAGES_ENABLED, inlineImageHeight: DEFAULT_INLINE_IMAGE_HEIGHT }, () => {
+            chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS, checkboxSize: DEFAULT_CHECKBOX_SIZE, checkedOpacity: DEFAULT_CHECKED_OPACITY, checkedOpacityEnabled: DEFAULT_CHECKED_OPACITY_ENABLED, inlineImagesEnabled: DEFAULT_INLINE_IMAGES_ENABLED, inlineImageHeight: DEFAULT_INLINE_IMAGE_HEIGHT, gameBlocksEnabled: DEFAULT_GAME_BLOCKS_ENABLED, gameBlocksCollapsed: DEFAULT_GAME_BLOCKS_COLLAPSED, gameBlocksSubtotalEnabled: DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED }, () => {
                 saved.colors = { ...DEFAULT_COLORS };
                 saved.checkboxSize = DEFAULT_CHECKBOX_SIZE;
                 saved.checkedOpacity = DEFAULT_CHECKED_OPACITY;
                 saved.checkedOpacityEnabled = DEFAULT_CHECKED_OPACITY_ENABLED;
                 saved.inlineImagesEnabled = DEFAULT_INLINE_IMAGES_ENABLED;
                 saved.inlineImageHeight = DEFAULT_INLINE_IMAGE_HEIGHT;
+                saved.gameBlocksEnabled = DEFAULT_GAME_BLOCKS_ENABLED;
+                saved.gameBlocksCollapsed = DEFAULT_GAME_BLOCKS_COLLAPSED;
+                saved.gameBlocksSubtotalEnabled = DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED;
                 applyStateToUI();
                 showStatus(`${m.resetStatus} ✓`);
             });

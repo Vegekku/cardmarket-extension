@@ -5,7 +5,7 @@
  * y mejoras de vista multi-juego (colapsar/expandir bloques y subtotal por juego).
  */
 import './content-common.js';
-import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from '../shared/defaults.js';
+import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT, DEFAULT_GAME_BLOCKS_ENABLED, DEFAULT_GAME_BLOCKS_COLLAPSED, DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED } from '../shared/defaults.js';
 import { injectThumbnail, applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from '../shared/order-features.js';
 
 // Inyecta el estilo estático de la custom property para el tamaño de checkbox
@@ -82,8 +82,11 @@ function calcSubtotal(table) {
 /**
  * Inyecta toggles de colapsar/expandir en cada bloque de juego.
  * Si hay más de un bloque, también inyecta subtotales por juego en .summary.
+ * @param {boolean} togglesEnabled
+ * @param {boolean} defaultCollapsed
+ * @param {boolean} subtotalEnabled
  */
-function initGameBlocks() {
+function initGameBlocks(togglesEnabled, defaultCollapsed, subtotalEnabled) {
     const sections = document.querySelectorAll('.category-subsection');
     if (!sections.length) return;
     /** @type {{ name: string, subtotal: string }[]} */
@@ -93,28 +96,31 @@ function initGameBlocks() {
         const table = section.querySelector('table[id^="ArticleTable"]');
         if (!header || !table) return;
 
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'mkm-game-toggle';
-        toggleBtn.style.cssText = 'background:none; border:none; cursor:pointer; font-size:1em; padding:0; line-height:1;';
-        toggleBtn.textContent = '▼';
-        toggleBtn.setAttribute('aria-expanded', 'true');
-        toggleBtn.addEventListener('click', () => {
-            const collapsed = table.style.display === 'none';
-            table.style.display = collapsed ? '' : 'none';
-            toggleBtn.textContent = collapsed ? '▼' : '▶';
-            toggleBtn.setAttribute('aria-expanded', String(collapsed));
-        });
+        if (togglesEnabled) {
+            if (defaultCollapsed) table.style.display = 'none';
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'mkm-game-toggle';
+            toggleBtn.style.cssText = 'background:none; border:none; cursor:pointer; font-size:1em; padding:0; line-height:1;';
+            toggleBtn.textContent = defaultCollapsed ? '▶' : '▼';
+            toggleBtn.setAttribute('aria-expanded', String(!defaultCollapsed));
+            toggleBtn.addEventListener('click', () => {
+                const collapsed = table.style.display === 'none';
+                table.style.display = collapsed ? '' : 'none';
+                toggleBtn.textContent = collapsed ? '▼' : '▶';
+                toggleBtn.setAttribute('aria-expanded', String(collapsed));
+            });
 
-        const h3 = header.querySelector('h3');
-        const leftGroup = document.createElement('div');
-        leftGroup.style.cssText = 'display:flex; align-items:center; gap:6px;';
-        h3.replaceWith(leftGroup);
-        leftGroup.append(toggleBtn, h3);
+            const h3 = header.querySelector('h3');
+            const leftGroup = document.createElement('div');
+            leftGroup.style.cssText = 'display:flex; align-items:center; gap:6px;';
+            h3.replaceWith(leftGroup);
+            leftGroup.append(toggleBtn, h3);
+        }
 
-        gameSubtotals.push({ name: h3.textContent.trim(), subtotal: calcSubtotal(table) });
+        gameSubtotals.push({ name: (header.querySelector('h3') ?? header).textContent.trim(), subtotal: calcSubtotal(table) });
     });
 
-    if (sections.length < 2) return;
+    if (!subtotalEnabled || sections.length < 2) return;
 
     const itemValueRow = document.querySelector('.summary .item-value')?.closest('.d-flex');
     if (!itemValueRow) return;
@@ -127,10 +133,13 @@ function initGameBlocks() {
     });
 }
 
-initGameBlocks();
-
 // Carga inicial
-chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight'], data => {
+chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled'], data => {
+    initGameBlocks(
+        data.gameBlocksEnabled ?? DEFAULT_GAME_BLOCKS_ENABLED,
+        data.gameBlocksCollapsed ?? DEFAULT_GAME_BLOCKS_COLLAPSED,
+        data.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED
+    );
     applyCheckboxSize(data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
     const opacityEnabled = data.checkedOpacityEnabled ?? false;
     const opacity = data.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
