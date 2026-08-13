@@ -181,6 +181,17 @@ function init() {
         const themeLabel = document.getElementById('orderPreviewThemeLabel');
         if (themeLabel) themeLabel.textContent = m.orderPreviewTheme ?? 'Modo oscuro';
 
+        const feedbackLink = document.getElementById('about-feedback');
+        if (feedbackLink) {
+            chrome.storage.local.get('lang', data => {
+                const lang = data.lang || 'es';
+                const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                const version = chrome.runtime.getManifest().version;
+                const params = new URLSearchParams({ version, lang, theme });
+                feedbackLink.href = `https://vegekku.github.io/cardmarket-extension/feedback.html?${params}`;
+            });
+        }
+
         saveBtn.addEventListener('click', () => {
             const colors = {
                 light: hexToRgba(lightInput.value),
