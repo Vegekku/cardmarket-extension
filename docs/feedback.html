@@ -149,7 +149,6 @@
     const params = new URLSearchParams(location.search);
     const meta = {
       version: params.get('version') || '',
-      browser: params.get('browser') || '',
       lang:    params.get('lang')    || 'es',
       theme:   params.get('theme')   || '',
     };
@@ -184,7 +183,6 @@
             description: form.description.value,
             url:         form.url.value,
             version:     meta.version,
-            browser:     meta.browser,
             lang:        meta.lang,
             theme:       meta.theme,
           }),

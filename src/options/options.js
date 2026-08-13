@@ -187,8 +187,7 @@ function init() {
                 const lang = data.lang || 'es';
                 const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
                 const version = chrome.runtime.getManifest().version;
-                const browser = navigator.userAgent;
-                const params = new URLSearchParams({ version, browser, lang, theme });
+                const params = new URLSearchParams({ version, lang, theme });
                 feedbackLink.href = `https://vegekku.github.io/cardmarket-extension/feedback.html?${params}`;
             });
         }
