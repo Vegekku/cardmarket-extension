@@ -7,7 +7,7 @@
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
 | 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
-| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.16](#416-formulario-de-feedback-abierto), [4.17](#417-features-de-pedido-en-el-carrito-de-compra) |
+| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-reescritura-de-enlaces-del-selector-de-juego-en-contexto-de-usuario), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.16](#416-formulario-de-feedback-abierto), [4.17](#417-features-de-pedido-en-el-carrito-de-compra) |
 | 5 — Brainstorming | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
 ---
@@ -77,6 +77,9 @@ Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/options.html`, `src/options/options.js`.
 
+---
+
+## 4. Funcionalidad nueva
 
 ### 4.3 Modo filtro: mostrar solo vendedores resaltados
 
@@ -94,17 +97,6 @@ El estado activo/inactivo del modo filtro por defecto podría ser configurable d
 
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/popup.html`, `src/options/popup.js`.
 
-### 4.6 Selector de juego en el perfil de un vendedor
-
-Cuando el usuario está en el perfil de un vendedor viendo cartas de un juego concreto (ej. Digimon), no hay forma de cambiar al catálogo de otro juego (ej. Pokémon) sin salir del perfil y navegar manualmente o editar la URL. Inyectar un selector de juego directamente en la página del perfil del vendedor que permita cambiar de juego sin perder el contexto del usuario.
-
-Pendiente de analizar:
-- Estructura de la URL del perfil de vendedor por juego en Cardmarket para construir los enlaces del selector.
-- Juegos disponibles a incluir en el selector (Magic, Pokémon, Yu-Gi-Oh!, Digimon, etc.).
-- Dónde inyectar el selector en el DOM sin romper el layout existente.
-
-Ficheros afectados: `src/content/content-highlight.js`.
-
 ### 4.5 Añadir vendedor al resaltado al comprar sus cartas
 
 Cuando el usuario añade cartas de un vendedor concreto al carrito, añadir automáticamente el nombre de ese vendedor a la lista de términos resaltados. El objetivo es facilitar la localización visual de ese vendedor en listados de cartas para construir pedidos.
@@ -114,6 +106,19 @@ Pendiente de decidir:
 - Cómo detectar el evento de "añadir al carrito" en la página de Cardmarket (MutationObserver sobre el DOM o intercepción de la petición de red).
 
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/popup.js`, `src/background.js`.
+
+### 4.6 Reescritura de enlaces del selector de juego en contexto de usuario
+
+Cuando la URL activa es de un usuario (`/{lang}/{game}/Users/{username}[/...]`), los enlaces del selector de juego nativo de Cardmarket apuntan a la home del juego (`/{lang}/{newGame}`), sacando al usuario del perfil. La extensión reescribe esos `href` para que apunten a `/{lang}/{newGame}/Users/{username}`, manteniendo el contexto del vendedor.
+
+Decisiones de diseño:
+- **Subpath** (`/Offers/Singles`, etc.): se descarta. Los subpaths pueden ser específicos del juego actual y no tienen equivalente garantizado en el destino. Se navega siempre a `/Users/{username}`.
+- **Query params**: se descartan todos. `idExpansion` es específico del juego actual; `sortBy` y similares son genéricos pero su presencia en la URL destino puede causar comportamientos inesperados si la página no los espera. Coste de descartarlos: mínimo.
+- **Detección de URL de usuario**: patrón `/{lang}/{game}/Users/{username}` — se activa solo en estas páginas, no en el resto de Cardmarket.
+- **Momento de reescritura**: al cargar la página. No es necesario MutationObserver salvo que el selector de juego se renderice de forma diferida (pendiente de verificar).
+- **Selector DOM del menú de juegos**: pendiente de inspeccionar en Cardmarket para identificar los `<a>` del dropdown de juego.
+
+Ficheros afectados: `src/content/content-game-switcher.js` (nuevo), `manifest.json`.
 
 ### 4.7 Filtro de precio en el listado de vendedores de una carta
 
