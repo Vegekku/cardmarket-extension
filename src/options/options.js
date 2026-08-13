@@ -42,7 +42,6 @@ function init() {
     const saveBtn = document.getElementById('save');
     const resetBtn = document.getElementById('reset');
     const checkboxSizeInput = document.getElementById('checkboxSize');
-    const checkboxSizePreview = document.getElementById('checkboxSizePreview');
     const checkedOpacityInput = document.getElementById('checkedOpacity');
     const checkedOpacityValue = document.getElementById('checkedOpacityValue');
     const checkedOpacityEnabled = document.getElementById('checkedOpacityEnabled');
@@ -55,7 +54,6 @@ function init() {
     const gameBlocksCollapsed = document.getElementById('gameBlocksCollapsed');
     const gameBlocksCollapsedRow = document.getElementById('gameBlocksCollapsedRow');
     const gameBlocksSubtotalEnabled = document.getElementById('gameBlocksSubtotalEnabled');
-    const gameBlocksSubtotalRow = document.getElementById('gameBlocksSubtotalRow');
 
     const defaultHexLight = rgbaToHex(DEFAULT_COLORS.light);
     const defaultHexDark = rgbaToHex(DEFAULT_COLORS.dark);
@@ -111,8 +109,6 @@ function init() {
         lightInput.value = rgbaToHex(saved.colors.light);
         darkInput.value = rgbaToHex(saved.colors.dark);
         checkboxSizeInput.value = saved.checkboxSize;
-        checkboxSizePreview.style.width = `${saved.checkboxSize}em`;
-        checkboxSizePreview.style.height = `${saved.checkboxSize}em`;
         checkedOpacityInput.value = saved.checkedOpacity;
         checkedOpacityValue.textContent = saved.checkedOpacity;
         checkedOpacityEnabled.checked = saved.checkedOpacityEnabled;
@@ -124,7 +120,6 @@ function init() {
         gameBlocksEnabled.checked = saved.gameBlocksEnabled;
         gameBlocksCollapsedRow.hidden = !saved.gameBlocksEnabled;
         gameBlocksCollapsed.checked = saved.gameBlocksCollapsed;
-        gameBlocksSubtotalRow.hidden = !saved.gameBlocksEnabled;
         gameBlocksSubtotalEnabled.checked = saved.gameBlocksSubtotalEnabled;
         updateColorPreview(lightRows, darkRows, lightInput.value, darkInput.value);
         updateButtons();
@@ -153,8 +148,6 @@ function init() {
         updateButtons();
     }));
     checkboxSizeInput.addEventListener('input', () => {
-        checkboxSizePreview.style.width = `${checkboxSizeInput.value}em`;
-        checkboxSizePreview.style.height = `${checkboxSizeInput.value}em`;
         updateButtons();
     });
     checkedOpacityEnabled.addEventListener('change', () => {
@@ -175,7 +168,6 @@ function init() {
     });
     gameBlocksEnabled.addEventListener('change', () => {
         gameBlocksCollapsedRow.hidden = !gameBlocksEnabled.checked;
-        gameBlocksSubtotalRow.hidden = !gameBlocksEnabled.checked;
         updateButtons();
     });
     gameBlocksCollapsed.addEventListener('change', updateButtons);
