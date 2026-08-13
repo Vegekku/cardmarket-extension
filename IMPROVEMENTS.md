@@ -7,7 +7,7 @@
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
 | 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
-| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket) |
+| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.16](#416-formulario-de-feedback-abierto) |
 | 5 — Brainstorming | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
 ---
@@ -207,6 +207,21 @@ Pendiente de decidir:
 - Si la activación es global o configurable por tipo de página.
 
 Ficheros afectados: `src/content/content-order.js`, `src/options/options.html`, `src/options/options.js`, `src/shared/i18n.js`.
+
+### 4.16 Formulario de feedback abierto
+
+Sustituir el canal de feedback basado en issues de GitHub (solo accesible para usuarios con cuenta) por un Google Form público y abierto, accesible a cualquier usuario de la extensión.
+
+El enlace al formulario se expone en:
+- Página de opciones (`options.html`) — sección o pie de página con enlace al formulario.
+- `README.md` — sección de contribución o feedback.
+- `docs/STORE.md` — descripción de la Chrome Web Store.
+
+Pendiente de analizar:
+- Campos del formulario (tipo de feedback, descripción, versión de la extensión, idioma, etc.).
+- Si se quiere pre-rellenar algún campo con la versión actual de la extensión vía parámetros de URL del formulario.
+
+Ficheros afectados: `src/options/options.html`, `src/options/styles/options.css`, `README.md`, `docs/STORE.md`.
 
 ---
 
