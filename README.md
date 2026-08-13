@@ -22,6 +22,8 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Permite ajustar el tamaño de los checkboxes en el listado de pedido (rango de 1em a 3em, con previsualización en vivo del checkbox).
 - Permite activar el atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
 - Permite activar la visualización de imágenes de cartas inline en el listado de pedido, con altura configurable.
+- Permite activar categorías colapsables en el pedido (toggle por bloque de juego) y configurar si están colapsadas por defecto.
+- Permite activar el desglose del valor del pedido por categoría de juego.
 - Incluye previsualización en vivo de la sección Pedido (checkboxes, opacidad e imágenes inline) con toggle de modo claro/oscuro.
 
 ## Instalación
@@ -55,7 +57,8 @@ cardmarket-extension/
 │   ├── content/
 │   │   ├── content-common.js      # Inicialización compartida entre content scripts (idioma)
 │   │   ├── content-highlight.js   # Resaltado de usuarios en páginas de Products
-│   │   └── content-order.js       # Features de pedido (imágenes inline, opacidad, checkbox)
+│   │   ├── content-order.js       # Features de pedido (imágenes inline, opacidad, checkbox, bloques por juego)
+│   │   └── content-order.css      # Estilos inyectados por content-order.js
 │   ├── options/
 │   │   ├── options-preview.js     # Lógica de previsualizaciones (colores y pedido)
 │   │   ├── options.js             # Lógica de la página de opciones
@@ -85,6 +88,8 @@ cardmarket-extension/
 │   └── icon128.png
 ├── build.js               # Script de build (esbuild)
 ├── zip.js                 # Genera el zip para la Chrome Web Store
+├── .githooks/
+│   └── pre-commit         # Hook que bloquea commits directos en main y develop
 ├── package.json
 ├── manifest.json          # Configuración de la extensión
 ├── CHANGELOG.md           # Historial de versiones

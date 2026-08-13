@@ -16,9 +16,10 @@ const staticFiles = [
     'icons/icon16.png', 'icons/icon48.png', 'icons/icon128.png',
     'src/options/popup.html', 'src/options/options.html',
     'src/options/styles/common.css', 'src/options/styles/popup.css', 'src/options/styles/options.css', 'src/options/styles/preview.css', 'src/options/styles/order-preview.css',
+    'src/content/content-order.css',
     'manifest.json'
 ];
-staticFiles.forEach(f => copyFileSync(f, `dist/${f.replace('src/options/styles/', '').replace('src/options/', '').replace('src/', '')}`));
+staticFiles.forEach(f => copyFileSync(f, `dist/${f.replace('src/options/styles/', '').replace('src/options/', '').replace('src/content/', '').replace('src/', '')}`));
 
 const logPlugin = { name: 'log', setup(build) { build.onEnd(() => console.log(`[${new Date().toLocaleString('es-ES')}] rebuilt`)); } };
 
@@ -47,7 +48,7 @@ if (watch) {
     const { watch: fsWatch } = await import('fs');
     [...staticFiles].forEach(f => {
         fsWatch(f, () => {
-            copyFileSync(f, `dist/${f.replace('src/options/styles/', '').replace('src/options/', '').replace('src/', '')}`);
+            copyFileSync(f, `dist/${f.replace('src/options/styles/', '').replace('src/options/', '').replace('src/content/', '').replace('src/', '')}`);
             console.log(`${ts()} copied ${f}`);
             ctx.rebuild();
         });
