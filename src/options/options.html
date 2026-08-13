@@ -45,14 +45,45 @@
         <div id="previewDark" class="preview-wrap" data-bs-theme="dark"></div>
 
         <h2 data-i18n="h2OrderSettings"></h2>
+
         <div class="row">
+          <div>
+            <label data-i18n="labelGameBlocksEnabled"></label>
+            <div class="hint" data-i18n="hintGameBlocksEnabled"></div>
+          </div>
+          <label class="toggle-label toggle-right">
+            <input type="checkbox" id="gameBlocksEnabled">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </label>
+        </div>
+        <div class="row" id="gameBlocksCollapsedRow" hidden>
+          <div>
+            <label for="gameBlocksCollapsed" data-i18n="labelGameBlocksCollapsed"></label>
+          </div>
+          <label class="toggle-label toggle-right">
+            <input type="checkbox" id="gameBlocksCollapsed">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </label>
+        </div>
+
+        <div class="row section-start">
+          <div>
+            <label data-i18n="labelGameBlocksSubtotalEnabled"></label>
+            <div class="hint" data-i18n="hintGameBlocksSubtotalEnabled"></div>
+          </div>
+          <label class="toggle-label toggle-right">
+            <input type="checkbox" id="gameBlocksSubtotalEnabled">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </label>
+        </div>
+
+        <div class="row section-start">
           <div>
             <label for="checkboxSize" data-i18n="labelCheckboxSize"></label>
             <div class="hint" data-i18n="hintCheckboxSize"></div>
           </div>
           <div class="range-control">
             <input type="range" id="checkboxSize" min="1" max="3" step="0.25">
-            <input type="checkbox" id="checkboxSizePreview">
           </div>
         </div>
 

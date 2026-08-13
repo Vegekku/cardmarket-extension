@@ -1,0 +1,23 @@
+.mkm-game-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0;
+    line-height: 1;
+}
+
+.mkm-game-left-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mkm-game-subtotal-row {
+    padding-left: 1em;
+}
+
+.mkm-game-subtotal-row .mkm-game-subtotal-item {
+    font-size: .9em;
+    opacity: .8;
+}

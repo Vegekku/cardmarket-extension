@@ -32,7 +32,8 @@
         },
         {
             "matches": ["*://*.cardmarket.com/*/Orders/*"],
-            "js": ["content-order.js"]
+            "js": ["content-order.js"],
+            "css": ["content-order.css"]
         }
     ]
 }

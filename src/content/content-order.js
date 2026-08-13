@@ -1,10 +1,11 @@
 /**
  * @module content-order
  * @description Inyectado en páginas de Orders de Cardmarket.
- * Gestiona imágenes inline, opacidad de filas marcadas y tamaño de checkbox.
+ * Gestiona imágenes inline, opacidad de filas marcadas, tamaño de checkbox
+ * y mejoras de vista multi-juego (colapsar/expandir bloques y subtotal por juego).
  */
 import './content-common.js';
-import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT } from '../shared/defaults.js';
+import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT, DEFAULT_GAME_BLOCKS_ENABLED, DEFAULT_GAME_BLOCKS_COLLAPSED, DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED } from '../shared/defaults.js';
 import { injectThumbnail, applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from '../shared/order-features.js';
 
 // Inyecta el estilo estático de la custom property para el tamaño de checkbox
@@ -58,8 +59,108 @@ function initCheckedRowOpacityListener(enabled, opacity) {
     document.addEventListener('change', _checkboxHandler);
 }
 
+/**
+ * Calcula el subtotal de una tabla de artículos usando data-amount y data-price de cada fila.
+ * @param {Element} table
+ * @returns {string} Subtotal formateado con 2 decimales y símbolo €
+ */
+function calcSubtotal(table) {
+    let total = 0;
+    table.querySelectorAll('tr[data-amount][data-price]').forEach(tr => {
+        total += parseFloat(tr.dataset.amount) * parseFloat(tr.dataset.price);
+    });
+    return total.toFixed(2).replace('.', ',') + ' €';
+}
+
+/**
+ * Inyecta toggles y la fila de desglose una única vez al cargar la página.
+ * La visibilidad y el estado se controlan mediante applyGameBlocksState.
+ */
+function initGameBlocks() {
+    const sections = document.querySelectorAll('.category-subsection');
+    if (!sections.length) return;
+
+    sections.forEach(section => {
+        const header = section.querySelector(':scope > div');
+        const table = section.querySelector('table[id^="ArticleTable"]');
+        if (!header || !table) return;
+
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'mkm-game-toggle';
+        toggleBtn.textContent = '▼';
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        toggleBtn.addEventListener('click', () => {
+            const collapsed = table.style.display === 'none';
+            table.style.display = collapsed ? '' : 'none';
+            toggleBtn.textContent = collapsed ? '▼' : '▶';
+            toggleBtn.setAttribute('aria-expanded', String(collapsed));
+        });
+
+        const h3 = header.querySelector('h3');
+        const leftGroup = document.createElement('div');
+        leftGroup.className = 'mkm-game-left-group';
+        h3.replaceWith(leftGroup);
+        leftGroup.append(toggleBtn, h3);
+    });
+
+    if (sections.length < 2) return;
+
+    const itemValueRow = document.querySelector('.summary .item-value')?.closest('.d-flex');
+    if (!itemValueRow) return;
+
+    const detailRow = document.createElement('div');
+    detailRow.className = 'mkm-game-subtotal-row';
+    sections.forEach(section => {
+        const header = section.querySelector(':scope > div');
+        const table = section.querySelector('table[id^="ArticleTable"]');
+        if (!header || !table) return;
+        const nameText = header.querySelector('h3')?.textContent.trim() ?? '';
+        const row = document.createElement('div');
+        row.className = 'd-flex mkm-game-subtotal-item';
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'flex-grow-1';
+        nameSpan.textContent = nameText;
+        const valueSpan = document.createElement('span');
+        valueSpan.textContent = calcSubtotal(table);
+        row.append(nameSpan, valueSpan);
+        detailRow.appendChild(row);
+    });
+    itemValueRow.after(detailRow);
+}
+
+/**
+ * Aplica visibilidad y estado de colapso según la configuración guardada.
+ * @param {boolean} togglesEnabled
+ * @param {boolean} defaultCollapsed
+ * @param {boolean} subtotalEnabled
+ */
+function applyGameBlocksState(togglesEnabled, defaultCollapsed, subtotalEnabled) {
+    document.querySelectorAll('.category-subsection').forEach(section => {
+        const table = section.querySelector('table[id^="ArticleTable"]');
+        const btn = section.querySelector('.mkm-game-toggle');
+        if (!btn) return;
+        btn.style.display = togglesEnabled ? '' : 'none';
+        if (!table) return;
+        if (!togglesEnabled) {
+            table.style.display = '';
+        } else {
+            table.style.display = defaultCollapsed ? 'none' : '';
+            btn.textContent = defaultCollapsed ? '▶' : '▼';
+            btn.setAttribute('aria-expanded', String(!defaultCollapsed));
+        }
+    });
+    const detailRow = document.querySelector('.mkm-game-subtotal-row');
+    if (detailRow) detailRow.style.display = subtotalEnabled ? '' : 'none';
+}
+
 // Carga inicial
-chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight'], data => {
+chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled'], data => {
+    initGameBlocks();
+    applyGameBlocksState(
+        data.gameBlocksEnabled ?? DEFAULT_GAME_BLOCKS_ENABLED,
+        data.gameBlocksCollapsed ?? DEFAULT_GAME_BLOCKS_COLLAPSED,
+        data.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED
+    );
     applyCheckboxSize(data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
     const opacityEnabled = data.checkedOpacityEnabled ?? false;
     const opacity = data.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
@@ -74,8 +175,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
     const needsOpacity = ['checkedOpacity', 'checkedOpacityEnabled'].some(k => k in changes);
     const needsInline = ['inlineImagesEnabled', 'inlineImageHeight'].some(k => k in changes);
     const needsCheckbox = 'checkboxSize' in changes;
-    if (!needsOpacity && !needsInline && !needsCheckbox) return;
-    chrome.storage.sync.get(['checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'checkboxSize'], d => {
+    const needsGameBlocks = ['gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled'].some(k => k in changes);
+    if (!needsOpacity && !needsInline && !needsCheckbox && !needsGameBlocks) return;
+    chrome.storage.sync.get(['checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'checkboxSize', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled'], d => {
         if (needsCheckbox) applyCheckboxSize(d.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
         if (needsOpacity) {
             const opacityEnabled = d.checkedOpacityEnabled ?? false;
@@ -84,5 +186,10 @@ chrome.storage.onChanged.addListener((changes, area) => {
             initCheckedRowOpacityListener(opacityEnabled, opacity);
         }
         if (needsInline) applyInlineImagesPage(d.inlineImagesEnabled ?? DEFAULT_INLINE_IMAGES_ENABLED, d.inlineImageHeight ?? DEFAULT_INLINE_IMAGE_HEIGHT);
+        if (needsGameBlocks) applyGameBlocksState(
+            d.gameBlocksEnabled ?? DEFAULT_GAME_BLOCKS_ENABLED,
+            d.gameBlocksCollapsed ?? DEFAULT_GAME_BLOCKS_COLLAPSED,
+            d.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED
+        );
     });
 });

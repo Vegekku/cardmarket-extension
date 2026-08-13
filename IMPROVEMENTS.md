@@ -7,8 +7,8 @@
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
 | 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
-| 4 — Funcionalidad nueva | [4.1](#41-colores-personalizables-por-término), [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.4](#44-navegación-entre-coincidencias), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-selector-de-juego-en-el-perfil-de-un-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.8](#48-mejoras-en-la-vista-de-pedido-con-varios-juegos), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket) |
-| 5 — Expansión | |
+| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-reescritura-de-enlaces-del-selector-de-juego-en-contexto-de-usuario), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.16](#416-formulario-de-feedback-abierto), [4.17](#417-features-de-pedido-en-el-carrito-de-compra) |
+| 5 — Brainstorming | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
 ---
 
@@ -18,6 +18,7 @@
 - [2. Infraestructura y calidad](#2-infraestructura-y-calidad)
 - [3. UX / Popup](#3-ux--popup)
 - [4. Funcionalidad nueva](#4-funcionalidad-nueva)
+- [5. Brainstorming](#5-brainstorming)
 
 ---
 
@@ -76,10 +77,9 @@ Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/options.html`, `src/options/options.js`.
 
+---
 
-### 4.1 Colores personalizables por término
-
-Permitir al usuario asignar un color diferente a cada término en lugar de usar siempre el color por defecto. Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
+## 4. Funcionalidad nueva
 
 ### 4.3 Modo filtro: mostrar solo vendedores resaltados
 
@@ -97,21 +97,6 @@ El estado activo/inactivo del modo filtro por defecto podría ser configurable d
 
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/popup.html`, `src/options/popup.js`.
 
-### 4.4 Navegación entre coincidencias
-
-Añadir botones anterior/siguiente en el popup para desplazarse entre las coincidencias resaltadas en la página.
-
-### 4.6 Selector de juego en el perfil de un vendedor
-
-Cuando el usuario está en el perfil de un vendedor viendo cartas de un juego concreto (ej. Digimon), no hay forma de cambiar al catálogo de otro juego (ej. Pokémon) sin salir del perfil y navegar manualmente o editar la URL. Inyectar un selector de juego directamente en la página del perfil del vendedor que permita cambiar de juego sin perder el contexto del usuario.
-
-Pendiente de analizar:
-- Estructura de la URL del perfil de vendedor por juego en Cardmarket para construir los enlaces del selector.
-- Juegos disponibles a incluir en el selector (Magic, Pokémon, Yu-Gi-Oh!, Digimon, etc.).
-- Dónde inyectar el selector en el DOM sin romper el layout existente.
-
-Ficheros afectados: `src/content/content-highlight.js`.
-
 ### 4.5 Añadir vendedor al resaltado al comprar sus cartas
 
 Cuando el usuario añade cartas de un vendedor concreto al carrito, añadir automáticamente el nombre de ese vendedor a la lista de términos resaltados. El objetivo es facilitar la localización visual de ese vendedor en listados de cartas para construir pedidos.
@@ -121,6 +106,19 @@ Pendiente de decidir:
 - Cómo detectar el evento de "añadir al carrito" en la página de Cardmarket (MutationObserver sobre el DOM o intercepción de la petición de red).
 
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/popup.js`, `src/background.js`.
+
+### 4.6 Reescritura de enlaces del selector de juego en contexto de usuario
+
+Cuando la URL activa es de un usuario (`/{lang}/{game}/Users/{username}[/...]`), los enlaces del selector de juego nativo de Cardmarket apuntan a la home del juego (`/{lang}/{newGame}`), sacando al usuario del perfil. La extensión reescribe esos `href` para que apunten a `/{lang}/{newGame}/Users/{username}`, manteniendo el contexto del vendedor.
+
+Decisiones de diseño:
+- **Subpath** (`/Offers/Singles`, etc.): se descarta. Los subpaths pueden ser específicos del juego actual y no tienen equivalente garantizado en el destino. Se navega siempre a `/Users/{username}`.
+- **Query params**: se descartan todos. `idExpansion` es específico del juego actual; `sortBy` y similares son genéricos pero su presencia en la URL destino puede causar comportamientos inesperados si la página no los espera. Coste de descartarlos: mínimo.
+- **Detección de URL de usuario**: patrón `/{lang}/{game}/Users/{username}` — se activa solo en estas páginas, no en el resto de Cardmarket.
+- **Momento de reescritura**: al cargar la página. No es necesario MutationObserver salvo que el selector de juego se renderice de forma diferida (pendiente de verificar).
+- **Selector DOM del menú de juegos**: pendiente de inspeccionar en Cardmarket para identificar los `<a>` del dropdown de juego.
+
+Ficheros afectados: `src/content/content-game-switcher.js` (nuevo), `manifest.json`.
 
 ### 4.7 Filtro de precio en el listado de vendedores de una carta
 
@@ -133,20 +131,6 @@ Pendiente de analizar:
 - Los valores por defecto de precio mínimo y máximo podrían ser configurables desde la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `src/content/content-highlight.js`.
-
-### 4.8 Mejoras en la vista de pedido con varios juegos
-
-Cuando un pedido combina cartas de varios juegos, Cardmarket divide el listado por juego pero no ofrece herramientas para gestionar esa vista. Dos mejoras independientes sobre esa página:
-
-- **Colapsar/expandir por juego**: añadir un toggle en la cabecera de cada bloque de juego para colapsar o expandir su listado de cartas, facilitando la navegación en pedidos largos.
-- **Valor por juego**: mostrar el subtotal económico de cada bloque de juego, ya que actualmente solo se muestra el valor total del pedido completo.
-
-Pendiente de analizar:
-- Estructura del DOM de la página de pedido para identificar los bloques por juego, las filas de cartas y las celdas de precio.
-- URL pattern de la página de pedido para restringir la inyección.
-- El estado por defecto (colapsado/expandido) podría ser configurable desde la página de opciones ([3.5](#35-página-de-opciones)).
-
-Ficheros afectados: `src/content/content-order.js`.
 
 ### 4.9 Pago selectivo de pedidos en el carrito
 
@@ -214,3 +198,55 @@ Pendiente de decidir:
 - Si la activación es global o configurable por tipo de página.
 
 Ficheros afectados: `src/content/content-order.js`, `src/options/options.html`, `src/options/options.js`, `src/shared/i18n.js`.
+
+### 4.17 Features de pedido en el carrito de compra
+
+Extender al carrito de compra (`/ShoppingCart/`) funcionalidades ya implementadas en la vista de pedido, adaptadas a las particularidades del carrito.
+
+El carrito organiza los artículos en bloques por vendedor (no por juego). Dentro de cada bloque puede haber artículos de distintas categorías. Las filas no tienen checkbox, por lo que la opacidad al marcar y el ajuste de tamaño de checkbox no aplican.
+
+Features a implementar:
+- **Imágenes inline**: mostrar el thumbnail de la carta, igual que en pedidos. El carrito también muestra el icono de cámara en los artículos (pendiente de verificar selector exacto).
+- **Colapsar/expandir bloque por vendedor**: toggle en la cabecera de cada bloque de vendedor para colapsar o expandir su listado de artículos.
+- **Valor por vendedor y juego**: mostrar el subtotal por juego dentro de cada bloque de vendedor (solo cuando el vendedor tiene artículos de más de un juego), y el total del bloque del vendedor. Actualmente solo se muestra el total del carrito.
+
+Particularidades del carrito a tener en cuenta:
+- Las unidades de un artículo pueden decrementarse o el artículo puede eliminarse; nunca incrementarse. Cualquier cambio de cantidad debe recalcular los subtotales por juego y el total del vendedor afectado en tiempo real.
+- El desglose de valor es por juego dentro de cada vendedor (igual que en pedidos, pero agrupado por vendedor en lugar de ser una vista global).
+
+Pendiente de analizar:
+- Estructura del DOM del carrito: selectores de bloques por vendedor, filas de artículos, celdas de precio y cantidad, e icono de cámara.
+- Si los selectores de `content-order.js` / `order-features.js` son reutilizables o requieren adaptación.
+- URL pattern del carrito para añadirlo a los `content_scripts` del manifest o al content script existente.
+- Si tiene sentido activar/desactivar imágenes inline por separado para pedidos y carrito, o compartir la misma configuración.
+
+Ficheros afectados: `src/content/content-order.js`, `src/shared/order-features.js`, `src/options/options.html`, `src/options/options.js`, `manifest.json`.
+
+### 4.16 Formulario de feedback abierto
+
+Sustituir el canal de feedback basado en issues de GitHub (solo accesible para usuarios con cuenta) por un Google Form público y abierto, accesible a cualquier usuario de la extensión.
+
+El enlace al formulario se expone en:
+- Página de opciones (`options.html`) — sección o pie de página con enlace al formulario.
+- `README.md` — sección de contribución o feedback.
+- `docs/STORE.md` — descripción de la Chrome Web Store.
+
+Pendiente de analizar:
+- Campos del formulario (tipo de feedback, descripción, versión de la extensión, idioma, etc.).
+- Si se quiere pre-rellenar algún campo con la versión actual de la extensión vía parámetros de URL del formulario.
+
+Ficheros afectados: `src/options/options.html`, `src/options/styles/options.css`, `README.md`, `docs/STORE.md`.
+
+---
+
+## 5. Brainstorming
+
+Ideas sin compromiso de implementación. Se promueven al bloque correspondiente si se decide abordarlas.
+
+### 4.1 Colores personalizables por término
+
+Permitir al usuario asignar un color diferente a cada término en lugar de usar siempre el color por defecto. Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
+
+### 4.4 Navegación entre coincidencias
+
+Añadir botones anterior/siguiente en el popup para desplazarse entre las coincidencias resaltadas en la página.
