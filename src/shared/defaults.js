@@ -35,3 +35,6 @@ export const DEFAULT_GAME_BLOCKS_COLLAPSED = false;
 
 /** @type {boolean} */
 export const DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED = true;
+
+/** @type {boolean} */
+export const DEFAULT_GAME_SWITCHER_ENABLED = true;

@@ -4,6 +4,7 @@
  * Reescribe los enlaces del selector de juego nativo para mantener el contexto del vendedor
  * al cambiar de juego, apuntando a `/{lang}/{newGame}/Users/{username}` en lugar de `/{lang}/{newGame}`.
  */
+import { DEFAULT_GAME_SWITCHER_ENABLED } from '../shared/defaults.js';
 
 /**
  * Extrae lang y username de la URL actual.
@@ -22,9 +23,35 @@ function parseUserUrl() {
 function rewriteGameLinks(lang, username) {
     document.querySelectorAll('#brand-gamesDD .dropdown-menu a.dropdown-item').forEach(a => {
         const gameMatch = a.getAttribute('href')?.match(/^\/[^/]+\/([^/]+)/);
-        if (gameMatch) a.href = `/${lang}/${gameMatch[1]}/Users/${username}`;
+        if (!gameMatch) return;
+        if (!a.dataset.originalHref) a.dataset.originalHref = a.getAttribute('href');
+        a.href = `/${lang}/${gameMatch[1]}/Users/${username}`;
+    });
+}
+
+/**
+ * Restaura los href originales del selector de juego.
+ */
+function restoreGameLinks() {
+    document.querySelectorAll('#brand-gamesDD .dropdown-menu a.dropdown-item[data-original-href]').forEach(a => {
+        a.href = a.dataset.originalHref;
     });
 }
 
 const ctx = parseUserUrl();
-if (ctx) rewriteGameLinks(ctx.lang, ctx.username);
+if (ctx) {
+    chrome.storage.sync.get('gameSwitcherEnabled', data => {
+        if ((data.gameSwitcherEnabled ?? DEFAULT_GAME_SWITCHER_ENABLED) !== false) {
+            rewriteGameLinks(ctx.lang, ctx.username);
+        }
+    });
+
+    chrome.storage.onChanged.addListener((changes, area) => {
+        if (area !== 'sync' || !('gameSwitcherEnabled' in changes)) return;
+        if (changes.gameSwitcherEnabled.newValue !== false) {
+            rewriteGameLinks(ctx.lang, ctx.username);
+        } else {
+            restoreGameLinks();
+        }
+    });
+}
