@@ -7,7 +7,7 @@
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
 | 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
-| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-reescritura-de-enlaces-del-selector-de-juego-en-contexto-de-usuario), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.17](#417-features-de-pedido-en-el-carrito-de-compra) |
+| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-reescritura-de-enlaces-del-selector-de-juego-en-contexto-de-usuario), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.17](#417-features-de-pedido-en-el-carrito-de-compra), [4.18](#418-renombrar-y-replantear-descripción-de-la-extensión) |
 | 5 — Brainstorming | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
 ---
@@ -221,6 +221,18 @@ Pendiente de analizar:
 - Si tiene sentido activar/desactivar imágenes inline por separado para pedidos y carrito, o compartir la misma configuración.
 
 Ficheros afectados: `src/content/content-order.js`, `src/shared/order-features.js`, `src/options/options.html`, `src/options/options.js`, `manifest.json`.
+
+### 4.18 Renombrar y replantear descripción de la extensión
+
+La extensión ha crecido más allá del resaltado de usuarios: incluye herramientas de gestión de pedidos, opciones de personalización avanzadas y una página web pública. El nombre actual «Cardmarket Highlighter» ya no refleja el alcance real del producto.
+
+Pendiente de decidir:
+- Nuevo nombre que refleje el conjunto de funcionalidades (resaltado + gestión de pedidos + personalización).
+- Nueva descripción corta (máx. 132 caracteres) y larga para la Chrome Web Store.
+- Actualizar `manifest.json` (`name`, `description`), `pages/index.html`, `pages/privacy.html`, `docs/STORE.md` y cualquier referencia al nombre actual en el proyecto.
+- Evaluar si el cambio de nombre requiere crear una nueva ficha en la Chrome Web Store o si puede actualizarse la existente.
+
+Ficheros afectados: `manifest.json`, `pages/index.html`, `pages/privacy.html`, `docs/STORE.md`, `README.md`.
 
 ---
 
