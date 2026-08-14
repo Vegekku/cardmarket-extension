@@ -23,7 +23,7 @@ Funcionalidades principales:
 • Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por Cardmarket.
 • Toggle para activar o desactivar el resaltado sin borrar la lista de usuarios.
 • Botón Vaciar para eliminar todos los usuarios guardados de una vez.
-• Feedback visual en el popup al guardar o vaciar la lista de usuarios.
+• Feedback visual en el popup al modificar o vaciar la lista de usuarios.
 • Página de opciones con selector de color de resaltado independiente para modo claro y oscuro, con previsualización en vivo.
 • Interfaz disponible en español, inglés, francés, alemán e italiano (se adapta automáticamente al idioma de Cardmarket).
 
@@ -92,4 +92,4 @@ https://vegekku.github.io/cardmarket-extension/privacy.html
 ### Instrucciones adicionales (máx. 500 caracteres)
 Esta extensión funciona en las páginas de producto de Cardmarket (ej. https://www.cardmarket.com/es/Magic/Products/Singles/...).
 
-Para probarla: instala la extensión, abre el popup, introduce un nombre de usuario de Cardmarket (ej. el de cualquier vendedor visible en el listado) y pulsa fuera del textarea para guardar. Al navegar a una página de producto, la fila de ese vendedor quedará resaltada en azul-cian.
+Para probarla: instala la extensión, abre el popup, introduce un nombre de usuario de Cardmarket (ej. el de cualquier vendedor visible en el listado). El guardado es automático al escribir. Al navegar a una página de producto, la fila de ese vendedor quedará resaltada en azul-cian.
