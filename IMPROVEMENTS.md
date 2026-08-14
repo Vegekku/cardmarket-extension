@@ -7,7 +7,7 @@
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
 | 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
-| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-reescritura-de-enlaces-del-selector-de-juego-en-contexto-de-usuario), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.13](#413-página-web-pública-de-la-extensión), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.17](#417-features-de-pedido-en-el-carrito-de-compra), [4.18](#418-renombrar-y-replantear-descripción-de-la-extensión) |
+| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-reescritura-de-enlaces-del-selector-de-juego-en-contexto-de-usuario), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.17](#417-features-de-pedido-en-el-carrito-de-compra), [4.18](#418-renombrar-y-replantear-descripción-de-la-extensión) |
 | 5 — Brainstorming | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
 ---
@@ -167,12 +167,6 @@ Pendiente de analizar:
 - Si el script de build (`build.js`) necesita cambios para generar un artefacto separado para Firefox.
 
 Ficheros afectados: `manifest.json`, `build.js`, `package.json`, `src/background.js`, `src/content/content-highlight.js`, `src/content/content-order.js`, `src/options/popup.js`.
-
-### 4.13 Página web pública de la extensión
-
-Crear un directorio `/pages` con `index.html` y mover `privacy.html` desde `docs/`. Configurar GitHub Pages apuntando a `/pages` como raíz. La página puede incluir descripción de la extensión, capturas y enlace a la Chrome Web Store.
-
-Ficheros afectados: `pages/index.html`, `pages/privacy.html` (movido desde `docs/`), `manifest.json` (actualizar URL de política de privacidad si aplica).
 
 ### 4.14 Selector de vista lista/cuadrícula en artículos de vendedor
 
