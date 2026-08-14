@@ -10,7 +10,7 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por Cardmarket.
 - El botón **Vaciar** elimina todos los usuarios guardados.
 - El toggle **Activar resaltado** permite activar o desactivar el resaltado sin borrar los usuarios.
-- Al guardar o vaciar la lista se muestra un mensaje de confirmación temporal en el popup.
+- Al modificar o vaciar la lista se muestra un mensaje de confirmación temporal en el popup.
 - El color de resaltado se actualiza en tiempo real al cambiar el tema claro/oscuro de Cardmarket.
 - La interfaz del popup y la página de opciones se muestran en el idioma de Cardmarket (español, inglés, francés, alemán e italiano).
 
@@ -22,8 +22,8 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Permite ajustar el tamaño de los checkboxes en el listado de pedido (rango de 1em a 3em, con previsualización en vivo del checkbox).
 - Permite activar el atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
 - Permite activar la visualización de imágenes de cartas inline en el listado de pedido, con altura configurable.
-- Permite activar categorías colapsables en el pedido (toggle por bloque de juego) y configurar si están colapsadas por defecto.
-- Permite activar el desglose del valor del pedido por categoría de juego.
+- Permite activar categorías colapsables en el pedido (toggle por bloque de categoría) y configurar si están colapsadas por defecto.
+- Permite activar el desglose del valor del pedido por categoría.
 - Incluye previsualización en vivo de la sección Pedido (checkboxes, opacidad e imágenes inline) con toggle de modo claro/oscuro.
 - Incluye enlace a formulario de feedback (bug, sugerencia, pregunta) en la sección Acerca de, con idioma, versión y tema pre-rellenados.
 
@@ -58,7 +58,7 @@ cardmarket-extension/
 │   ├── content/
 │   │   ├── content-common.js      # Inicialización compartida entre content scripts (idioma)
 │   │   ├── content-highlight.js   # Resaltado de usuarios en páginas de Products
-│   │   ├── content-order.js       # Features de pedido (imágenes inline, opacidad, checkbox, bloques por juego)
+│   │   ├── content-order.js       # Features de pedido (imágenes inline, opacidad, checkbox, bloques por categoría)
 │   │   └── content-order.css      # Estilos inyectados por content-order.js
 │   ├── options/
 │   │   ├── options-preview.js     # Lógica de previsualizaciones (colores y pedido)
@@ -80,7 +80,9 @@ cardmarket-extension/
 │       ├── i18n.js                # Traducciones de la UI (es, en, fr, de, it)
 │       └── order-features.js      # Lógica compartida de features de pedido
 ├── docs/
-│   ├── STORE.md           # Descripción y capturas para la Chrome Web Store
+│   └── STORE.md           # Descripción y capturas para la Chrome Web Store
+├── pages/
+│   ├── index.html         # Página web pública de la extensión
 │   ├── feedback.html      # Formulario de feedback (alojado en GitHub Pages)
 │   └── privacy.html       # Política de privacidad
 ├── dist/                  # Build generado (no commitear)
