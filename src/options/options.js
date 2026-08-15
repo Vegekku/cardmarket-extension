@@ -4,7 +4,7 @@
  * de color de resaltado por modo claro/oscuro.
  */
 import { loadMessages, applyMessages } from '../shared/i18n.js';
-import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT, DEFAULT_GAME_BLOCKS_ENABLED, DEFAULT_GAME_BLOCKS_COLLAPSED, DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED } from '../shared/defaults.js';
+import { DEFAULT_COLORS, DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_CHECKED_OPACITY_ENABLED, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT, DEFAULT_GAME_BLOCKS_ENABLED, DEFAULT_GAME_BLOCKS_COLLAPSED, DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED, DEFAULT_GAME_SWITCHER_ENABLED, DEFAULT_GAME_SWITCHER_FULL_CONTEXT_ENABLED } from '../shared/defaults.js';
 import { rgbaToHex, hexToRgba } from '../shared/color-utils.js';
 import { initPreview, updateColorPreview, initOrderPreview } from './options-preview.js';
 
@@ -54,6 +54,10 @@ function init() {
     const gameBlocksCollapsed = document.getElementById('gameBlocksCollapsed');
     const gameBlocksCollapsedRow = document.getElementById('gameBlocksCollapsedRow');
     const gameBlocksSubtotalEnabled = document.getElementById('gameBlocksSubtotalEnabled');
+    const gameSwitcherEnabled = document.getElementById('gameSwitcherEnabled');
+    const gameSwitcherFullContextEnabled = document.getElementById('gameSwitcherFullContextEnabled');
+    const gameSwitcherFullContextRow = document.getElementById('gameSwitcherFullContextRow');
+    const gameSwitcherFullContextWarning = document.getElementById('gameSwitcherFullContextWarning');
 
     const defaultHexLight = rgbaToHex(DEFAULT_COLORS.light);
     const defaultHexDark = rgbaToHex(DEFAULT_COLORS.dark);
@@ -72,6 +76,8 @@ function init() {
         gameBlocksEnabled: DEFAULT_GAME_BLOCKS_ENABLED,
         gameBlocksCollapsed: DEFAULT_GAME_BLOCKS_COLLAPSED,
         gameBlocksSubtotalEnabled: DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED,
+        gameSwitcherEnabled: DEFAULT_GAME_SWITCHER_ENABLED,
+        gameSwitcherFullContextEnabled: DEFAULT_GAME_SWITCHER_FULL_CONTEXT_ENABLED,
     };
 
     /**
@@ -87,7 +93,9 @@ function init() {
             || (inlineImagesEnabled.checked && parseInt(inlineImageHeightInput.value) !== saved.inlineImageHeight)
             || gameBlocksEnabled.checked !== saved.gameBlocksEnabled
             || (gameBlocksEnabled.checked && gameBlocksCollapsed.checked !== saved.gameBlocksCollapsed)
-            || gameBlocksSubtotalEnabled.checked !== saved.gameBlocksSubtotalEnabled;
+            || gameBlocksSubtotalEnabled.checked !== saved.gameBlocksSubtotalEnabled
+            || gameSwitcherEnabled.checked !== saved.gameSwitcherEnabled
+            || (gameSwitcherEnabled.checked && gameSwitcherFullContextEnabled.checked !== saved.gameSwitcherFullContextEnabled);
         const isDefault = lightInput.value === defaultHexLight
             && darkInput.value === defaultHexDark
             && parseFloat(checkboxSizeInput.value) === DEFAULT_CHECKBOX_SIZE
@@ -97,7 +105,9 @@ function init() {
             && parseInt(inlineImageHeightInput.value) === DEFAULT_INLINE_IMAGE_HEIGHT
             && gameBlocksEnabled.checked === DEFAULT_GAME_BLOCKS_ENABLED
             && gameBlocksCollapsed.checked === DEFAULT_GAME_BLOCKS_COLLAPSED
-            && gameBlocksSubtotalEnabled.checked === DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED;
+            && gameBlocksSubtotalEnabled.checked === DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED
+            && gameSwitcherEnabled.checked === DEFAULT_GAME_SWITCHER_ENABLED
+            && gameSwitcherFullContextEnabled.checked === DEFAULT_GAME_SWITCHER_FULL_CONTEXT_ENABLED;
         saveBtn.disabled = !changed;
         resetBtn.disabled = isDefault;
     }
@@ -121,6 +131,10 @@ function init() {
         gameBlocksCollapsedRow.hidden = !saved.gameBlocksEnabled;
         gameBlocksCollapsed.checked = saved.gameBlocksCollapsed;
         gameBlocksSubtotalEnabled.checked = saved.gameBlocksSubtotalEnabled;
+        gameSwitcherEnabled.checked = saved.gameSwitcherEnabled;
+        gameSwitcherFullContextRow.hidden = !saved.gameSwitcherEnabled;
+        gameSwitcherFullContextEnabled.checked = saved.gameSwitcherFullContextEnabled;
+        gameSwitcherFullContextWarning.hidden = !saved.gameSwitcherEnabled || !saved.gameSwitcherFullContextEnabled;
         updateColorPreview(lightRows, darkRows, lightInput.value, darkInput.value);
         updateButtons();
         orderPreview.applyCheckboxSize();
@@ -130,7 +144,7 @@ function init() {
 
     const orderPreview = initOrderPreview({ checkboxSizeInput, checkedOpacityEnabled, checkedOpacityInput, inlineImagesEnabled, inlineImageHeightInput });
 
-    chrome.storage.sync.get(['highlightColors', 'checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled'], data => {
+    chrome.storage.sync.get(['highlightColors', 'checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled', 'gameSwitcherEnabled', 'gameSwitcherFullContextEnabled'], data => {
         saved.colors = { ...DEFAULT_COLORS, ...(data.highlightColors || {}) };
         saved.checkboxSize = data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE;
         saved.checkedOpacity = data.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
@@ -140,6 +154,8 @@ function init() {
         saved.gameBlocksEnabled = data.gameBlocksEnabled ?? DEFAULT_GAME_BLOCKS_ENABLED;
         saved.gameBlocksCollapsed = data.gameBlocksCollapsed ?? DEFAULT_GAME_BLOCKS_COLLAPSED;
         saved.gameBlocksSubtotalEnabled = data.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED;
+        saved.gameSwitcherEnabled = data.gameSwitcherEnabled ?? DEFAULT_GAME_SWITCHER_ENABLED;
+        saved.gameSwitcherFullContextEnabled = data.gameSwitcherFullContextEnabled ?? DEFAULT_GAME_SWITCHER_FULL_CONTEXT_ENABLED;
         applyStateToUI();
     });
 
@@ -172,6 +188,15 @@ function init() {
     });
     gameBlocksCollapsed.addEventListener('change', updateButtons);
     gameBlocksSubtotalEnabled.addEventListener('change', updateButtons);
+    gameSwitcherEnabled.addEventListener('change', () => {
+        gameSwitcherFullContextRow.hidden = !gameSwitcherEnabled.checked;
+        gameSwitcherFullContextWarning.hidden = !gameSwitcherEnabled.checked || !gameSwitcherFullContextEnabled.checked;
+        updateButtons();
+    });
+    gameSwitcherFullContextEnabled.addEventListener('change', () => {
+        gameSwitcherFullContextWarning.hidden = !gameSwitcherFullContextEnabled.checked;
+        updateButtons();
+    });
 
     loadMessages().then(m => {
         document.title = m.optionsTitle;
@@ -205,7 +230,9 @@ function init() {
             const gameBlocksEnabledVal = gameBlocksEnabled.checked;
             const gameBlocksCollapsedVal = gameBlocksCollapsed.checked;
             const gameBlocksSubtotalEnabledVal = gameBlocksSubtotalEnabled.checked;
-            chrome.storage.sync.set({ highlightColors: colors, checkboxSize, checkedOpacity, checkedOpacityEnabled: checkedOpacityEnabledVal, inlineImagesEnabled: inlineImagesEnabledVal, inlineImageHeight, gameBlocksEnabled: gameBlocksEnabledVal, gameBlocksCollapsed: gameBlocksCollapsedVal, gameBlocksSubtotalEnabled: gameBlocksSubtotalEnabledVal }, () => {
+            const gameSwitcherEnabledVal = gameSwitcherEnabled.checked;
+            const gameSwitcherFullContextEnabledVal = gameSwitcherFullContextEnabled.checked;
+            chrome.storage.sync.set({ highlightColors: colors, checkboxSize, checkedOpacity, checkedOpacityEnabled: checkedOpacityEnabledVal, inlineImagesEnabled: inlineImagesEnabledVal, inlineImageHeight, gameBlocksEnabled: gameBlocksEnabledVal, gameBlocksCollapsed: gameBlocksCollapsedVal, gameBlocksSubtotalEnabled: gameBlocksSubtotalEnabledVal, gameSwitcherEnabled: gameSwitcherEnabledVal, gameSwitcherFullContextEnabled: gameSwitcherFullContextEnabledVal }, () => {
                 saved.colors = { ...colors };
                 saved.checkboxSize = checkboxSize;
                 saved.checkedOpacity = checkedOpacity;
@@ -215,13 +242,15 @@ function init() {
                 saved.gameBlocksEnabled = gameBlocksEnabledVal;
                 saved.gameBlocksCollapsed = gameBlocksCollapsedVal;
                 saved.gameBlocksSubtotalEnabled = gameBlocksSubtotalEnabledVal;
+                saved.gameSwitcherEnabled = gameSwitcherEnabledVal;
+                saved.gameSwitcherFullContextEnabled = gameSwitcherFullContextEnabledVal;
                 updateButtons();
                 showStatus(`${m.saved} ✓`);
             });
         });
 
         resetBtn.addEventListener('click', () => {
-            chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS, checkboxSize: DEFAULT_CHECKBOX_SIZE, checkedOpacity: DEFAULT_CHECKED_OPACITY, checkedOpacityEnabled: DEFAULT_CHECKED_OPACITY_ENABLED, inlineImagesEnabled: DEFAULT_INLINE_IMAGES_ENABLED, inlineImageHeight: DEFAULT_INLINE_IMAGE_HEIGHT, gameBlocksEnabled: DEFAULT_GAME_BLOCKS_ENABLED, gameBlocksCollapsed: DEFAULT_GAME_BLOCKS_COLLAPSED, gameBlocksSubtotalEnabled: DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED }, () => {
+            chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS, checkboxSize: DEFAULT_CHECKBOX_SIZE, checkedOpacity: DEFAULT_CHECKED_OPACITY, checkedOpacityEnabled: DEFAULT_CHECKED_OPACITY_ENABLED, inlineImagesEnabled: DEFAULT_INLINE_IMAGES_ENABLED, inlineImageHeight: DEFAULT_INLINE_IMAGE_HEIGHT, gameBlocksEnabled: DEFAULT_GAME_BLOCKS_ENABLED, gameBlocksCollapsed: DEFAULT_GAME_BLOCKS_COLLAPSED, gameBlocksSubtotalEnabled: DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED, gameSwitcherEnabled: DEFAULT_GAME_SWITCHER_ENABLED, gameSwitcherFullContextEnabled: DEFAULT_GAME_SWITCHER_FULL_CONTEXT_ENABLED }, () => {
                 saved.colors = { ...DEFAULT_COLORS };
                 saved.checkboxSize = DEFAULT_CHECKBOX_SIZE;
                 saved.checkedOpacity = DEFAULT_CHECKED_OPACITY;
@@ -231,6 +260,8 @@ function init() {
                 saved.gameBlocksEnabled = DEFAULT_GAME_BLOCKS_ENABLED;
                 saved.gameBlocksCollapsed = DEFAULT_GAME_BLOCKS_COLLAPSED;
                 saved.gameBlocksSubtotalEnabled = DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED;
+                saved.gameSwitcherEnabled = DEFAULT_GAME_SWITCHER_ENABLED;
+                saved.gameSwitcherFullContextEnabled = DEFAULT_GAME_SWITCHER_FULL_CONTEXT_ENABLED;
                 applyStateToUI();
                 showStatus(`${m.resetStatus} ✓`);
             });
