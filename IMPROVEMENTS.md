@@ -6,7 +6,7 @@
 |-----------|--------|
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
-| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
+| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket), [3.10](#310-modal-de-confirmación-al-restablecer-opciones) |
 | 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6](#46-reescritura-de-enlaces-del-selector-de-juego-en-contexto-de-usuario), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.17](#417-features-de-pedido-en-el-carrito-de-compra), [4.18](#418-renombrar-y-replantear-descripción-de-la-extensión) |
 | 5 — Brainstorming | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
@@ -77,6 +77,12 @@ Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/options.html`, `src/options/options.js`.
 
+### 3.10 Modal de confirmación al restablecer opciones
+
+Al pulsar el botón "Restablecer" en la página de opciones, mostrar una modal de confirmación antes de ejecutar la acción, ya que restablece todas las opciones a sus valores por defecto.
+
+Ficheros afectados: `src/options/options.html`, `src/options/options.js`, `src/options/styles/options.css`.
+
 ---
 
 ## 4. Funcionalidad nueva
@@ -112,13 +118,17 @@ Ficheros afectados: `src/content/content-highlight.js`, `src/options/popup.js`, 
 Cuando la URL activa es de un usuario (`/{lang}/{game}/Users/{username}[/...]`), los enlaces del selector de juego nativo de Cardmarket apuntan a la home del juego (`/{lang}/{newGame}`), sacando al usuario del perfil. La extensión reescribe esos `href` para que apunten a `/{lang}/{newGame}/Users/{username}`, manteniendo el contexto del vendedor.
 
 Decisiones de diseño:
-- **Subpath** (`/Offers/Singles`, etc.): se descarta. Los subpaths pueden ser específicos del juego actual y no tienen equivalente garantizado en el destino. Se navega siempre a `/Users/{username}`.
-- **Query params**: se descartan todos. `idExpansion` es específico del juego actual; `sortBy` y similares son genéricos pero su presencia en la URL destino puede causar comportamientos inesperados si la página no los espera. Coste de descartarlos: mínimo.
+- **Subpath** (`/Offers/Singles`, etc.): se descarta por defecto. Existe sub-opción para preservarlo (ver más abajo).
+- **Query params**: se descartan por defecto. Existe sub-opción para preservar los genéricos hardcodeados (`sortBy`), con posibilidad de ampliar la lista (ver más abajo).
 - **Detección de URL de usuario**: patrón `/{lang}/{game}/Users/{username}` — se activa solo en estas páginas, no en el resto de Cardmarket.
 - **Momento de reescritura**: al cargar la página. No es necesario MutationObserver salvo que el selector de juego se renderice de forma diferida (pendiente de verificar).
-- **Selector DOM del menú de juegos**: pendiente de inspeccionar en Cardmarket para identificar los `<a>` del dropdown de juego.
+- **Selector DOM del menú de juegos**: `#brand-gamesDD .dropdown-menu a.dropdown-item`.
 
-Ficheros afectados: `src/content/content-game-switcher.js` (nuevo), `manifest.json`.
+Pendiente (segunda vuelta, una vez probado el funcionamiento):
+- **4.6.a** Mostrar en opciones un listado con checkbox de los query params encontrados en la URL activa, para que el usuario elija cuáles preservar, en lugar de la lista hardcodeada actual.
+- **4.6.b** Mostrar en opciones un listado con checkbox de las subpáginas del vendedor (`/Offers/Singles`, `/Offers/Lots`, etc.) para que el usuario elija en cuáles se mantiene la navegación y en cuáles no.
+
+Ficheros afectados: `src/content/content-game-switcher.js`, `src/options/options.html`, `src/options/options.js`, `src/shared/defaults.js`, `src/shared/i18n.js`, `manifest.json`.
 
 ### 4.7 Filtro de precio en el listado de vendedores de una carta
 
