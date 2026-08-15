@@ -57,6 +57,7 @@ function init() {
     const gameSwitcherEnabled = document.getElementById('gameSwitcherEnabled');
     const gameSwitcherFullContextEnabled = document.getElementById('gameSwitcherFullContextEnabled');
     const gameSwitcherFullContextRow = document.getElementById('gameSwitcherFullContextRow');
+    const gameSwitcherFullContextWarning = document.getElementById('gameSwitcherFullContextWarning');
 
     const defaultHexLight = rgbaToHex(DEFAULT_COLORS.light);
     const defaultHexDark = rgbaToHex(DEFAULT_COLORS.dark);
@@ -133,6 +134,7 @@ function init() {
         gameSwitcherEnabled.checked = saved.gameSwitcherEnabled;
         gameSwitcherFullContextRow.hidden = !saved.gameSwitcherEnabled;
         gameSwitcherFullContextEnabled.checked = saved.gameSwitcherFullContextEnabled;
+        gameSwitcherFullContextWarning.hidden = !saved.gameSwitcherEnabled || !saved.gameSwitcherFullContextEnabled;
         updateColorPreview(lightRows, darkRows, lightInput.value, darkInput.value);
         updateButtons();
         orderPreview.applyCheckboxSize();
@@ -188,9 +190,13 @@ function init() {
     gameBlocksSubtotalEnabled.addEventListener('change', updateButtons);
     gameSwitcherEnabled.addEventListener('change', () => {
         gameSwitcherFullContextRow.hidden = !gameSwitcherEnabled.checked;
+        gameSwitcherFullContextWarning.hidden = !gameSwitcherEnabled.checked || !gameSwitcherFullContextEnabled.checked;
         updateButtons();
     });
-    gameSwitcherFullContextEnabled.addEventListener('change', updateButtons);
+    gameSwitcherFullContextEnabled.addEventListener('change', () => {
+        gameSwitcherFullContextWarning.hidden = !gameSwitcherFullContextEnabled.checked;
+        updateButtons();
+    });
 
     loadMessages().then(m => {
         document.title = m.optionsTitle;
