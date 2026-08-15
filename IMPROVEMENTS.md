@@ -6,7 +6,7 @@
 |-----------|--------|
 | 1 — Bugs críticos | |
 | 2 — Infraestructura y calidad | |
-| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket), [3.10](#310-modal-de-confirmación-al-restablecer-opciones) |
+| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
 | 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6.a](#46a-listado-configurable-de-query-params-a-preservar), [4.6.b](#46b-listado-configurable-de-subpáginas-del-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.17](#417-features-de-pedido-en-el-carrito-de-compra), [4.18](#418-renombrar-y-replantear-descripción-de-la-extensión) |
 | 5 — Brainstorming | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
@@ -76,12 +76,6 @@ Pendiente de analizar:
 Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/options.html`, `src/options/options.js`.
-
-### 3.10 Modal de confirmación al restablecer opciones
-
-Al pulsar el botón "Restablecer" en la página de opciones, mostrar una modal de confirmación antes de ejecutar la acción, ya que restablece todas las opciones a sus valores por defecto.
-
-Ficheros afectados: `src/options/options.html`, `src/options/options.js`, `src/options/styles/options.css`.
 
 ---
 

@@ -249,7 +249,16 @@ function init() {
             });
         });
 
-        resetBtn.addEventListener('click', () => {
+        const resetModal = document.getElementById('resetModal');
+        const modalCancel = document.getElementById('modalCancel');
+        const modalConfirm = document.getElementById('modalConfirm');
+
+        resetBtn.addEventListener('click', () => { resetModal.hidden = false; });
+        modalCancel.addEventListener('click', () => { resetModal.hidden = true; });
+        resetModal.addEventListener('click', e => { if (e.target === resetModal) resetModal.hidden = true; });
+
+        modalConfirm.addEventListener('click', () => {
+            resetModal.hidden = true;
             chrome.storage.sync.set({ highlightColors: DEFAULT_COLORS, checkboxSize: DEFAULT_CHECKBOX_SIZE, checkedOpacity: DEFAULT_CHECKED_OPACITY, checkedOpacityEnabled: DEFAULT_CHECKED_OPACITY_ENABLED, inlineImagesEnabled: DEFAULT_INLINE_IMAGES_ENABLED, inlineImageHeight: DEFAULT_INLINE_IMAGE_HEIGHT, gameBlocksEnabled: DEFAULT_GAME_BLOCKS_ENABLED, gameBlocksCollapsed: DEFAULT_GAME_BLOCKS_COLLAPSED, gameBlocksSubtotalEnabled: DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED, gameSwitcherEnabled: DEFAULT_GAME_SWITCHER_ENABLED, gameSwitcherFullContextEnabled: DEFAULT_GAME_SWITCHER_FULL_CONTEXT_ENABLED }, () => {
                 saved.colors = { ...DEFAULT_COLORS };
                 saved.checkboxSize = DEFAULT_CHECKBOX_SIZE;
