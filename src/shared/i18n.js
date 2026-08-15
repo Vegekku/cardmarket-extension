@@ -59,6 +59,9 @@ const MESSAGES = {
         resetStatus:       'Restablecido',
         supportText:       'Desarrollo esta extensión en los ratos libres que me dejan mis dos hijas (spoiler: no son muchos). Hecha con cariño entre pañales y madrugadas — si te ha gustado y quieres que añada más funcionalidades, cualquier donación ayuda a seguir adelante.',
         btnDonate:         'Apoya las madrugadas de papá',
+        modalResetTitle:   '¿Restablecer opciones?',
+        modalResetMessage: 'Se restablecerán todas las opciones a sus valores por defecto. Esta acción no se puede deshacer.',
+        modalCancel:       'Cancelar',
     },
     en: {
         popupTitle:        'User Highlighter',
@@ -112,6 +115,9 @@ const MESSAGES = {
         resetStatus:       'Reset',
         supportText:       "I develop this extension in the spare time my two daughters leave me (spoiler: not much). Made with love between diapers and sleepless nights — if you liked it and want more features, any donation helps keep it going.",
         btnDonate:         "Support dad's sleepless nights",
+        modalResetTitle:   'Reset options?',
+        modalResetMessage: 'All options will be reset to their default values. This action cannot be undone.',
+        modalCancel:       'Cancel',
     },
     fr: {
         popupTitle:        "Surligneur d'utilisateurs",
@@ -165,6 +171,9 @@ const MESSAGES = {
         resetStatus:       'Réinitialisé',
         supportText:       'Je développe cette extension dans les moments libres que me laissent mes deux filles (spoiler : pas beaucoup). Faite avec amour entre couches et nuits blanches — si elle vous a plu et que vous souhaitez plus de fonctionnalités, tout don aide à continuer.',
         btnDonate:         'Soutenez les nuits blanches de papa',
+        modalResetTitle:   'Réinitialiser les options ?',
+        modalResetMessage: 'Toutes les options seront réinitialisées à leurs valeurs par défaut. Cette action est irréversible.',
+        modalCancel:       'Annuler',
     },
     de: {
         popupTitle:        'Benutzer-Hervorheber',
@@ -218,6 +227,9 @@ const MESSAGES = {
         resetStatus:       'Zurückgesetzt',
         supportText:       'Ich entwickle diese Erweiterung in der Freizeit, die mir meine zwei Töchter lassen (Spoiler: nicht viel). Mit Liebe zwischen Windeln und schlaflosen Nächten gemacht — wenn sie dir gefallen hat und du mehr Funktionen möchtest, hilft jede Spende weiter.',
         btnDonate:         'Unterstütze Papas schlaflose Nächte',
+        modalResetTitle:   'Optionen zurücksetzen?',
+        modalResetMessage: 'Alle Optionen werden auf ihre Standardwerte zurückgesetzt. Diese Aktion kann nicht rückgängig gemacht werden.',
+        modalCancel:       'Abbrechen',
     },
     it: {
         popupTitle:        'Evidenziatore utenti',
@@ -271,6 +283,9 @@ const MESSAGES = {
         resetStatus:       'Ripristinato',
         supportText:       'Sviluppo questa estensione nel tempo libero che mi lasciano le mie due figlie (spoiler: non molto). Fatta con amore tra pannolini e notti insonni — se ti è piaciuta e vuoi più funzionalità, qualsiasi donazione aiuta ad andare avanti.',
         btnDonate:         "Supporta le notti insonni di papà",
+        modalResetTitle:   'Ripristinare le opzioni?',
+        modalResetMessage: 'Tutte le opzioni verranno ripristinate ai valori predefiniti. Questa azione non può essere annullata.',
+        modalCancel:       'Annulla',
     },
 };
 
