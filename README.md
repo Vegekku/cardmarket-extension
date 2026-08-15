@@ -25,6 +25,8 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Permite activar categorías colapsables en el pedido (toggle por bloque de categoría) y configurar si están colapsadas por defecto.
 - Permite activar el desglose del valor del pedido por categoría.
 - Incluye previsualización en vivo de la sección Pedido (checkboxes, opacidad e imágenes inline) con toggle de modo claro/oscuro.
+- Permite activar la reescritura de los enlaces del selector de juego en páginas de usuario para mantener el contexto del vendedor al cambiar de juego.
+- Permite activar la preservación de la categoría actual y los filtros genéricos al cambiar de juego (sub-opción del punto anterior).
 - Incluye enlace a formulario de feedback (bug, sugerencia, pregunta) en la sección Acerca de, con idioma, versión y tema pre-rellenados.
 
 ## Instalación
