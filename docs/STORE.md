@@ -1,7 +1,7 @@
 # Chrome Web Store — Ficha de la extensión
 
 ## Versión publicada
-v1.2.1
+v1.3.0
 
 ## Ficha de Play Store
 
@@ -12,7 +12,6 @@ Cardmarket Enhancer
 
 #### Resumen del paquete (máx. 132 caracteres)
 Resalta vendedores y mejora la interfaz de Cardmarket: pedidos, navegación y personalización visual.
-
 #### Descripción (máx. 16000 caracteres)
 Cardmarket Enhancer resalta visualmente los vendedores que más te interesan en los listados de artículos de Cardmarket, el marketplace europeo de cartas coleccionables (Magic, Pokémon, Yu-Gi-Oh!, Digimon, etc.), y mejora la interfaz de pedidos, navegación y personalización visual.
 
@@ -25,6 +24,13 @@ Funcionalidades principales:
 • Botón Vaciar para eliminar todos los usuarios guardados de una vez.
 • Feedback visual en el popup al modificar o vaciar la lista de usuarios.
 • Página de opciones con selector de color de resaltado independiente para modo claro y oscuro, con previsualización en vivo.
+• Tamaño de checkboxes configurable en el listado de pedido, con previsualización en vivo.
+• Atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
+• Imágenes de cartas inline en el listado de pedido, con altura configurable.
+• Categorías colapsables en el pedido (toggle por bloque de juego) y opción de colapso por defecto.
+• Desglose del valor del pedido por categoría de juego.
+• Reescritura de los enlaces del selector de juego en páginas de usuario para mantener el contexto del vendedor al cambiar de juego.
+• Enlace a formulario de feedback en la sección Acerca de, con idioma, versión y tema pre-rellenados.
 • Interfaz disponible en español, inglés, francés, alemán e italiano (se adapta automáticamente al idioma de Cardmarket).
 
 Compatibilidad: Chrome con Manifest V3. Funciona en todas las páginas de Cardmarket.
@@ -41,24 +47,28 @@ Español (es)
 
 1. Popup de la extensión con varios usuarios introducidos y el toggle de resaltado activado.
 2. Listado de artículos de una carta con filas de vendedores resaltadas en azul-cian.
+3. Página de opciones con controles de pedido y previsualización en vivo.
+4. Listado de pedido con imágenes inline, checkboxes ampliados y bloques colapsables por juego.
+
+Nota: las capturas 3 y 4 están pendientes de actualizar con las nuevas funcionalidades.
 
 ## Privacidad
 
 ### Una sola finalidad
 
 #### Descripción de la finalidad única (máx. 1000 caracteres)
-Esta extensión resalta visualmente vendedores favoritos en los listados de artículos de Cardmarket, permitiendo localizarlos de forma rápida sin necesidad de buscarlos manualmente.
+Esta extensión mejora la experiencia de uso de Cardmarket: resalta visualmente vendedores favoritos en los listados de artículos y añade herramientas de productividad para la gestión de pedidos y la navegación entre juegos.
 
 ### Justificación de permiso
 
 #### Justificación de storage (máx. 1000 caracteres)
-Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de color entre sesiones y dispositivos vinculados al perfil de Chrome.
+Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de la extensión (colores de resaltado, tamaño de checkboxes, opacidad de filas, imágenes inline, bloques colapsables, selector de juego) entre sesiones y dispositivos vinculados al perfil de Chrome.
 
 #### Justificación de tabs (máx. 1000 caracteres)
 Se usa chrome.tabs para enviar mensajes desde el popup a las pestañas abiertas de Cardmarket y aplicar el resaltado sin necesidad de recargar la página.
 
 #### Justificación de Permiso de host (máx. 1000 caracteres)
-El permiso sobre *://*.cardmarket.com/* es necesario para inyectar el script de resaltado en las páginas de Cardmarket y aplicar el resaltado sobre los listados de artículos.
+El permiso sobre *://*.cardmarket.com/* es necesario para inyectar los content scripts en las páginas de Cardmarket: resaltado de vendedores en listados de artículos, mejoras en el listado de pedido (imágenes inline, checkboxes, bloques colapsables) y reescritura del selector de juego en páginas de usuario.
 
 #### Utilizas código remoto?
 - (x) No, no estoy usando Código remoto
@@ -90,6 +100,6 @@ https://vegekku.github.io/cardmarket-extension/privacy.html
 ## Instrucciones de la prueba
 
 ### Instrucciones adicionales (máx. 500 caracteres)
-Esta extensión funciona en las páginas de producto de Cardmarket (ej. https://www.cardmarket.com/es/Magic/Products/Singles/...).
+Resaltado: abre el popup, introduce un nombre de usuario de Cardmarket y navega a una página de producto (ej. https://www.cardmarket.com/es/Magic/Products/Singles/...). La fila del vendedor quedará resaltada.
 
-Para probarla: instala la extensión, abre el popup, introduce un nombre de usuario de Cardmarket (ej. el de cualquier vendedor visible en el listado). El guardado es automático al escribir. Al navegar a una página de producto, la fila de ese vendedor quedará resaltada en azul-cian.
+Pedido: abre una página de pedido (https://www.cardmarket.com/es/Magic/Orders/...) y accede a Opciones para configurar checkboxes, imágenes inline y bloques por juego.
