@@ -217,7 +217,7 @@ Ficheros afectados: `src/content/content-order.js`, `src/shared/order-features.j
 
 ### 4.18 Renombrar y replantear descripción de la extensión
 
-La extensión ha crecido más allá del resaltado de usuarios: incluye herramientas de gestión de pedidos, opciones de personalización avanzadas y una página web pública. El nombre actual «Cardmarket Highlighter» ya no refleja el alcance real del producto.
+La extensión ha crecido más allá del resaltado de usuarios: incluye herramientas de gestión de pedidos, opciones de personalización avanzadas y una página web pública. El nombre actual ya no refleja el alcance real del producto.
 
 Pendiente de decidir:
 - Nuevo nombre que refleje el conjunto de funcionalidades (resaltado + gestión de pedidos + personalización).
