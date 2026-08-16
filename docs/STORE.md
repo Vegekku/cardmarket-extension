@@ -1,7 +1,7 @@
 # Chrome Web Store — Ficha de la extensión
 
 ## Versión publicada
-v1.2.1
+v1.3.0
 
 ## Ficha de Play Store
 
@@ -25,6 +25,13 @@ Funcionalidades principales:
 • Botón Vaciar para eliminar todos los usuarios guardados de una vez.
 • Feedback visual en el popup al modificar o vaciar la lista de usuarios.
 • Página de opciones con selector de color de resaltado independiente para modo claro y oscuro, con previsualización en vivo.
+• Tamaño de checkbox configurable en el listado de pedido, con previsualización en vivo.
+• Atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
+• Imágenes de cartas inline en el listado de pedido, con altura configurable.
+• Previsualización en vivo de la sección Pedido en la página de opciones.
+• Bloques colapsables por categoría en el pedido y desglose del valor por categoría.
+• Reescritura de los enlaces del selector de juego para mantener el contexto del vendedor al cambiar de juego.
+• Formulario de feedback accesible desde la página de opciones.
 • Interfaz disponible en español, inglés, francés, alemán e italiano (se adapta automáticamente al idioma de Cardmarket).
 
 Compatibilidad: Chrome con Manifest V3. Funciona en todas las páginas de Cardmarket.
@@ -41,24 +48,27 @@ Español (es)
 
 1. Popup de la extensión con varios usuarios introducidos y el toggle de resaltado activado.
 2. Listado de artículos de una carta con filas de vendedores resaltadas en azul-cian.
+3. Página de opciones con la sección Pedido y la previsualización en vivo.
+4. Listado de pedido con imágenes inline y bloques colapsables por categoría.
+5. Página de usuario con el selector de juego reescrito.
 
 ## Privacidad
 
 ### Una sola finalidad
 
 #### Descripción de la finalidad única (máx. 1000 caracteres)
-Esta extensión resalta visualmente vendedores favoritos en los listados de artículos de Cardmarket, permitiendo localizarlos de forma rápida sin necesidad de buscarlos manualmente.
+Esta extensión mejora la experiencia en Cardmarket: resalta visualmente vendedores favoritos en los listados de artículos, mejora la interfaz de pedidos (imágenes inline, checkboxes configurables, bloques colapsables por categoría) y mantiene el contexto del vendedor al cambiar de juego.
 
 ### Justificación de permiso
 
 #### Justificación de storage (máx. 1000 caracteres)
-Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de color entre sesiones y dispositivos vinculados al perfil de Chrome.
+Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de la extensión (colores de resaltado, tamaño de checkbox, opacidad de filas, imágenes inline, bloques de categoría, selector de juego) entre sesiones y dispositivos vinculados al perfil de Chrome.
 
 #### Justificación de tabs (máx. 1000 caracteres)
 Se usa chrome.tabs para enviar mensajes desde el popup a las pestañas abiertas de Cardmarket y aplicar el resaltado sin necesidad de recargar la página.
 
 #### Justificación de Permiso de host (máx. 1000 caracteres)
-El permiso sobre *://*.cardmarket.com/* es necesario para inyectar el script de resaltado en las páginas de Cardmarket y aplicar el resaltado sobre los listados de artículos.
+El permiso sobre *://*.cardmarket.com/* es necesario para inyectar los content scripts en las páginas de Cardmarket: resaltado de vendedores en páginas de producto, mejoras de la interfaz de pedidos en páginas de pedido, y reescritura del selector de juego en páginas de usuario.
 
 #### Utilizas código remoto?
 - (x) No, no estoy usando Código remoto
@@ -93,3 +103,5 @@ https://vegekku.github.io/cardmarket-extension/privacy.html
 Esta extensión funciona en las páginas de producto de Cardmarket (ej. https://www.cardmarket.com/es/Magic/Products/Singles/...).
 
 Para probarla: instala la extensión, abre el popup, introduce un nombre de usuario de Cardmarket (ej. el de cualquier vendedor visible en el listado). El guardado es automático al escribir. Al navegar a una página de producto, la fila de ese vendedor quedará resaltada en azul-cian.
+
+También puedes probar las mejoras de pedido en https://www.cardmarket.com/es/Magic/Orders/ y el selector de juego en la página de cualquier vendedor (https://www.cardmarket.com/es/Magic/Users/<nombre>).
