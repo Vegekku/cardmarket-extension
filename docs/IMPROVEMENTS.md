@@ -1,24 +1,28 @@
 # Mejoras pendientes
 
-## Priorización
+## Mi backlog
 
-| Prioridad | Puntos |
-|-----------|--------|
-| 1 — Bugs críticos | |
-| 2 — Infraestructura y calidad | |
-| 3 — UX | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
-| 4 — Funcionalidad nueva | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6.a](#46a-listado-configurable-de-query-params-a-preservar), [4.6.b](#46b-listado-configurable-de-subpáginas-del-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.17](#417-features-de-pedido-en-el-carrito-de-compra) |
-| 5 — Brainstorming | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
+Puntos que quiero abordar próximamente, en el orden que me interesa.
+
+| # | Punto |
+|---|-------|
+| 1 | [4.17 Features de pedido en el carrito de compra](#417-features-de-pedido-en-el-carrito-de-compra) |
+| 2 | [3.8 Accesibilidad WCAG](#38-accesibilidad-wcag) |
+| 3 | [4.11 Compatibilidad con Firefox](#411-compatibilidad-con-firefox) |
+| 4 | [4.5 Añadir vendedor al resaltado al comprar sus cartas](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas) |
+| 5 | [4.10 Añadir / quitar vendedor con doble click](#410-añadir--quitar-vendedor-con-doble-click) |
 
 ---
 
-## Índice
+## Priorización
 
-- [1. Bugs críticos](#1-bugs-críticos)
-- [2. Infraestructura y calidad](#2-infraestructura-y-calidad)
-- [3. UX / Popup](#3-ux--popup)
-- [4. Funcionalidad nueva](#4-funcionalidad-nueva)
-- [5. Brainstorming](#5-brainstorming)
+| Bloque | Puntos |
+|--------|--------|
+| [1 — Bugs críticos](#1-bugs-críticos) | |
+| [2 — Infraestructura y calidad](#2-infraestructura-y-calidad) | |
+| [3 — UX / Popup](#3-ux--popup) | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
+| [4 — Funcionalidad nueva](#4-funcionalidad-nueva) | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6.a](#46a-listado-configurable-de-query-params-a-preservar), [4.6.b](#46b-listado-configurable-de-subpáginas-del-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.17](#417-features-de-pedido-en-el-carrito-de-compra) |
+| [5 — Brainstorming](#5-brainstorming) | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
 ---
 
