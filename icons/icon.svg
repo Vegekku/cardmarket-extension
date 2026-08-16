@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Background -->
+  <rect width="128" height="128" rx="20" fill="#004a8f"/>
+
+  <!-- Fan of cards shifted down 30% (~14px) -->
+  <g transform="translate(0, 14)">
+    <!-- Card 1: far left (rotated -44deg) -->
+    <g transform="translate(64, 92) rotate(-44) translate(-64, -92)">
+      <rect x="30" y="30" width="34" height="48" rx="4" fill="#2d6aa0"/>
+    </g>
+
+    <!-- Card 5: far right (rotated +44deg) -->
+    <g transform="translate(64, 92) rotate(44) translate(-64, -92)">
+      <rect x="64" y="30" width="34" height="48" rx="4" fill="#2d6aa0"/>
+    </g>
+
+    <!-- Card 2: left (rotated -22deg) -->
+    <g transform="translate(64, 92) rotate(-22) translate(-64, -92)">
+      <rect x="30" y="30" width="34" height="48" rx="4" fill="#d6e4f0"/>
+    </g>
+
+    <!-- Card 4: right (rotated +22deg) -->
+    <g transform="translate(64, 92) rotate(22) translate(-64, -92)">
+      <rect x="64" y="30" width="34" height="48" rx="4" fill="#d6e4f0"/>
+    </g>
+
+    <!-- Card 3: center -->
+    <rect x="47" y="26" width="34" height="48" rx="4" fill="white"/>
+  </g>
+
+  <!-- 3 stars in a semicircle arc -->
+  <!-- Star 1: -125deg -->
+  <g transform="translate(38, 44)">
+    <polygon points="0,-7 1.7,-2.3 6.6,-2.3 2.8,0.9 4.1,5.7 0,3 -4.1,5.7 -2.8,0.9 -6.6,-2.3 -1.7,-2.3" fill="#FFD700"/>
+  </g>
+  <!-- Star 2: -90deg (top center) -->
+  <g transform="translate(64, 35)">
+    <polygon points="0,-14 3.4,-4.6 13.2,-4.6 5.6,1.8 8.2,11.4 0,6 -8.2,11.4 -5.6,1.8 -13.2,-4.6 -3.4,-4.6" fill="#FFD700"/>
+  </g>
+  <!-- Star 3: -55deg -->
+  <g transform="translate(90, 44)">
+    <polygon points="0,-7 1.7,-2.3 6.6,-2.3 2.8,0.9 4.1,5.7 0,3 -4.1,5.7 -2.8,0.9 -6.6,-2.3 -1.7,-2.3" fill="#FFD700"/>
+  </g>
+
+  <!-- Arrow left -->
+  <g transform="translate(22, 44)">
+    <path d="M0,8 C-0.5,0 -2,-16 -3,-24 L-8,-24 L0,-38 L8,-24 L3,-24 C2,-16 0.5,0 0,8 Z" fill="#ff9f1c"/>
+  </g>
+
+  <!-- Arrow right -->
+  <g transform="translate(106, 44)">
+    <path d="M0,8 C-0.5,0 -2,-16 -3,-24 L-8,-24 L0,-38 L8,-24 L3,-24 C2,-16 0.5,0 0,8 Z" fill="#ff9f1c"/>
+  </g>
+</svg>

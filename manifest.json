@@ -1,9 +1,9 @@
 {
     "manifest_version": 3,
-    "name": "Cardmarket Highlighter",
-    "description": "Resalta usuarios en Cardmarket para localizarlos rápidamente en los listados de artículos.",
-    "version": "1.2.1",
-    "homepage_url": "https://github.com/vegekku/cardmarket-extension",
+    "name": "Cardmarket Enhancer",
+    "description": "Resalta vendedores y mejora la interfaz de Cardmarket: pedidos, navegación y personalización visual.",
+    "version": "1.3.0",
+    "homepage_url": "https://chromewebstore.google.com/detail/cardmarket-enhancer/jmekahcibjcoemagbbkmnjjhlofolomc",
     "permissions": [
         "storage",
         "tabs"
@@ -27,12 +27,17 @@
     },
     "content_scripts": [
         {
-            "matches": [
-                "*://*.cardmarket.com/*"
-            ],
-            "js": [
-                "content.js"
-            ]
+            "matches": ["*://*.cardmarket.com/*/Products/*"],
+            "js": ["content-highlight.js"]
+        },
+        {
+            "matches": ["*://*.cardmarket.com/*/Orders/*"],
+            "js": ["content-order.js"],
+            "css": ["content-order.css"]
+        },
+        {
+            "matches": ["*://*.cardmarket.com/*/Users/*"],
+            "js": ["content-game-switcher.js"]
         }
     ]
 }

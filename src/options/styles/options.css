@@ -30,8 +30,11 @@ h2:first-of-type { margin-top: 0; }
 .content { flex: 1; padding: 28px 32px; max-width: 560px; }
 
 .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.row[hidden] { display: none; }
+.row.section-start { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
 .row label { flex: 1; color: #444; }
 .row .hint { font-size: 12px; color: #999; margin-top: 2px; }
+.warning-hint { font-size: 12px; color: #996600; background: #fffbe6; border: 1px solid #ffe58f; border-radius: 4px; padding: 6px 8px; margin-bottom: 8px; }
 input[type=color] { width: 48px; height: 28px; padding: 1px; border: 1px solid #ccc; border-radius: 3px; cursor: pointer; }
 
 .actions { margin-top: 28px; display: flex; gap: 10px; align-items: center; }
@@ -46,5 +49,31 @@ button { border-radius: 4px; font-size: 14px; }
 .donate-btn { display: inline-block; padding: 7px 18px; background: #004a8f; color: #fff; border-radius: 4px; text-decoration: none; font-size: 14px; }
 .donate-btn:hover { background: #003d78; }
 
+.range-control { display: flex; align-items: center; gap: 8px; }
+.range-control input[type=range] { width: 120px; cursor: pointer; }
+#checkboxSizePreview {
+    cursor: default;
+    flex-shrink: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border: 1px solid #dee2e6;
+    vertical-align: top;
+    border-radius: .25em;
+}
+
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.modal-overlay[hidden] { display: none; }
+.modal { background: #fff; border-radius: 6px; padding: 24px; max-width: 360px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+.modal-title { font-size: 15px; font-weight: 600; margin: 0 0 10px; color: #333; }
+.modal-message { font-size: 13px; color: #555; margin: 0 0 20px; line-height: 1.5; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-danger { padding: 7px 16px; background: #c0392b; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+.btn-danger:hover { background: #a93226; }

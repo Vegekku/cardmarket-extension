@@ -1,14 +1,11 @@
 /**
- * @module content
- * @description Script inyectado en cardmarket.com. Lee los usuarios guardados
- * y resalta las filas de artículos cuyos usuarios coincidan.
- * Escucha mensajes del popup para actualizar el resaltado sin reinyectarse.
+ * @module content-highlight
+ * @description Inyectado en páginas de Products de Cardmarket.
+ * Lee los usuarios guardados y resalta las filas de artículos coincidentes.
+ * Escucha mensajes del popup y cambios de storage para actualizar el resaltado.
  */
-
-if (typeof __BUILD_TIME__ !== 'undefined') console.log(`[Cardmarket] build: ${__BUILD_TIME__}`);
-
-/** Color por defecto si no hay configuración guardada. */
-const DEFAULT_COLOR = 'rgba(0, 150, 200, 0.3)';
+import './content-common.js';
+import { DEFAULT_COLOR } from '../shared/defaults.js';
 
 /**
  * Devuelve el color de resaltado según el modo claro/oscuro activo en Cardmarket.
@@ -21,23 +18,14 @@ function resolveColor(colors) {
     return theme === 'dark' ? (colors.dark || DEFAULT_COLOR) : (colors.light || DEFAULT_COLOR);
 }
 
+/** @type {MutationObserver|null} */
 let activeObserver = null;
 
 /**
- * Elimina el resaltado de todas las filas previamente marcadas.
- */
-function clearHighlights() {
-    const table = document.getElementById('table');
-    if (table) table.querySelectorAll('div.article-row').forEach(row => {
-        row.style.removeProperty('--bs-table-bg');
-    });
-}
-
-/**
  * Resalta las filas `div.article-row` que contienen un enlace a un usuario
- * cuyo nombre coincide con alguno de los usuarios dados.
- * @param {string[]} terms - Usuarios a buscar
- * @param {Node} root - Nodo raíz desde el que buscar
+ * cuyo nombre coincide con alguno de los términos dados.
+ * @param {string[]} terms
+ * @param {Node} root
  * @param {{ light: string, dark: string } | undefined} highlightColors
  */
 function highlightRows(terms, root, highlightColors) {
@@ -50,7 +38,7 @@ function highlightRows(terms, root, highlightColors) {
 
 /**
  * Observa cambios en el DOM y resalta filas en los nuevos nodos añadidos.
- * @param {string[]} terms - Usuarios a buscar
+ * @param {string[]} terms
  * @param {{ light: string, dark: string } | undefined} highlightColors
  * @returns {MutationObserver}
  */
@@ -58,9 +46,7 @@ function observeNewContent(terms, highlightColors) {
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             mutation.addedNodes.forEach(node => {
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    highlightRows(terms, node, highlightColors);
-                }
+                if (node.nodeType === Node.ELEMENT_NODE) highlightRows(terms, node, highlightColors);
             });
         });
     });
@@ -70,38 +56,33 @@ function observeNewContent(terms, highlightColors) {
 
 /**
  * Aplica o limpia el resaltado según los datos de storage proporcionados.
- * @param {{ terms?: string[], enabled?: boolean }} data
+ * @param {{ terms?: string[], enabled?: boolean, highlightColors?: object }} data
  */
 function applyHighlight(data) {
     if (activeObserver) { activeObserver.disconnect(); activeObserver = null; }
-    clearHighlights();
-    if (data.enabled === false) return;
-    if (data.terms && data.terms.length > 0) {
-        const table = document.getElementById('table');
-        if (table) highlightRows(data.terms, table, data.highlightColors);
-        activeObserver = observeNewContent(data.terms, data.highlightColors);
-    }
+    const table = document.getElementById('table');
+    if (table) table.querySelectorAll('div.article-row').forEach(row => row.style.removeProperty('--bs-table-bg'));
+    if (data.enabled === false || !data.terms?.length) return;
+    if (table) highlightRows(data.terms, table, data.highlightColors);
+    activeObserver = observeNewContent(data.terms, data.highlightColors);
 }
 
-// Persiste el idioma de Cardmarket para que popup y opciones puedan leerlo
-chrome.storage.local.set({ lang: document.documentElement.lang || 'es' });
-
-// Carga inicial desde storage
+// Carga inicial
 chrome.storage.sync.get(['terms', 'enabled', 'highlightColors'], applyHighlight);
 
-// Escucha mensajes del popup
-chrome.runtime.onMessage.addListener(function(message) {
+// Mensajes del popup
+chrome.runtime.onMessage.addListener(message => {
     if (message.type === 'UPDATE_HIGHLIGHT') applyHighlight(message.data);
 });
 
-// Reaplica cuando cambia highlightColors, terms o enabled desde otra pestaña/opciones
+// Cambios desde opciones u otras pestañas
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'sync') return;
-    if (!('highlightColors' in changes || 'terms' in changes || 'enabled' in changes)) return;
+    if (!['highlightColors', 'terms', 'enabled'].some(k => k in changes)) return;
     chrome.storage.sync.get(['terms', 'enabled', 'highlightColors'], applyHighlight);
 });
 
-// Reaplica cuando cambia el tema claro/oscuro en Cardmarket
+// Reaplica al cambiar el tema claro/oscuro
 new MutationObserver(() => {
     chrome.storage.sync.get(['terms', 'enabled', 'highlightColors'], applyHighlight);
 }).observe(document.documentElement, { attributeFilter: ['data-bs-theme'] });

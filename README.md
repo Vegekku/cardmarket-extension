@@ -1,4 +1,4 @@
-# Cardmarket Extension
+# Cardmarket Enhancer
 
 Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket.com), el marketplace europeo de cartas coleccionables (Magic, Pokémon, Yu-Gi-Oh!, etc.).
 
@@ -10,7 +10,7 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por Cardmarket.
 - El botón **Vaciar** elimina todos los usuarios guardados.
 - El toggle **Activar resaltado** permite activar o desactivar el resaltado sin borrar los usuarios.
-- Al guardar o vaciar la lista se muestra un mensaje de confirmación temporal en el popup.
+- Al modificar o vaciar la lista se muestra un mensaje de confirmación temporal en el popup.
 - El color de resaltado se actualiza en tiempo real al cambiar el tema claro/oscuro de Cardmarket.
 - La interfaz del popup y la página de opciones se muestran en el idioma de Cardmarket (español, inglés, francés, alemán e italiano).
 
@@ -19,6 +19,15 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Permite configurar el color de resaltado por separado para modo claro y modo oscuro.
 - Incluye previsualización en vivo del color seleccionado antes de guardar.
 - Los cambios de color se aplican en todas las pestañas abiertas de Cardmarket sin recargar.
+- Permite ajustar el tamaño de los checkboxes en el listado de pedido (rango de 1em a 3em, con previsualización en vivo del checkbox).
+- Permite activar el atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
+- Permite activar la visualización de imágenes de cartas inline en el listado de pedido, con altura configurable.
+- Permite activar categorías colapsables en el pedido (toggle por bloque de categoría) y configurar si están colapsadas por defecto.
+- Permite activar el desglose del valor del pedido por categoría.
+- Incluye previsualización en vivo de la sección Pedido (checkboxes, opacidad e imágenes inline) con toggle de modo claro/oscuro.
+- Permite activar la reescritura de los enlaces del selector de juego en páginas de usuario para mantener el contexto del vendedor al cambiar de juego.
+- Permite activar la preservación de la categoría actual y los filtros genéricos al cambiar de juego (sub-opción del punto anterior).
+- Incluye enlace a formulario de feedback (bug, sugerencia, pregunta) en la sección Acerca de, con idioma, versión y tema pre-rellenados.
 
 ## Instalación
 
@@ -48,20 +57,35 @@ Los usuarios introducidos se guardan en `chrome.storage.sync`, vinculados al per
 ```
 cardmarket-extension/
 ├── src/
-│   ├── content.js         # Script inyectado: resalta usuarios en la página y persiste el idioma
-│   ├── i18n.js            # Traducciones de la UI (es, en, fr, de, it)
-│   ├── popup.html         # Popup del icono de la extensión
-│   ├── popup.js           # Lógica del popup
-│   ├── options.html       # Página de opciones de la extensión
-│   ├── options.js         # Lógica de la página de opciones
-│   ├── preview.html       # Fragmento HTML para la previsualización de colores
-│   └── styles/
-│       ├── common.css     # Estilos compartidos (popup y opciones)
-│       ├── popup.css      # Estilos específicos del popup
-│       ├── options.css    # Estilos específicos de opciones
-│       └── preview.css    # Estilos de la previsualización
+│   ├── content/
+│   │   ├── content-common.js      # Inicialización compartida entre content scripts (idioma)
+│   │   ├── content-highlight.js   # Resaltado de usuarios en páginas de Products
+│   │   ├── content-order.js       # Features de pedido (imágenes inline, opacidad, checkbox, bloques por categoría)
+│   │   └── content-order.css      # Estilos inyectados por content-order.js
+│   ├── options/
+│   │   ├── options-preview.js     # Lógica de previsualizaciones (colores y pedido)
+│   │   ├── options.js             # Lógica de la página de opciones
+│   │   ├── options.html           # Página de opciones de la extensión
+│   │   ├── popup.js               # Lógica del popup
+│   │   ├── popup.html             # Popup del icono de la extensión
+│   │   ├── preview.html           # Fragmento HTML para la previsualización de colores
+│   │   ├── order-preview.html     # Fragmento HTML para la previsualización de pedido
+│   │   └── styles/
+│   │       ├── common.css         # Estilos compartidos (popup y opciones)
+│   │       ├── popup.css          # Estilos específicos del popup
+│   │       ├── options.css        # Estilos específicos de opciones
+│   │       ├── preview.css        # Estilos de la previsualización de colores
+│   │       └── order-preview.css  # Estilos de la previsualización de pedido
+│   └── shared/
+│       ├── color-utils.js         # Conversión entre formatos rgba y hex
+│       ├── defaults.js            # Constantes de valores por defecto compartidas
+│       ├── i18n.js                # Traducciones de la UI (es, en, fr, de, it)
+│       └── order-features.js      # Lógica compartida de features de pedido
 ├── docs/
-│   ├── STORE.md           # Descripción y capturas para la Chrome Web Store
+│   └── STORE.md           # Descripción y capturas para la Chrome Web Store
+├── pages/
+│   ├── index.html         # Página web pública de la extensión
+│   ├── feedback.html      # Formulario de feedback (alojado en GitHub Pages)
 │   └── privacy.html       # Política de privacidad
 ├── dist/                  # Build generado (no commitear)
 ├── icons/
@@ -70,6 +94,8 @@ cardmarket-extension/
 │   └── icon128.png
 ├── build.js               # Script de build (esbuild)
 ├── zip.js                 # Genera el zip para la Chrome Web Store
+├── .githooks/
+│   └── pre-commit         # Hook que bloquea commits directos en main y develop
 ├── package.json
 ├── manifest.json          # Configuración de la extensión
 ├── CHANGELOG.md           # Historial de versiones
