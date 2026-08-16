@@ -1,8 +1,6 @@
 # Mejoras pendientes
 
-## Mi backlog
-
-Puntos que quiero abordar próximamente, en el orden que me interesa.
+## Priorización
 
 | # | Punto |
 |---|-------|
@@ -14,7 +12,7 @@ Puntos que quiero abordar próximamente, en el orden que me interesa.
 
 ---
 
-## Priorización
+## Tipología
 
 | Bloque | Puntos |
 |--------|--------|
