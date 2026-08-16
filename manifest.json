@@ -1,9 +1,9 @@
 {
     "manifest_version": 3,
-    "name": "Cardmarket Highlighter",
-    "description": "Resalta usuarios en Cardmarket para localizarlos rápidamente en los listados de artículos.",
+    "name": "Cardmarket Enhancer",
+    "description": "Resalta vendedores y mejora la interfaz de Cardmarket: pedidos, navegación y personalización visual.",
     "version": "1.2.1",
-    "homepage_url": "https://chromewebstore.google.com/detail/cardmarket-highlighter/jmekahcibjcoemagbbkmnjjhlofolomc",
+    "homepage_url": "https://chromewebstore.google.com/detail/cardmarket-enhancer/jmekahcibjcoemagbbkmnjjhlofolomc",
     "permissions": [
         "storage",
         "tabs"
