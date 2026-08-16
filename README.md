@@ -1,4 +1,4 @@
-# Cardmarket Extension
+# Cardmarket Enhancer
 
 Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket.com), el marketplace europeo de cartas coleccionables (Magic, Pokémon, Yu-Gi-Oh!, etc.).
 
