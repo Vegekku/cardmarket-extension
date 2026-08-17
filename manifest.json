@@ -31,7 +31,7 @@
             "js": ["content-highlight.js"]
         },
         {
-            "matches": ["*://*.cardmarket.com/*/Orders/*"],
+            "matches": ["*://*.cardmarket.com/*/Orders/*", "*://*.cardmarket.com/*/ShoppingCart", "*://*.cardmarket.com/*/ShoppingCart/*"],
             "js": ["content-order.js"],
             "css": ["content-order.css"]
         },

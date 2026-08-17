@@ -1,8 +1,9 @@
 /**
  * @module content-order
- * @description Inyectado en páginas de Orders de Cardmarket.
+ * @description Inyectado en páginas de Orders y ShoppingCart de Cardmarket.
  * Gestiona imágenes inline, opacidad de filas marcadas, tamaño de checkbox
- * y mejoras de vista multi-juego (colapsar/expandir bloques y subtotal por juego).
+ * y mejoras de vista (colapsar/expandir bloques y subtotal por juego).
+ * Opera sobre cada section.shipment-block de forma genérica, cubriendo tanto pedidos (uno) como carrito (varios).
  */
 import './content-common.js';
 import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT, DEFAULT_GAME_BLOCKS_ENABLED, DEFAULT_GAME_BLOCKS_COLLAPSED, DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED } from '../shared/defaults.js';
@@ -73,84 +74,88 @@ function calcSubtotal(table) {
 }
 
 /**
- * Inyecta toggles y la fila de desglose una única vez al cargar la página.
- * La visibilidad y el estado se controlan mediante applyGameBlocksState.
+ * Inyecta toggles y filas de desglose por juego en cada shipment-block.
+ * Opera sobre todos los .shipment-block del documento (uno en pedido, varios en carrito).
+ * La visibilidad y estado se controlan mediante applyGameBlocksState.
  */
 function initGameBlocks() {
-    const sections = document.querySelectorAll('.category-subsection');
-    if (!sections.length) return;
+    document.querySelectorAll('.shipment-block').forEach(block => {
+        const sections = [...block.querySelectorAll('.category-subsection')].filter(s => !s.closest('.custom-collapse-wrapper'));
+        if (!sections.length) return;
 
-    sections.forEach(section => {
-        const header = section.querySelector(':scope > div');
-        const table = section.querySelector('table[id^="ArticleTable"]');
-        if (!header || !table) return;
+        sections.forEach(section => {
+            const header = section.querySelector(':scope > div');
+            const table = section.querySelector('table[id^="ArticleTable"]');
+            if (!header || !table || header.querySelector('.mkm-game-toggle')) return;
 
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'mkm-game-toggle';
-        toggleBtn.textContent = '▼';
-        toggleBtn.setAttribute('aria-expanded', 'true');
-        toggleBtn.addEventListener('click', () => {
-            const collapsed = table.style.display === 'none';
-            table.style.display = collapsed ? '' : 'none';
-            toggleBtn.textContent = collapsed ? '▼' : '▶';
-            toggleBtn.setAttribute('aria-expanded', String(collapsed));
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'mkm-game-toggle';
+            toggleBtn.textContent = '▼';
+            toggleBtn.setAttribute('aria-expanded', 'true');
+            toggleBtn.addEventListener('click', () => {
+                const collapsed = table.style.display === 'none';
+                table.style.display = collapsed ? '' : 'none';
+                toggleBtn.textContent = collapsed ? '▼' : '▶';
+                toggleBtn.setAttribute('aria-expanded', String(collapsed));
+            });
+            const h3 = header.querySelector('h3');
+            const leftGroup = document.createElement('div');
+            leftGroup.className = 'mkm-game-left-group';
+            h3.replaceWith(leftGroup);
+            leftGroup.append(toggleBtn, h3);
         });
 
-        const h3 = header.querySelector('h3');
-        const leftGroup = document.createElement('div');
-        leftGroup.className = 'mkm-game-left-group';
-        h3.replaceWith(leftGroup);
-        leftGroup.append(toggleBtn, h3);
+        if (sections.length < 2 || block.querySelector('.mkm-game-subtotal-row')) return;
+
+        const itemValueRow = block.querySelector('.summary .item-value')?.closest('.d-flex');
+        if (!itemValueRow) return;
+
+        const detailRow = document.createElement('div');
+        detailRow.className = 'mkm-game-subtotal-row';
+        sections.forEach(section => {
+            const table = section.querySelector('table[id^="ArticleTable"]');
+            if (!table) return;
+            const nameText = section.querySelector(':scope > div h3')?.textContent.trim() ?? '';
+            const row = document.createElement('div');
+            row.className = 'd-flex mkm-game-subtotal-item';
+            row.dataset.mkmTable = table.id;
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'flex-grow-1';
+            nameSpan.textContent = nameText;
+            const valueSpan = document.createElement('span');
+            valueSpan.textContent = calcSubtotal(table);
+            row.append(nameSpan, valueSpan);
+            detailRow.appendChild(row);
+        });
+        itemValueRow.after(detailRow);
     });
-
-    if (sections.length < 2) return;
-
-    const itemValueRow = document.querySelector('.summary .item-value')?.closest('.d-flex');
-    if (!itemValueRow) return;
-
-    const detailRow = document.createElement('div');
-    detailRow.className = 'mkm-game-subtotal-row';
-    sections.forEach(section => {
-        const header = section.querySelector(':scope > div');
-        const table = section.querySelector('table[id^="ArticleTable"]');
-        if (!header || !table) return;
-        const nameText = header.querySelector('h3')?.textContent.trim() ?? '';
-        const row = document.createElement('div');
-        row.className = 'd-flex mkm-game-subtotal-item';
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'flex-grow-1';
-        nameSpan.textContent = nameText;
-        const valueSpan = document.createElement('span');
-        valueSpan.textContent = calcSubtotal(table);
-        row.append(nameSpan, valueSpan);
-        detailRow.appendChild(row);
-    });
-    itemValueRow.after(detailRow);
 }
 
 /**
- * Aplica visibilidad y estado de colapso según la configuración guardada.
+ * Aplica visibilidad y estado de colapso en todos los shipment-block.
  * @param {boolean} togglesEnabled
  * @param {boolean} defaultCollapsed
  * @param {boolean} subtotalEnabled
  */
 function applyGameBlocksState(togglesEnabled, defaultCollapsed, subtotalEnabled) {
-    document.querySelectorAll('.category-subsection').forEach(section => {
-        const table = section.querySelector('table[id^="ArticleTable"]');
-        const btn = section.querySelector('.mkm-game-toggle');
-        if (!btn) return;
-        btn.style.display = togglesEnabled ? '' : 'none';
-        if (!table) return;
-        if (!togglesEnabled) {
-            table.style.display = '';
-        } else {
-            table.style.display = defaultCollapsed ? 'none' : '';
-            btn.textContent = defaultCollapsed ? '▶' : '▼';
-            btn.setAttribute('aria-expanded', String(!defaultCollapsed));
-        }
+    document.querySelectorAll('.shipment-block').forEach(block => {
+        block.querySelectorAll('.category-subsection').forEach(section => {
+            const table = section.querySelector('table[id^="ArticleTable"]');
+            const btn = section.querySelector('.mkm-game-toggle');
+            if (!btn) return;
+            btn.style.display = togglesEnabled ? '' : 'none';
+            if (!table) return;
+            if (!togglesEnabled) {
+                table.style.display = '';
+            } else {
+                table.style.display = defaultCollapsed ? 'none' : '';
+                btn.textContent = defaultCollapsed ? '▶' : '▼';
+                btn.setAttribute('aria-expanded', String(!defaultCollapsed));
+            }
+        });
+        const detailRow = block.querySelector('.mkm-game-subtotal-row');
+        if (detailRow) detailRow.style.display = subtotalEnabled ? '' : 'none';
     });
-    const detailRow = document.querySelector('.mkm-game-subtotal-row');
-    if (detailRow) detailRow.style.display = subtotalEnabled ? '' : 'none';
 }
 
 // Carga inicial
