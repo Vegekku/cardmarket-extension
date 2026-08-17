@@ -74,60 +74,85 @@ function calcSubtotal(table) {
 }
 
 /**
+ * Inyecta toggles en las secciones de un contenedor (desktop o mobile).
+ * @param {Element[]} sections
+ */
+function _injectToggles(sections) {
+    sections.forEach(section => {
+        const header = section.querySelector(':scope > div');
+        const table = section.querySelector('table[id^="ArticleTable"]');
+        if (!header || !table || header.querySelector('.mkm-game-toggle')) return;
+
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'mkm-game-toggle';
+        toggleBtn.textContent = '▼';
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        toggleBtn.addEventListener('click', () => {
+            const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+            table.style.display = isExpanded ? 'none' : '';
+            toggleBtn.textContent = isExpanded ? '▶' : '▼';
+            toggleBtn.setAttribute('aria-expanded', String(!isExpanded));
+        });
+        const h3 = header.querySelector('h3');
+        const leftGroup = document.createElement('div');
+        leftGroup.className = 'mkm-game-left-group';
+        h3.replaceWith(leftGroup);
+        leftGroup.append(toggleBtn, h3);
+    });
+}
+
+/**
+ * Inyecta fila de desglose por juego en el .summary de un contenedor.
+ * @param {Element[]} sections
+ * @param {Element} summaryEl
+ */
+function _injectSubtotalRow(sections, summaryEl) {
+    if (sections.length < 2 || summaryEl.querySelector('.mkm-game-subtotal-row')) return;
+    const itemValueRow = summaryEl.querySelector('.item-value')?.closest('.d-flex');
+    if (!itemValueRow) return;
+
+    const detailRow = document.createElement('div');
+    detailRow.className = 'mkm-game-subtotal-row';
+    sections.forEach(section => {
+        const table = section.querySelector('table[id^="ArticleTable"]');
+        if (!table) return;
+        const nameText = section.querySelector(':scope > div h3')?.textContent.trim() ?? '';
+        const row = document.createElement('div');
+        row.className = 'd-flex mkm-game-subtotal-item';
+        row.dataset.mkmTable = table.id;
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'flex-grow-1';
+        nameSpan.textContent = nameText;
+        const valueSpan = document.createElement('span');
+        valueSpan.textContent = calcSubtotal(table);
+        row.append(nameSpan, valueSpan);
+        detailRow.appendChild(row);
+    });
+    itemValueRow.after(detailRow);
+}
+
+/**
  * Inyecta toggles y filas de desglose por juego en cada shipment-block.
  * Opera sobre todos los .shipment-block del documento (uno en pedido, varios en carrito).
+ * Procesa por separado las secciones desktop y mobile (responsive duplicate).
  * La visibilidad y estado se controlan mediante applyGameBlocksState.
  */
 function initGameBlocks() {
+    // Toggles: agnóstico a la estructura, aplica a cualquier .category-subsection
+    _injectToggles([...document.querySelectorAll('.category-subsection')]);
+
+    // Desglose: necesita asociar secciones con su .summary por contenedor
     document.querySelectorAll('.shipment-block').forEach(block => {
-        const sections = [...block.querySelectorAll('.category-subsection')].filter(s => !s.closest('.custom-collapse-wrapper'));
-        if (!sections.length) return;
+        const mobileWrapper = block.querySelector('.custom-collapse-wrapper:has(.category-subsection)');
 
-        sections.forEach(section => {
-            const header = section.querySelector(':scope > div');
-            const table = section.querySelector('table[id^="ArticleTable"]');
-            if (!header || !table || header.querySelector('.mkm-game-toggle')) return;
+        const desktopSections = [...block.querySelectorAll('.category-subsection')].filter(s => !s.closest('.custom-collapse-wrapper'));
+        const desktopSummary = (mobileWrapper ? block.querySelector(':scope > .card-body > .content.d-none') : block)?.querySelector('.summary');
+        if (desktopSummary) _injectSubtotalRow(desktopSections, desktopSummary);
 
-            const toggleBtn = document.createElement('button');
-            toggleBtn.className = 'mkm-game-toggle';
-            toggleBtn.textContent = '▼';
-            toggleBtn.setAttribute('aria-expanded', 'true');
-            toggleBtn.addEventListener('click', () => {
-                const collapsed = table.style.display === 'none';
-                table.style.display = collapsed ? '' : 'none';
-                toggleBtn.textContent = collapsed ? '▼' : '▶';
-                toggleBtn.setAttribute('aria-expanded', String(collapsed));
-            });
-            const h3 = header.querySelector('h3');
-            const leftGroup = document.createElement('div');
-            leftGroup.className = 'mkm-game-left-group';
-            h3.replaceWith(leftGroup);
-            leftGroup.append(toggleBtn, h3);
-        });
-
-        if (sections.length < 2 || block.querySelector('.mkm-game-subtotal-row')) return;
-
-        const itemValueRow = block.querySelector('.summary .item-value')?.closest('.d-flex');
-        if (!itemValueRow) return;
-
-        const detailRow = document.createElement('div');
-        detailRow.className = 'mkm-game-subtotal-row';
-        sections.forEach(section => {
-            const table = section.querySelector('table[id^="ArticleTable"]');
-            if (!table) return;
-            const nameText = section.querySelector(':scope > div h3')?.textContent.trim() ?? '';
-            const row = document.createElement('div');
-            row.className = 'd-flex mkm-game-subtotal-item';
-            row.dataset.mkmTable = table.id;
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'flex-grow-1';
-            nameSpan.textContent = nameText;
-            const valueSpan = document.createElement('span');
-            valueSpan.textContent = calcSubtotal(table);
-            row.append(nameSpan, valueSpan);
-            detailRow.appendChild(row);
-        });
-        itemValueRow.after(detailRow);
+        if (mobileWrapper) {
+            const mobileSummary = mobileWrapper.querySelector('.summary');
+            if (mobileSummary) _injectSubtotalRow([...mobileWrapper.querySelectorAll('.category-subsection')], mobileSummary);
+        }
     });
 }
 
@@ -145,16 +170,14 @@ function applyGameBlocksState(togglesEnabled, defaultCollapsed, subtotalEnabled)
             if (!btn) return;
             btn.style.display = togglesEnabled ? '' : 'none';
             if (!table) return;
-            if (!togglesEnabled) {
-                table.style.display = '';
-            } else {
-                table.style.display = defaultCollapsed ? 'none' : '';
-                btn.textContent = defaultCollapsed ? '▶' : '▼';
-                btn.setAttribute('aria-expanded', String(!defaultCollapsed));
-            }
+            const collapsed = togglesEnabled && defaultCollapsed;
+            table.style.display = collapsed ? 'none' : '';
+            btn.textContent = collapsed ? '▶' : '▼';
+            btn.setAttribute('aria-expanded', String(!collapsed));
         });
-        const detailRow = block.querySelector('.mkm-game-subtotal-row');
-        if (detailRow) detailRow.style.display = subtotalEnabled ? '' : 'none';
+        block.querySelectorAll('.mkm-game-subtotal-row').forEach(row => {
+            row.style.display = subtotalEnabled ? '' : 'none';
+        });
     });
 }
 
