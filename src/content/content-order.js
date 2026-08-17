@@ -192,7 +192,7 @@ function _injectGlobalSubtotalRow(globalMap) {
 
     const detailRow = document.createElement('div');
     detailRow.className = 'mkm-game-subtotal-row';
-    globalMap.forEach((total, name) => {
+    [...globalMap.entries()].sort(([a], [b]) => a.localeCompare(b)).forEach(([name, total]) => {
         const row = document.createElement('div');
         row.className = 'd-flex mkm-game-subtotal-item';
         const nameSpan = document.createElement('span');
