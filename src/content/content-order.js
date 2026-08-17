@@ -6,7 +6,7 @@
  * Opera sobre cada section.shipment-block de forma genérica, cubriendo tanto pedidos (uno) como carrito (varios).
  */
 import './content-common.js';
-import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT, DEFAULT_GAME_BLOCKS_ENABLED, DEFAULT_GAME_BLOCKS_COLLAPSED, DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED } from '../shared/defaults.js';
+import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT, DEFAULT_GAME_BLOCKS_ENABLED, DEFAULT_GAME_BLOCKS_COLLAPSED, DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED, DEFAULT_GAME_BLOCKS_SUBTOTAL_COLLAPSED } from '../shared/defaults.js';
 import { injectThumbnail, applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from '../shared/order-features.js';
 
 // Inyecta el estilo estático de la custom property para el tamaño de checkbox
@@ -98,6 +98,9 @@ function _injectToggles(sections) {
         leftGroup.className = 'mkm-game-left-group';
         h3.replaceWith(leftGroup);
         leftGroup.append(toggleBtn, h3);
+        leftGroup.addEventListener('click', e => {
+            if (!e.target.closest('.mkm-game-toggle')) toggleBtn.click();
+        });
     });
 }
 
@@ -108,6 +111,27 @@ function _injectToggles(sections) {
  */
 function _sectionName(section) {
     return (section.querySelector(':scope > div h3')?.textContent.trim() ?? '').replace(/\s*\(\d+\)$/, '');
+}
+
+/**
+ * Inyecta el botón toggle del desglose antes del valor en la fila .item-value.
+ * @param {Element} itemValueRow
+ * @param {Element} detailRow
+ */
+function _injectSubtotalToggle(itemValueRow, detailRow) {
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'mkm-subtotal-toggle';
+    toggleBtn.textContent = '▼';
+    toggleBtn.setAttribute('aria-expanded', 'true');
+    toggleBtn.addEventListener('click', () => {
+        const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+        detailRow.style.display = isExpanded ? 'none' : '';
+        toggleBtn.textContent = isExpanded ? '▶' : '▼';
+        toggleBtn.setAttribute('aria-expanded', String(!isExpanded));
+    });
+    const labelSpan = itemValueRow.querySelector('span:not(.item-value)');
+    if (labelSpan) labelSpan.append(toggleBtn);
+    else itemValueRow.querySelector('.item-value').before(toggleBtn);
 }
 
 /**
@@ -138,6 +162,7 @@ function _injectSubtotalRow(sections, summaryEl, globalMap) {
             detailRow.appendChild(row);
         });
         itemValueRow.after(detailRow);
+        _injectSubtotalToggle(itemValueRow, detailRow);
     }
 
     if (globalMap) {
@@ -179,6 +204,7 @@ function _injectGlobalSubtotalRow(globalMap) {
         detailRow.appendChild(row);
     });
     itemValueRow.after(detailRow);
+    _injectSubtotalToggle(itemValueRow, detailRow);
 }
 
 /**
@@ -215,8 +241,9 @@ function initGameBlocks() {
  * @param {boolean} togglesEnabled
  * @param {boolean} defaultCollapsed
  * @param {boolean} subtotalEnabled
+ * @param {boolean} subtotalCollapsed
  */
-function applyGameBlocksState(togglesEnabled, defaultCollapsed, subtotalEnabled) {
+function applyGameBlocksState(togglesEnabled, defaultCollapsed, subtotalEnabled, subtotalCollapsed) {
     document.querySelectorAll('.shipment-block').forEach(block => {
         block.querySelectorAll('.category-subsection').forEach(section => {
             const table = section.querySelector('table[id^="ArticleTable"]');
@@ -229,22 +256,42 @@ function applyGameBlocksState(togglesEnabled, defaultCollapsed, subtotalEnabled)
             btn.textContent = collapsed ? '▶' : '▼';
             btn.setAttribute('aria-expanded', String(!collapsed));
         });
+        block.querySelectorAll('.mkm-subtotal-toggle').forEach(btn => {
+            if (!subtotalEnabled) return;
+            const detailRow = btn.closest('.d-flex')?.nextElementSibling;
+            if (!detailRow?.classList.contains('mkm-game-subtotal-row')) return;
+            detailRow.style.display = subtotalCollapsed ? 'none' : '';
+            btn.textContent = subtotalCollapsed ? '▶' : '▼';
+            btn.setAttribute('aria-expanded', String(!subtotalCollapsed));
+        });
         block.querySelectorAll('.mkm-game-subtotal-row').forEach(row => {
             row.style.display = subtotalEnabled ? '' : 'none';
         });
     });
-    document.querySelector('.order-first .cart-overview')?.querySelectorAll('.mkm-game-subtotal-row').forEach(row => {
-        row.style.display = subtotalEnabled ? '' : 'none';
-    });
+    const overview = document.querySelector('.order-first .cart-overview');
+    if (overview) {
+        overview.querySelectorAll('.mkm-subtotal-toggle').forEach(btn => {
+            if (!subtotalEnabled) return;
+            const detailRow = btn.closest('.d-flex')?.nextElementSibling;
+            if (!detailRow?.classList.contains('mkm-game-subtotal-row')) return;
+            detailRow.style.display = subtotalCollapsed ? 'none' : '';
+            btn.textContent = subtotalCollapsed ? '▶' : '▼';
+            btn.setAttribute('aria-expanded', String(!subtotalCollapsed));
+        });
+        overview.querySelectorAll('.mkm-game-subtotal-row').forEach(row => {
+            row.style.display = subtotalEnabled ? '' : 'none';
+        });
+    }
 }
 
 // Carga inicial
-chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled'], data => {
+chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled', 'gameBlocksSubtotalCollapsed'], data => {
     initGameBlocks();
     applyGameBlocksState(
         data.gameBlocksEnabled ?? DEFAULT_GAME_BLOCKS_ENABLED,
         data.gameBlocksCollapsed ?? DEFAULT_GAME_BLOCKS_COLLAPSED,
-        data.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED
+        data.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED,
+        data.gameBlocksSubtotalCollapsed ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_COLLAPSED
     );
     applyCheckboxSize(data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
     const opacityEnabled = data.checkedOpacityEnabled ?? false;
@@ -260,9 +307,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
     const needsOpacity = ['checkedOpacity', 'checkedOpacityEnabled'].some(k => k in changes);
     const needsInline = ['inlineImagesEnabled', 'inlineImageHeight'].some(k => k in changes);
     const needsCheckbox = 'checkboxSize' in changes;
-    const needsGameBlocks = ['gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled'].some(k => k in changes);
+    const needsGameBlocks = ['gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled', 'gameBlocksSubtotalCollapsed'].some(k => k in changes);
     if (!needsOpacity && !needsInline && !needsCheckbox && !needsGameBlocks) return;
-    chrome.storage.sync.get(['checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'checkboxSize', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled'], d => {
+    chrome.storage.sync.get(['checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'checkboxSize', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled', 'gameBlocksSubtotalCollapsed'], d => {
         if (needsCheckbox) applyCheckboxSize(d.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
         if (needsOpacity) {
             const opacityEnabled = d.checkedOpacityEnabled ?? false;
@@ -274,7 +321,8 @@ chrome.storage.onChanged.addListener((changes, area) => {
         if (needsGameBlocks) applyGameBlocksState(
             d.gameBlocksEnabled ?? DEFAULT_GAME_BLOCKS_ENABLED,
             d.gameBlocksCollapsed ?? DEFAULT_GAME_BLOCKS_COLLAPSED,
-            d.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED
+            d.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED,
+            d.gameBlocksSubtotalCollapsed ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_COLLAPSED
         );
     });
 });
