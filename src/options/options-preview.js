@@ -3,7 +3,7 @@
  * @description Lógica de las previsualizaciones de la página de opciones:
  * preview de colores de resaltado y preview de la sección Pedido.
  */
-import previewHtml from './preview.html';
+import colorPreviewHtml from './color-preview.html';
 import orderPreviewHtml from './order-preview.html';
 import { hexToRgba } from '../shared/color-utils.js';
 import { applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from '../shared/order-features.js';
@@ -15,8 +15,8 @@ import { applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from '..
 export function initPreview() {
     const lightWrap = document.getElementById('previewLight');
     const darkWrap = document.getElementById('previewDark');
-    lightWrap.innerHTML = previewHtml;
-    darkWrap.innerHTML = previewHtml;
+    lightWrap.innerHTML = colorPreviewHtml;
+    darkWrap.innerHTML = colorPreviewHtml;
     return {
         lightRows: lightWrap.querySelectorAll('[data-highlighted]'),
         darkRows: darkWrap.querySelectorAll('[data-highlighted]'),

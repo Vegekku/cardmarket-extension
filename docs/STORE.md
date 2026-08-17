@@ -12,6 +12,7 @@ Cardmarket Enhancer
 
 #### Resumen del paquete (máx. 132 caracteres)
 Resalta vendedores y mejora la interfaz de Cardmarket: pedidos, navegación y personalización visual.
+
 #### Descripción (máx. 16000 caracteres)
 Cardmarket Enhancer resalta visualmente los vendedores que más te interesan en los listados de artículos de Cardmarket, el marketplace europeo de cartas coleccionables (Magic, Pokémon, Yu-Gi-Oh!, Digimon, etc.), y mejora la interfaz de pedidos, navegación y personalización visual.
 
