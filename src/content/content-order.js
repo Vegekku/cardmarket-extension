@@ -102,29 +102,79 @@ function _injectToggles(sections) {
 }
 
 /**
+ * Extrae el nombre limpio de una .category-subsection (sin el " (N)" final).
+ * @param {Element} section
+ * @returns {string}
+ */
+function _sectionName(section) {
+    return (section.querySelector(':scope > div h3')?.textContent.trim() ?? '').replace(/\s*\(\d+\)$/, '');
+}
+
+/**
  * Inyecta fila de desglose por juego en el .summary de un contenedor.
  * @param {Element[]} sections
  * @param {Element} summaryEl
+ * @param {Map<string, number>} [globalMap] - Si se pasa, acumula subtotales por nombre limpio
  */
-function _injectSubtotalRow(sections, summaryEl) {
-    if (sections.length < 2 || summaryEl.querySelector('.mkm-game-subtotal-row')) return;
+function _injectSubtotalRow(sections, summaryEl, globalMap) {
     const itemValueRow = summaryEl.querySelector('.item-value')?.closest('.d-flex');
+    if (!itemValueRow) return;
+
+    if (!summaryEl.querySelector('.mkm-game-subtotal-row') && sections.length >= 2) {
+        const detailRow = document.createElement('div');
+        detailRow.className = 'mkm-game-subtotal-row';
+        sections.forEach(section => {
+            const table = section.querySelector('table[id^="ArticleTable"]');
+            if (!table) return;
+            const row = document.createElement('div');
+            row.className = 'd-flex mkm-game-subtotal-item';
+            row.dataset.mkmTable = table.id;
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'flex-grow-1';
+            nameSpan.textContent = _sectionName(section);
+            const valueSpan = document.createElement('span');
+            valueSpan.textContent = calcSubtotal(table);
+            row.append(nameSpan, valueSpan);
+            detailRow.appendChild(row);
+        });
+        itemValueRow.after(detailRow);
+    }
+
+    if (globalMap) {
+        sections.forEach(section => {
+            const table = section.querySelector('table[id^="ArticleTable"]');
+            if (!table) return;
+            const name = _sectionName(section);
+            let total = 0;
+            table.querySelectorAll('tr[data-amount][data-price]').forEach(tr => {
+                total += parseFloat(tr.dataset.amount) * parseFloat(tr.dataset.price);
+            });
+            globalMap.set(name, (globalMap.get(name) ?? 0) + total);
+        });
+    }
+}
+
+/**
+ * Inyecta fila de desglose global por categoría en la vista general del carrito.
+ * @param {Map<string, number>} globalMap
+ */
+function _injectGlobalSubtotalRow(globalMap) {
+    if (globalMap.size < 2) return;
+    const overview = document.querySelector('.order-first .cart-overview');
+    if (!overview || overview.querySelector('.mkm-game-subtotal-row')) return;
+    const itemValueRow = overview.querySelector('.item-value')?.closest('.d-flex');
     if (!itemValueRow) return;
 
     const detailRow = document.createElement('div');
     detailRow.className = 'mkm-game-subtotal-row';
-    sections.forEach(section => {
-        const table = section.querySelector('table[id^="ArticleTable"]');
-        if (!table) return;
-        const nameText = section.querySelector(':scope > div h3')?.textContent.trim() ?? '';
+    globalMap.forEach((total, name) => {
         const row = document.createElement('div');
         row.className = 'd-flex mkm-game-subtotal-item';
-        row.dataset.mkmTable = table.id;
         const nameSpan = document.createElement('span');
         nameSpan.className = 'flex-grow-1';
-        nameSpan.textContent = nameText;
+        nameSpan.textContent = name;
         const valueSpan = document.createElement('span');
-        valueSpan.textContent = calcSubtotal(table);
+        valueSpan.textContent = total.toFixed(2).replace('.', ',') + ' €';
         row.append(nameSpan, valueSpan);
         detailRow.appendChild(row);
     });
@@ -142,18 +192,22 @@ function initGameBlocks() {
     _injectToggles([...document.querySelectorAll('.category-subsection')]);
 
     // Desglose: necesita asociar secciones con su .summary por contenedor
+    // globalMap acumula subtotales por categoría para la vista general del carrito
+    const globalMap = new Map();
     document.querySelectorAll('.shipment-block').forEach(block => {
         const mobileWrapper = block.querySelector('.custom-collapse-wrapper:has(.category-subsection)');
 
         const desktopSections = [...block.querySelectorAll('.category-subsection')].filter(s => !s.closest('.custom-collapse-wrapper'));
         const desktopSummary = (mobileWrapper ? block.querySelector(':scope > .card-body > .content.d-none') : block)?.querySelector('.summary');
-        if (desktopSummary) _injectSubtotalRow(desktopSections, desktopSummary);
+        if (desktopSummary) _injectSubtotalRow(desktopSections, desktopSummary, globalMap);
 
         if (mobileWrapper) {
             const mobileSummary = mobileWrapper.querySelector('.summary');
             if (mobileSummary) _injectSubtotalRow([...mobileWrapper.querySelectorAll('.category-subsection')], mobileSummary);
         }
     });
+
+    _injectGlobalSubtotalRow(globalMap);
 }
 
 /**
@@ -178,6 +232,9 @@ function applyGameBlocksState(togglesEnabled, defaultCollapsed, subtotalEnabled)
         block.querySelectorAll('.mkm-game-subtotal-row').forEach(row => {
             row.style.display = subtotalEnabled ? '' : 'none';
         });
+    });
+    document.querySelector('.order-first .cart-overview')?.querySelectorAll('.mkm-game-subtotal-row').forEach(row => {
+        row.style.display = subtotalEnabled ? '' : 'none';
     });
 }
 
