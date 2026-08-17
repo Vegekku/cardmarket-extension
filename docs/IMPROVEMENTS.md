@@ -5,10 +5,11 @@
 | # | Punto |
 |---|-------|
 | 1 | [4.17 Features de pedido en el carrito de compra](#417-features-de-pedido-en-el-carrito-de-compra) |
-| 2 | [3.8 Accesibilidad WCAG](#38-accesibilidad-wcag) |
-| 3 | [4.11 Compatibilidad con Firefox](#411-compatibilidad-con-firefox) |
-| 4 | [4.5 Añadir vendedor al resaltado al comprar sus cartas](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas) |
-| 5 | [4.10 Añadir / quitar vendedor con doble click](#410-añadir--quitar-vendedor-con-doble-click) |
+| 2 | [4.18 Orden de los desgloses de valor del pedido](#418-orden-de-los-desgloses-de-valor-del-pedido) |
+| 3 | [3.8 Accesibilidad WCAG](#38-accesibilidad-wcag) |
+| 4 | [4.11 Compatibilidad con Firefox](#411-compatibilidad-con-firefox) |
+| 5 | [4.5 Añadir vendedor al resaltado al comprar sus cartas](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas) |
+| 6 | [4.10 Añadir / quitar vendedor con doble click](#410-añadir--quitar-vendedor-con-doble-click) |
 
 ---
 
@@ -19,7 +20,7 @@
 | [1 — Bugs críticos](#1-bugs-críticos) | |
 | [2 — Infraestructura y calidad](#2-infraestructura-y-calidad) | |
 | [3 — UX / Popup](#3-ux--popup) | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
-| [4 — Funcionalidad nueva](#4-funcionalidad-nueva) | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6.a](#46a-listado-configurable-de-query-params-a-preservar), [4.6.b](#46b-listado-configurable-de-subpáginas-del-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.17](#417-features-de-pedido-en-el-carrito-de-compra) |
+| [4 — Funcionalidad nueva](#4-funcionalidad-nueva) | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6.a](#46a-listado-configurable-de-query-params-a-preservar), [4.6.b](#46b-listado-configurable-de-subpáginas-del-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.17](#417-features-de-pedido-en-el-carrito-de-compra), [4.18](#418-orden-de-los-desgloses-de-valor-del-pedido) |
 | [5 — Brainstorming](#5-brainstorming) | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
 ---
@@ -193,6 +194,12 @@ Pendiente de decidir:
 - Si la activación es global o configurable por tipo de página.
 
 Ficheros afectados: `src/content/content-order.js`, `src/options/options.html`, `src/options/options.js`, `src/shared/i18n.js`.
+
+### 4.18 Orden de los desgloses de valor del pedido
+
+Opción en la página de opciones para elegir el criterio de ordenación de las filas del desglose de valor por categoría en el pedido: por defecto (orden de aparición en el DOM), alfabéticamente por nombre de categoría, o por valor descendente.
+
+Ficheros afectados: `src/content/content-order.js`, `src/shared/order-features.js`, `src/options/options.html`, `src/options/options.js`, `src/shared/defaults.js`, `src/shared/i18n.js`.
 
 ### 4.17 Features de pedido en el carrito de compra
 
