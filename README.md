@@ -22,8 +22,8 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Permite ajustar el tamaño de los checkboxes en el listado de pedido (rango de 1em a 3em, con previsualización en vivo del checkbox).
 - Permite activar el atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
 - Permite activar la visualización de imágenes de cartas inline en el listado de pedido, con altura configurable.
-- Permite activar categorías colapsables en el pedido (toggle por bloque de categoría) y configurar si están colapsadas por defecto.
-- Permite activar el desglose del valor del pedido por categoría.
+- Permite activar categorías colapsables en el pedido y en el carrito (toggle por bloque de categoría) y configurar si están colapsadas por defecto.
+- Permite activar el desglose del valor del pedido y del carrito por categoría, con opción de colapso por defecto y criterio de ordenación configurable (por defecto, alfabético o por valor descendente).
 - Incluye previsualización en vivo de la sección Pedido (checkboxes, opacidad e imágenes inline) con toggle de modo claro/oscuro.
 - Permite activar la reescritura de los enlaces del selector de juego en páginas de usuario para mantener el contexto del vendedor al cambiar de juego.
 - Permite activar la preservación de la categoría actual y los filtros genéricos al cambiar de juego (sub-opción del punto anterior).
@@ -68,7 +68,7 @@ cardmarket-extension/
 │   │   ├── options.html           # Página de opciones de la extensión
 │   │   ├── popup.js               # Lógica del popup
 │   │   ├── popup.html             # Popup del icono de la extensión
-│   │   ├── preview.html           # Fragmento HTML para la previsualización de colores
+│   │   ├── color-preview.html     # Fragmento HTML para la previsualización de colores
 │   │   ├── order-preview.html     # Fragmento HTML para la previsualización de pedido
 │   │   └── styles/
 │   │       ├── common.css         # Estilos compartidos (popup y opciones)
@@ -82,7 +82,8 @@ cardmarket-extension/
 │       ├── i18n.js                # Traducciones de la UI (es, en, fr, de, it)
 │       └── order-features.js      # Lógica compartida de features de pedido
 ├── docs/
-│   └── STORE.md           # Descripción y capturas para la Chrome Web Store
+│   ├── STORE.md           # Descripción y capturas para la Chrome Web Store
+│   └── IMPROVEMENTS.md    # Ideas y mejoras pendientes
 ├── pages/
 │   ├── index.html         # Página web pública de la extensión
 │   ├── feedback.html      # Formulario de feedback (alojado en GitHub Pages)
@@ -98,8 +99,7 @@ cardmarket-extension/
 │   └── pre-commit         # Hook que bloquea commits directos en main y develop
 ├── package.json
 ├── manifest.json          # Configuración de la extensión
-├── CHANGELOG.md           # Historial de versiones
-└── IMPROVEMENTS.md        # Ideas y mejoras pendientes
+└── CHANGELOG.md           # Historial de versiones
 ```
 
 ## Compatibilidad

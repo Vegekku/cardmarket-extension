@@ -4,6 +4,20 @@ Todos los cambios notables de este proyecto se documentan aquí.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 Versionado según [Semantic Versioning](https://semver.org/lang/es/).
 
+## [v1.4.0] - 2026-08-19
+
+### Added
+
+- Extensión de las features de pedido (bloques colapsables por categoría, desglose de valor e imágenes inline) a la página del carrito de compra
+- Desglose global del valor del carrito por categoría en el widget de resumen
+- Opción para colapsar por defecto el desglose de valor del carrito
+- Criterio de ordenación configurable para el desglose de valor por categoría (por defecto, alfabético o por valor descendente)
+
+### Changed
+
+- `preview.html` renombrado a `color-preview.html` para mayor claridad
+- `IMPROVEMENTS.md` movido a `docs/` con tabla de Tipología y Priorización reformateadas
+
 ## [v1.3.0] - 2026-08-16
 
 ### Added
@@ -71,6 +85,7 @@ Versionado según [Semantic Versioning](https://semver.org/lang/es/).
 
 - Versión inicial: resaltado de términos de búsqueda en páginas de Cardmarket
 
+[v1.4.0]: https://github.com/vegekku/cardmarket-extension/compare/v1.3.0...v1.4.0
 [v1.3.0]: https://github.com/vegekku/cardmarket-extension/compare/v1.2.1...v1.3.0
 [v1.2.1]: https://github.com/vegekku/cardmarket-extension/compare/v1.2.0...v1.2.1
 [v1.2.0]: https://github.com/vegekku/cardmarket-extension/compare/v1.1.0...v1.2.0
