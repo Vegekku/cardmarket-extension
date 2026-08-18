@@ -22,8 +22,8 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Permite ajustar el tamaño de los checkboxes en el listado de pedido (rango de 1em a 3em, con previsualización en vivo del checkbox).
 - Permite activar el atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
 - Permite activar la visualización de imágenes de cartas inline en el listado de pedido, con altura configurable.
-- Permite activar categorías colapsables en el pedido (toggle por bloque de categoría) y configurar si están colapsadas por defecto.
-- Permite activar el desglose del valor del pedido por categoría.
+- Permite activar categorías colapsables en el pedido y en el carrito (toggle por bloque de categoría) y configurar si están colapsadas por defecto.
+- Permite activar el desglose del valor del pedido y del carrito por categoría, con opción de colapso por defecto.
 - Incluye previsualización en vivo de la sección Pedido (checkboxes, opacidad e imágenes inline) con toggle de modo claro/oscuro.
 - Permite activar la reescritura de los enlaces del selector de juego en páginas de usuario para mantener el contexto del vendedor al cambiar de juego.
 - Permite activar la preservación de la categoría actual y los filtros genéricos al cambiar de juego (sub-opción del punto anterior).
