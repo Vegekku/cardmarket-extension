@@ -29,7 +29,7 @@ Funcionalidades principales:
 • Atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
 • Imágenes de cartas inline en el listado de pedido, con altura configurable.
 • Categorías colapsables en el pedido y en el carrito (toggle por bloque de juego) y opción de colapso por defecto.
-• Desglose del valor del pedido y del carrito por categoría de juego, con opción de colapso por defecto.
+• Desglose del valor del pedido y del carrito por categoría de juego, con opción de colapso por defecto y criterio de ordenación configurable (por defecto, alfabético o por valor descendente).
 • Reescritura de los enlaces del selector de juego en páginas de usuario para mantener el contexto del vendedor al cambiar de juego.
 • Enlace a formulario de feedback en la sección Acerca de, con idioma, versión y tema pre-rellenados.
 • Interfaz disponible en español, inglés, francés, alemán e italiano (se adapta automáticamente al idioma de Cardmarket).
@@ -63,7 +63,7 @@ Esta extensión mejora la experiencia de uso de Cardmarket: resalta visualmente 
 ### Justificación de permiso
 
 #### Justificación de storage (máx. 1000 caracteres)
-Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de la extensión (colores de resaltado, tamaño de checkboxes, opacidad de filas, imágenes inline, bloques colapsables, colapso del desglose de valor, selector de juego) entre sesiones y dispositivos vinculados al perfil de Chrome.
+Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de la extensión (colores de resaltado, tamaño de checkboxes, opacidad de filas, imágenes inline, bloques colapsables, colapso del desglose de valor, ordenación del desglose, selector de juego) entre sesiones y dispositivos vinculados al perfil de Chrome.
 
 #### Justificación de tabs (máx. 1000 caracteres)
 Se usa chrome.tabs para enviar mensajes desde el popup a las pestañas abiertas de Cardmarket y aplicar el resaltado sin necesidad de recargar la página.

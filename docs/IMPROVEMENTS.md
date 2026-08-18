@@ -4,11 +4,10 @@
 
 | # | Punto |
 |---|-------|
-| 1 | [4.18 Orden de los desgloses de valor del pedido](#418-orden-de-los-desgloses-de-valor-del-pedido) |
-| 2 | [3.8 Accesibilidad WCAG](#38-accesibilidad-wcag) |
-| 3 | [4.11 Compatibilidad con Firefox](#411-compatibilidad-con-firefox) |
-| 4 | [4.5 Añadir vendedor al resaltado al comprar sus cartas](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas) |
-| 5 | [4.10 Añadir / quitar vendedor con doble click](#410-añadir--quitar-vendedor-con-doble-click) |
+| 1 | [3.8 Accesibilidad WCAG](#38-accesibilidad-wcag) |
+| 2 | [4.11 Compatibilidad con Firefox](#411-compatibilidad-con-firefox) |
+| 3 | [4.5 Añadir vendedor al resaltado al comprar sus cartas](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas) |
+| 4 | [4.10 Añadir / quitar vendedor con doble click](#410-añadir--quitar-vendedor-con-doble-click) |
 
 ---
 
@@ -18,8 +17,8 @@
 |--------|--------|
 | [1 — Bugs críticos](#1-bugs-críticos) | |
 | [2 — Infraestructura y calidad](#2-infraestructura-y-calidad) | |
-| [3 — UX / Popup](#3-ux--popup) | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket) |
-| [4 — Funcionalidad nueva](#4-funcionalidad-nueva) | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6.a](#46a-listado-configurable-de-query-params-a-preservar), [4.6.b](#46b-listado-configurable-de-subpáginas-del-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.18](#418-orden-de-los-desgloses-de-valor-del-pedido) |
+| [3 — UX / Popup](#3-ux--popup) | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket), [3.10](#310-rediseño-de-la-página-de-opciones) |
+| [4 — Funcionalidad nueva](#4-funcionalidad-nueva) | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6.a](#46a-listado-configurable-de-query-params-a-preservar), [4.6.b](#46b-listado-configurable-de-subpáginas-del-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.19](#419-colapsar-pedidos-en-el-carrito), [4.20](#420-vaciado-de-carrito) |
 | [5 — Brainstorming](#5-brainstorming) | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
 ---
@@ -66,6 +65,16 @@ Pendiente de decidir la estrategia de verificación, teniendo en cuenta el creci
 - **Fase 2 (cuando exista `options.html` u otro HTML propio)**: integrar `@axe-core/cli` + Playwright como script `npm run a11y` que audite todos los HTML propios de la extensión en un browser headless. Añadir al flujo de cierre de feature como paso previo al commit.
 
 Ficheros afectados: `src/options/popup.html`, `src/options/styles/popup.css`, `src/options/options.html`, `.amazonq/rules/accessibility.md` (nuevo), `package.json` (fase 2).
+
+### 3.10 Rediseño de la página de opciones
+
+La página de opciones ha crecido hasta tener un único panel con múltiples secciones (`<h2>`) que mezclan contextos distintos (resaltado, pedido/carrito, navegación). Con las mejoras previstas el problema se agravará.
+
+Propuesta: convertir los `<h2>` actuales en tabs de la sidebar (Resaltado, Pedido y carrito, Navegación, Acerca de), separando claramente los contextos y haciendo la página más escalable. Implica refactorizar `options.js` y los estilos.
+
+Momento recomendado: abordar cuando se añada una sección nueva de peso (ej. 4.3 o 4.9), no antes.
+
+Ficheros afectados: `src/options/options.html`, `src/options/options.js`, `src/options/styles/options.css`, `src/shared/i18n.js`.
 
 ### 3.9 Simplificación de selectores y filtros de Cardmarket
 
@@ -194,11 +203,21 @@ Pendiente de decidir:
 
 Ficheros afectados: `src/content/content-order.js`, `src/options/options.html`, `src/options/options.js`, `src/shared/i18n.js`.
 
-### 4.18 Orden de los desgloses de valor del pedido
+### 4.19 Colapsar pedidos en el carrito
 
-Opción en la página de opciones para elegir el criterio de ordenación de las filas del desglose de valor por categoría en el pedido: por defecto (orden de aparición en el DOM), alfabéticamente por nombre de categoría, o por valor descendente.
+Añadir un toggle para colapsar/expandir el contenedor completo de cada pedido (bloque por vendedor) en la página del carrito. Funcionalidad equivalente a la que ya existe en la versión mobile de Cardmarket.
 
-Ficheros afectados: `src/content/content-order.js`, `src/shared/order-features.js`, `src/options/options.html`, `src/options/options.js`, `src/shared/defaults.js`, `src/shared/i18n.js`.
+Ficheros afectados: `src/content/content-order.js`, `src/options/options.html`, `src/options/options.js`, `src/shared/defaults.js`, `src/shared/i18n.js`.
+
+### 4.20 Vaciado de carrito
+
+Añadir un botón o enlace para eliminar todos los pedidos del carrito de una sola acción, sin tener que borrarlos uno a uno.
+
+Pendiente de analizar:
+- Estructura del DOM del carrito para identificar los botones de eliminación de pedido individuales.
+- Si Cardmarket expone algún endpoint o acción nativa para vaciar el carrito completo, o si hay que simular los clicks uno a uno.
+
+Ficheros afectados: `src/content/content-order.js`.
 
 ---
 
