@@ -83,3 +83,25 @@ export function applyCheckedRowOpacity(enabled, opacity, root = document) {
 export function applyCheckboxSize(size, root = document.documentElement) {
     root.style.setProperty('--op-cb-size', `${size}em`);
 }
+
+/**
+ * Reordena las filas de desglose (.mkm-game-subtotal-item) dentro de cada .mkm-game-subtotal-row.
+ * @param {'default'|'alpha'|'value'} sort
+ * @param {ParentNode} [root=document]
+ */
+export function applyBreakdownSort(sort, root = document) {
+    root.querySelectorAll('.mkm-game-subtotal-row').forEach(detailRow => {
+        const items = [...detailRow.querySelectorAll('.mkm-game-subtotal-item')];
+        if (sort === 'alpha') {
+            items.sort((a, b) => a.querySelector('.flex-grow-1').textContent.localeCompare(b.querySelector('.flex-grow-1').textContent));
+        } else if (sort === 'value') {
+            items.sort((a, b) => {
+                const parse = el => parseFloat(el.querySelector('span:last-child').textContent.replace(',', '.'));
+                return parse(b) - parse(a);
+            });
+        } else {
+            return; // 'default': no reordenar
+        }
+        items.forEach(item => detailRow.appendChild(item));
+    });
+}

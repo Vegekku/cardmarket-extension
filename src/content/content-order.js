@@ -6,8 +6,8 @@
  * Opera sobre cada section.shipment-block de forma genérica, cubriendo tanto pedidos (uno) como carrito (varios).
  */
 import './content-common.js';
-import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT, DEFAULT_GAME_BLOCKS_ENABLED, DEFAULT_GAME_BLOCKS_COLLAPSED, DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED, DEFAULT_GAME_BLOCKS_SUBTOTAL_COLLAPSED } from '../shared/defaults.js';
-import { injectThumbnail, applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize } from '../shared/order-features.js';
+import { DEFAULT_CHECKBOX_SIZE, DEFAULT_CHECKED_OPACITY, DEFAULT_INLINE_IMAGES_ENABLED, DEFAULT_INLINE_IMAGE_HEIGHT, DEFAULT_GAME_BLOCKS_ENABLED, DEFAULT_GAME_BLOCKS_COLLAPSED, DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED, DEFAULT_GAME_BLOCKS_SUBTOTAL_COLLAPSED, DEFAULT_BREAKDOWN_SORT } from '../shared/defaults.js';
+import { injectThumbnail, applyInlineImages, applyCheckedRowOpacity, applyCheckboxSize, applyBreakdownSort } from '../shared/order-features.js';
 
 // Inyecta el estilo estático de la custom property para el tamaño de checkbox
 const style = document.createElement('style');
@@ -285,7 +285,7 @@ function applyGameBlocksState(togglesEnabled, defaultCollapsed, subtotalEnabled,
 }
 
 // Carga inicial
-chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled', 'gameBlocksSubtotalCollapsed'], data => {
+chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled', 'gameBlocksSubtotalCollapsed', 'breakdownSort'], data => {
     initGameBlocks();
     applyGameBlocksState(
         data.gameBlocksEnabled ?? DEFAULT_GAME_BLOCKS_ENABLED,
@@ -293,6 +293,7 @@ chrome.storage.sync.get(['checkboxSize', 'checkedOpacity', 'checkedOpacityEnable
         data.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED,
         data.gameBlocksSubtotalCollapsed ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_COLLAPSED
     );
+    applyBreakdownSort(data.breakdownSort ?? DEFAULT_BREAKDOWN_SORT);
     applyCheckboxSize(data.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
     const opacityEnabled = data.checkedOpacityEnabled ?? false;
     const opacity = data.checkedOpacity ?? DEFAULT_CHECKED_OPACITY;
@@ -308,8 +309,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
     const needsInline = ['inlineImagesEnabled', 'inlineImageHeight'].some(k => k in changes);
     const needsCheckbox = 'checkboxSize' in changes;
     const needsGameBlocks = ['gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled', 'gameBlocksSubtotalCollapsed'].some(k => k in changes);
-    if (!needsOpacity && !needsInline && !needsCheckbox && !needsGameBlocks) return;
-    chrome.storage.sync.get(['checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'checkboxSize', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled', 'gameBlocksSubtotalCollapsed'], d => {
+    const needsBreakdownSort = 'breakdownSort' in changes;
+    if (!needsOpacity && !needsInline && !needsCheckbox && !needsGameBlocks && !needsBreakdownSort) return;
+    chrome.storage.sync.get(['checkedOpacity', 'checkedOpacityEnabled', 'inlineImagesEnabled', 'inlineImageHeight', 'checkboxSize', 'gameBlocksEnabled', 'gameBlocksCollapsed', 'gameBlocksSubtotalEnabled', 'gameBlocksSubtotalCollapsed', 'breakdownSort'], d => {
         if (needsCheckbox) applyCheckboxSize(d.checkboxSize ?? DEFAULT_CHECKBOX_SIZE);
         if (needsOpacity) {
             const opacityEnabled = d.checkedOpacityEnabled ?? false;
@@ -324,5 +326,6 @@ chrome.storage.onChanged.addListener((changes, area) => {
             d.gameBlocksSubtotalEnabled ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_ENABLED,
             d.gameBlocksSubtotalCollapsed ?? DEFAULT_GAME_BLOCKS_SUBTOTAL_COLLAPSED
         );
+        if (needsBreakdownSort) applyBreakdownSort(d.breakdownSort ?? DEFAULT_BREAKDOWN_SORT);
     });
 });

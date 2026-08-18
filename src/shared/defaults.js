@@ -44,3 +44,6 @@ export const DEFAULT_GAME_SWITCHER_ENABLED = true;
 
 /** @type {boolean} */
 export const DEFAULT_GAME_SWITCHER_FULL_CONTEXT_ENABLED = false;
+
+/** @type {string} */
+export const DEFAULT_BREAKDOWN_SORT = 'default';
