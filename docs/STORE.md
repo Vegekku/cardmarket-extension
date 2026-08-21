@@ -18,21 +18,21 @@ Cardmarket Enhancer resalta visualmente los vendedores que más te interesan en 
 
 Funcionalidades principales:
 
-• Introduce uno o varios nombres de usuario en el popup separados por espacio, salto de línea o coma.
-• Las filas de los vendedores coincidentes se resaltan en el listado de artículos.
-• Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por Cardmarket.
-• Toggle para activar o desactivar el resaltado sin borrar la lista de usuarios.
-• Botón Vaciar para eliminar todos los usuarios guardados de una vez.
-• Feedback visual en el popup al modificar o vaciar la lista de usuarios.
-• Página de opciones con selector de color de resaltado independiente para modo claro y oscuro, con previsualización en vivo.
-• Tamaño de checkboxes configurable en el listado de pedido, con previsualización en vivo.
-• Atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
-• Imágenes de cartas inline en el listado de pedido, con altura configurable.
-• Categorías colapsables en el pedido y en el carrito (toggle por bloque de juego) y opción de colapso por defecto.
-• Desglose del valor del pedido y del carrito por categoría de juego, con opción de colapso por defecto y criterio de ordenación configurable (por defecto, alfabético o por valor descendente).
-• Reescritura de los enlaces del selector de juego en páginas de usuario para mantener el contexto del vendedor al cambiar de juego.
-• Enlace a formulario de feedback en la sección Acerca de, con idioma, versión y tema pre-rellenados.
-• Interfaz disponible en español, inglés, francés, alemán e italiano (se adapta automáticamente al idioma de Cardmarket).
+- Introduce uno o varios nombres de usuario en el popup separados por espacio, salto de línea o coma.
+- Las filas de los vendedores coincidentes se resaltan en el listado de artículos.
+- Los usuarios persisten entre sesiones y se aplican automáticamente al navegar por Cardmarket.
+- Toggle para activar o desactivar el resaltado sin borrar la lista de usuarios.
+- Botón Vaciar para eliminar todos los usuarios guardados de una vez.
+- Feedback visual en el popup al modificar o vaciar la lista de usuarios.
+- Página de opciones con selector de color de resaltado independiente para modo claro y oscuro, con previsualización en vivo.
+- Tamaño de checkboxes configurable en el listado de pedido, con previsualización en vivo.
+- Atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
+- Miniaturas de artículos en el listado de pedido, con altura configurable.
+- Categorías colapsables en el pedido y en el carrito (toggle por bloque de juego) y opción de colapso por defecto.
+- Desglose del valor del pedido y del carrito por categoría de juego, con opción de colapso por defecto y criterio de ordenación configurable (por defecto, alfabético o por valor descendente).
+- Reescritura de los enlaces del selector de juego en páginas de usuario para mantener el contexto del vendedor al cambiar de juego.
+- Enlace a formulario de feedback en la sección Acerca de, con idioma, versión y tema pre-rellenados.
+- Interfaz disponible en español, inglés, francés, alemán e italiano (se adapta automáticamente al idioma de Cardmarket).
 
 Compatibilidad: Chrome con Manifest V3. Funciona en todas las páginas de Cardmarket.
 
@@ -62,7 +62,7 @@ No disponible
 
 <a href="../imgs/options_page.jpg" target="_blank"><img src="../imgs/options_page.jpg" width="640" alt="Página de opciones"></a>
 
-3. Listado de pedido con imágenes inline, checkboxes ampliados y bloques colapsables por categoría.
+3. Listado de pedido con miniaturas de artículos, checkboxes ampliados y bloques colapsables por categoría.
 
 <a href="../imgs/order.jpg" target="_blank"><img src="../imgs/order.jpg" width="640" alt="Pedido"></a>
 
@@ -102,13 +102,13 @@ Esta extensión mejora la experiencia de uso de Cardmarket: resalta visualmente 
 ### Justificación de permiso
 
 #### Justificación de storage (máx. 1000 caracteres)
-Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de la extensión (colores de resaltado, tamaño de checkboxes, opacidad de filas, imágenes inline, bloques colapsables, colapso del desglose de valor, ordenación del desglose, selector de juego, preservar categoría y filtros al cambiar de juego) entre sesiones y dispositivos vinculados al perfil de Chrome.
+Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de la extensión (colores de resaltado, tamaño de checkboxes, opacidad de filas, miniaturas de artículos, bloques colapsables, colapso del desglose de valor, ordenación del desglose, selector de juego, preservar categoría y filtros al cambiar de juego) entre sesiones y dispositivos vinculados al perfil de Chrome.
 
 #### Justificación de tabs (máx. 1000 caracteres)
 Se usa chrome.tabs para enviar mensajes desde el popup a las pestañas abiertas de Cardmarket y aplicar el resaltado sin necesidad de recargar la página.
 
 #### Justificación de Permiso de host (máx. 1000 caracteres)
-El permiso sobre *://*.cardmarket.com/* es necesario para inyectar los content scripts en las páginas de Cardmarket: resaltado de vendedores en listados de artículos, mejoras en el listado de pedido y carrito (imágenes inline, checkboxes, bloques colapsables por categoría, desglose de valor por categoría) y reescritura del selector de juego en páginas de usuario.
+El permiso sobre *://*.cardmarket.com/* es necesario para inyectar los content scripts en las páginas de Cardmarket: resaltado de vendedores en listados de artículos, mejoras en el listado de pedido y carrito (miniaturas de artículos, checkboxes, bloques colapsables por categoría, desglose de valor por categoría) y reescritura del selector de juego en páginas de usuario.
 
 #### Utilizas código remoto?
 - (x) No, no estoy usando Código remoto
@@ -142,7 +142,7 @@ https://vegekku.github.io/cardmarket-extension/privacy.html
 ### Instrucciones adicionales (máx. 500 caracteres)
 Resaltado: abre el popup, introduce un usuario de Cardmarket y navega a una página de producto. La fila del vendedor quedará resaltada.
 
-Pedido: abre una página de pedido y accede a Opciones para configurar checkboxes, imágenes inline y bloques por juego.
+Pedido: abre una página de pedido y accede a Opciones para configurar checkboxes, miniaturas de artículos y bloques por juego.
 
 Carrito: abre el carrito con artículos de varios juegos para ver los bloques colapsables y el desglose de valor por categoría.
 
