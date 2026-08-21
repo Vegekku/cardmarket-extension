@@ -21,10 +21,10 @@ Extensión de Chrome que resalta usuarios en [Cardmarket](https://www.cardmarket
 - Los cambios de color se aplican en todas las pestañas abiertas de Cardmarket sin recargar.
 - Permite ajustar el tamaño de los checkboxes en el listado de pedido (rango de 1em a 3em, con previsualización en vivo del checkbox).
 - Permite activar el atenuado de filas al marcar su checkbox en el listado de pedido, con opacidad configurable.
-- Permite activar la visualización de imágenes de cartas inline en el listado de pedido, con altura configurable.
+- Permite activar la visualización de miniaturas de artículos en el listado de pedido, con altura configurable.
 - Permite activar categorías colapsables en el pedido y en el carrito (toggle por bloque de categoría) y configurar si están colapsadas por defecto.
 - Permite activar el desglose del valor del pedido y del carrito por categoría, con opción de colapso por defecto y criterio de ordenación configurable (por defecto, alfabético o por valor descendente).
-- Incluye previsualización en vivo de la sección Pedido (checkboxes, opacidad e imágenes inline) con toggle de modo claro/oscuro.
+- Incluye previsualización en vivo de la sección Pedido (checkboxes, opacidad y miniaturas de artículos) con toggle de modo claro/oscuro.
 - Permite activar la reescritura de los enlaces del selector de juego en páginas de usuario para mantener el contexto del vendedor al cambiar de juego.
 - Permite activar la preservación de la categoría actual y los filtros genéricos al cambiar de juego (sub-opción del punto anterior).
 - Incluye enlace a formulario de feedback (bug, sugerencia, pregunta) en la sección Acerca de, con idioma, versión y tema pre-rellenados.
@@ -60,7 +60,7 @@ cardmarket-extension/
 │   ├── content/
 │   │   ├── content-common.js      # Inicialización compartida entre content scripts (idioma)
 │   │   ├── content-highlight.js   # Resaltado de usuarios en páginas de Products
-│   │   ├── content-order.js       # Features de pedido (imágenes inline, opacidad, checkbox, bloques por categoría)
+│   │   ├── content-order.js       # Features de pedido (miniaturas de artículos, opacidad, checkbox, bloques por categoría)
 │   │   └── content-order.css      # Estilos inyectados por content-order.js
 │   ├── options/
 │   │   ├── options-preview.js     # Lógica de previsualizaciones (colores y pedido)
