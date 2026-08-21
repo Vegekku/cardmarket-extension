@@ -44,14 +44,53 @@ Español (es)
 
 ### Recursos gráficos
 
-#### Capturas de pantalla (máx. 5 capturas)
+#### Icono de Chrome Web Store (128x128 píxeles)
 
-1. Popup de la extensión con varios usuarios introducidos y el toggle de resaltado activado.
-2. Listado de artículos de una carta con filas de vendedores resaltadas en azul-cian.
-3. Página de opciones con controles de pedido y previsualización en vivo.
-4. Listado de pedido con imágenes inline, checkboxes ampliados y bloques colapsables por juego.
+![Icono](../icons/icon128.png)
 
-Nota: las capturas 3 y 4 están pendientes de actualizar con las nuevas funcionalidades.
+#### Vídeo promocional global (Introduce la URL de un vídeo de YouTube)
+
+No disponible
+
+#### Capturas de pantalla (Hasta un máximo de 5; 1280 x 800 o 640 x 400; Archivo JPEG o PNG de 24 bits (no alfa))
+
+1. Popup abierto con usuarios introducidos y toggle activado, con filas de vendedores resaltadas de fondo.
+
+<a href="../imgs/popup_highlighted.jpg" target="_blank"><img src="../imgs/popup_highlighted.jpg" width="640" alt="Popup y resaltado"></a>
+
+2. Página de opciones, sección Pedido con previsualizón en vivo de la tabla.
+
+<a href="../imgs/options_page.jpg" target="_blank"><img src="../imgs/options_page.jpg" width="640" alt="Página de opciones"></a>
+
+3. Listado de pedido con imágenes inline, checkboxes ampliados y bloques colapsables por categoría.
+
+<a href="../imgs/order.jpg" target="_blank"><img src="../imgs/order.jpg" width="640" alt="Pedido"></a>
+
+4. Carrito con bloques colapsables por juego y desglose de valor por categoría.
+
+<a href="../imgs/cart.jpg" target="_blank"><img src="../imgs/cart.jpg" width="640" alt="Carrito"></a>
+
+#### Imagen en mosaico promocional pequeña (Canvas de 440x280; Archivo JPEG o PNG de 24 bits (no alfa))
+
+No disponible
+
+#### Imagen en mosaico promocional con desplazamiento (Canvas de 1400x560; Archivo JPEG o PNG de 24 bits (no alfa))
+
+No disponible
+
+### Campos adicionales
+
+#### URL oficial
+
+No disponible
+
+#### URL de la página principal (Enlace al sitio web de tu elemento)
+
+https://vegekku.github.io/cardmarket-extension/
+
+#### URL de asistencia
+
+https://vegekku.github.io/cardmarket-extension/feedback.html
 
 ## Privacidad
 
@@ -63,13 +102,13 @@ Esta extensión mejora la experiencia de uso de Cardmarket: resalta visualmente 
 ### Justificación de permiso
 
 #### Justificación de storage (máx. 1000 caracteres)
-Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de la extensión (colores de resaltado, tamaño de checkboxes, opacidad de filas, imágenes inline, bloques colapsables, colapso del desglose de valor, ordenación del desglose, selector de juego) entre sesiones y dispositivos vinculados al perfil de Chrome.
+Se usa chrome.storage.sync para guardar los nombres de usuario resaltados y las preferencias de la extensión (colores de resaltado, tamaño de checkboxes, opacidad de filas, imágenes inline, bloques colapsables, colapso del desglose de valor, ordenación del desglose, selector de juego, preservar categoría y filtros al cambiar de juego) entre sesiones y dispositivos vinculados al perfil de Chrome.
 
 #### Justificación de tabs (máx. 1000 caracteres)
 Se usa chrome.tabs para enviar mensajes desde el popup a las pestañas abiertas de Cardmarket y aplicar el resaltado sin necesidad de recargar la página.
 
 #### Justificación de Permiso de host (máx. 1000 caracteres)
-El permiso sobre *://*.cardmarket.com/* es necesario para inyectar los content scripts en las páginas de Cardmarket: resaltado de vendedores en listados de artículos, mejoras en el listado de pedido (imágenes inline, checkboxes, bloques colapsables) y reescritura del selector de juego en páginas de usuario.
+El permiso sobre *://*.cardmarket.com/* es necesario para inyectar los content scripts en las páginas de Cardmarket: resaltado de vendedores en listados de artículos, mejoras en el listado de pedido y carrito (imágenes inline, checkboxes, bloques colapsables por categoría, desglose de valor por categoría) y reescritura del selector de juego en páginas de usuario.
 
 #### Utilizas código remoto?
 - (x) No, no estoy usando Código remoto
@@ -101,8 +140,10 @@ https://vegekku.github.io/cardmarket-extension/privacy.html
 ## Instrucciones de la prueba
 
 ### Instrucciones adicionales (máx. 500 caracteres)
-Resaltado: abre el popup, introduce un nombre de usuario de Cardmarket y navega a una página de producto (ej. https://www.cardmarket.com/es/Magic/Products/Singles/...). La fila del vendedor quedará resaltada.
+Resaltado: abre el popup, introduce un usuario de Cardmarket y navega a una página de producto. La fila del vendedor quedará resaltada.
 
-Pedido: abre una página de pedido (https://www.cardmarket.com/es/Magic/Orders/...) y accede a Opciones para configurar checkboxes, imágenes inline y bloques por juego.
+Pedido: abre una página de pedido y accede a Opciones para configurar checkboxes, imágenes inline y bloques por juego.
 
-Carrito: abre el carrito (https://www.cardmarket.com/es/Magic/ShoppingCart) con artículos de varios juegos para ver los bloques colapsables y el desglose de valor por categoría.
+Carrito: abre el carrito con artículos de varios juegos para ver los bloques colapsables y el desglose de valor por categoría.
+
+Selector de juego: en el perfil de un vendedor, activa «Mantener contexto de vendedor» en Opciones y cambia de juego.
