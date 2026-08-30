@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <span class="save-status" id="saveStatus"></span>
-    <h3 id="popupHeading" data-i18n="popupHeading"></h3>
+    <span class="save-status" id="saveStatus" role="status" aria-live="polite"></span>
+    <h1 id="popupHeading" data-i18n="popupHeading"></h1>
+    <label for="terms" class="sr-only" data-i18n="popupHeading"></label>
     <textarea id="terms" data-i18n-placeholder="popupPlaceholder"></textarea>
     <div class="bottom-row">
         <label class="toggle-label" id="toggleLabel" data-i18n-title="toggleTitle">

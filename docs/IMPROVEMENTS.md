@@ -4,10 +4,9 @@
 
 | # | Punto |
 |---|-------|
-| 1 | [3.8 Accesibilidad WCAG](#38-accesibilidad-wcag) |
-| 2 | [4.11 Compatibilidad con Firefox](#411-compatibilidad-con-firefox) |
-| 3 | [4.5 Añadir vendedor al resaltado al comprar sus cartas](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas) |
-| 4 | [4.10 Añadir / quitar vendedor con doble click](#410-añadir--quitar-vendedor-con-doble-click) |
+| 1 | [4.11 Compatibilidad con Firefox](#411-compatibilidad-con-firefox) |
+| 2 | [4.5 Añadir vendedor al resaltado al comprar sus cartas](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas) |
+| 3 | [4.10 Añadir / quitar vendedor con doble click](#410-añadir--quitar-vendedor-con-doble-click) |
 
 ---
 
@@ -17,7 +16,7 @@
 |--------|--------|
 | [1 — Bugs críticos](#1-bugs-críticos) | |
 | [2 — Infraestructura y calidad](#2-infraestructura-y-calidad) | |
-| [3 — UX / Popup](#3-ux--popup) | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.8](#38-accesibilidad-wcag), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket), [3.10](#310-rediseño-de-la-página-de-opciones) |
+| [3 — UX / Popup](#3-ux--popup) | [3.6](#36-ocultar-secciones-de-la-ui-de-cardmarket), [3.9](#39-simplificación-de-selectores-y-filtros-de-cardmarket), [3.10](#310-rediseño-de-la-página-de-opciones) |
 | [4 — Funcionalidad nueva](#4-funcionalidad-nueva) | [4.3](#43-modo-filtro-mostrar-solo-vendedores-resaltados), [4.5](#45-añadir-vendedor-al-resaltado-al-comprar-sus-cartas), [4.6.a](#46a-listado-configurable-de-query-params-a-preservar), [4.6.b](#46b-listado-configurable-de-subpáginas-del-vendedor), [4.7](#47-filtro-de-precio-en-el-listado-de-vendedores-de-una-carta), [4.9](#49-pago-selectivo-de-pedidos-en-el-carrito), [4.10](#410-añadir--quitar-vendedor-con-doble-click), [4.11](#411-compatibilidad-con-firefox), [4.14](#414-selector-de-vista-listacuadrícula-en-artículos-de-vendedor), [4.15](#415-imágenes-inline-en-más-páginas-de-cardmarket), [4.19](#419-colapsar-pedidos-en-el-carrito), [4.20](#420-vaciado-de-carrito) |
 | [5 — Brainstorming](#5-brainstorming) | [4.1](#41-colores-personalizables-por-término), [4.4](#44-navegación-entre-coincidencias) |
 
@@ -44,27 +43,6 @@ Pendiente de analizar:
 Se expone en la página de opciones ([3.5](#35-página-de-opciones)).
 
 Ficheros afectados: `src/content/content-highlight.js`, `src/options/options.html`, `src/options/options.js`.
-
-### 3.8 Accesibilidad WCAG
-
-Auditoría completa de accesibilidad de la extensión. Problemas identificados:
-
-- **Contraste insuficiente (WCAG 1.4.3 AA / 1.4.6 AAA)**:
-  - Botón "Vaciar": `#666` sobre `#e0e0e0` (~3.1:1, falla AA).
-  - Toast `#saveStatus`: `#2a9d5c` sobre `#d4f5e2` (~3.8:1, falla AA).
-  - Placeholder del textarea: `#767676` sobre `#fff` (~4.5:1, pasa AA justo, falla AAA).
-- **Semántica HTML (WCAG 1.3.1)**:
-  - `<h3>` sin `<h1>`/`<h2>` previo — jerarquía de headings rota.
-  - `<textarea>` sin `<label>` asociado; el `placeholder` no es suficiente.
-- **Regiones dinámicas (WCAG 4.1.3)**: `#saveStatus` cambia de contenido dinámicamente pero carece de `role="status"` y `aria-live="polite"` — los lectores de pantalla no lo anuncian.
-- **CSS muerto**: `.toggle-row { display: none }` — residuo de refactorización, eliminar.
-
-Pendiente de decidir la estrategia de verificación, teniendo en cuenta el crecimiento previsto del proyecto (página de opciones en 3.5, UI inyectada en content.js en múltiples mejoras del bloque 4):
-
-- **Fase 1 (ahora)**: añadir regla en `.amazonq/rules/accessibility.md` con checklist WCAG AA/AAA aplicable a cada fichero HTML/CSS tocado. Sin dependencias extra, coste cero.
-- **Fase 2 (cuando exista `options.html` u otro HTML propio)**: integrar `@axe-core/cli` + Playwright como script `npm run a11y` que audite todos los HTML propios de la extensión en un browser headless. Añadir al flujo de cierre de feature como paso previo al commit.
-
-Ficheros afectados: `src/options/popup.html`, `src/options/styles/popup.css`, `src/options/options.html`, `.amazonq/rules/accessibility.md` (nuevo), `package.json` (fase 2).
 
 ### 3.10 Rediseño de la página de opciones
 
